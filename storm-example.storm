@@ -1,7 +1,6 @@
 
 
-storm my_data{
-
+storm my_data {
     var_one: string,
     var_two: double,
     var_three: int

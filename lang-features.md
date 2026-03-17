@@ -3,14 +3,14 @@
 
 --- Storm Language Features ---
 
-- Procedures
+- Procedures (proc)
 - Loops (for, while, range)
 - Conditional statements
 - Function calls
 - Variable types - int, double, bool, string, user-defined types
 - Pass by reference/copy
 - Multiple files support
-- Module - containerizes multiple data objects
+- Storm - containerizes multiple data objects
 
 
 
