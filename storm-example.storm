@@ -1,0 +1,25 @@
+
+
+storm my_data{
+
+    var_one: string,
+    var_two: double,
+    var_three: int
+};
+
+proc void tempest() {
+
+    x: int = 5;
+
+    [[will print 5 to 49]]
+    for(x..50) {
+        echo(x);
+    }
+
+    int result = get_sum(x, 2);
+    
+}
+
+proc int get_sum(num_one: int, num_two: int) {
+    return num_one + num_two;
+}
