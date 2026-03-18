@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../token.h"
+#include <iostream>
 #include <vector>
 #include <string>
 
@@ -23,5 +24,14 @@ public:
         if(c == '\n') line++;
         else if(c == ' ') start = ++end; 
     } 
+
+    void print_tokens() {
+        
+        for(auto t : tokens) {
+            std::cout << "\nTokenType-> " << token_tostring.at(t.type) << "\n"
+                      << "Value-> " << t.value << "\n"
+                      << "Line: " << t.line << "Column: " << t.col;
+        }
+    }
 
 };
