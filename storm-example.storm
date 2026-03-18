@@ -11,7 +11,7 @@ proc void tempest() {
     x: int = 5;
 
     [[will print 5 to 49]]
-    for(x..50) {
+    range(x..50) {
         echo(x);
     }
 

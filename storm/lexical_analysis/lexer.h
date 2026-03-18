@@ -18,19 +18,21 @@ class Lexer {
 
 public:
 
-    Lexer(const std::string& content) : con(content), length(content.length()) { }
+    Lexer(const std::string& content) : con(content), length(content.length()) { 
+        lex();
+    }
 
     void skip_whitespace(char c) {
-        if(c == '\n') line++;
+        if(c == '\n') { line++; col = 0; start = ++end; }
         else if(c == ' ') start = ++end; 
     } 
 
     void print_tokens() {
         
         for(auto t : tokens) {
-            std::cout << "\nTokenType-> " << token_tostring.at(t.type) << "\n"
+            std::cout << "\n\nTokenType-> " << token_tostring.at(t.type) << "\n"
                       << "Value-> " << t.value << "\n"
-                      << "Line: " << t.line << "Column: " << t.col;
+                      << " Line: " << t.line << " Column: " << t.col;
         }
     }
 

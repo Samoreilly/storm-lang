@@ -7,13 +7,13 @@ void Lexer::lex() {
 
     while(end < length ) {
         char c = con[end];
-        
+
         skip_whitespace(c);
         
         if(std::isalpha(c)) {
             start = end;
             
-            while(end < length && std::isalpha(con[end])) {
+            while(end < length && (std::isalpha(con[end]) || con[end] == '_')) {
                 end++;
                 col++;
             }
@@ -27,7 +27,7 @@ void Lexer::lex() {
                 TokenType type = FEATURES.at(data);
                 tokens.push_back({type, data, line, col});
             }else {
-                tokens.push_back({TokenType::IDENTIFIER});
+                tokens.push_back({TokenType::IDENTIFIER, data, line, col});
             }
 
             start = end;
@@ -56,8 +56,16 @@ void Lexer::lex() {
         }
 
         if(is_symbol(c)) {
+            
+            //for range(0..50)
+            if(c == '.' && con[end + 1] == '.') {
+                tokens.push_back({TokenType::UPTO, "..", line, col});
+                end += 2;
+                col++;
+                continue;
+            }
             //[[this is a comment in storm without "//"]]
-            if(c == '[' && con[end + 1] == c) {
+            if(c == '[' && con[end + 1] == '[') {
                 end += 2;
                 while(con[end] != ']' && con[end + 1] != ']') {
                     if(con[end] == '\n') {
@@ -65,6 +73,8 @@ void Lexer::lex() {
                     }
                     end++;
                 }
+
+                
                 continue;
             }
 
@@ -133,15 +143,15 @@ void Lexer::lex() {
         }
 
         if(end > start) {
-
-            
+                
             std::string_view dat(con.data() + start, end - start);
             std::string data(dat);
             
+
             tokens.push_back({TokenType::IDENTIFIER, data, line, col});
             end++;
             
-            start = ++end;
+            start = end;
             continue;
         }
     }
