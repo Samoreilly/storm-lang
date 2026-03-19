@@ -24,7 +24,7 @@ public:
 
     void skip_whitespace(char c) {
         if(c == '\n') { line++; col = 0; start = ++end; }
-        else if(c == ' ') start = ++end; 
+        else if(std::isspace(c)) { start = ++end; col++; } 
     } 
 
     void print_tokens() {

@@ -8,11 +8,12 @@ void Lexer::lex() {
     while(end < length ) {
         char c = con[end];
 
+        std::cout <<  c;
         skip_whitespace(c);
         
         if(std::isalpha(c)) {
             start = end;
-            
+            int curr_col = col;
             while(end < length && (std::isalpha(con[end]) || con[end] == '_')) {
                 end++;
                 col++;
@@ -25,7 +26,7 @@ void Lexer::lex() {
 
             if(it != FEATURES.end()) {
                 TokenType type = FEATURES.at(data);
-                tokens.push_back({type, data, line, col});
+                tokens.push_back({type, data, line, curr_col});
             }else {
                 tokens.push_back({TokenType::IDENTIFIER, data, line, col});
             }
@@ -36,8 +37,14 @@ void Lexer::lex() {
 
         if(std::isdigit(c)) {
             start = end;
-
+            bool exit = false;
             while(end < length && (std::isdigit(con[end]) || con[end] == '.')) {
+                if(end + 1 < length && con[end] == '.' && con[end + 1] == '.') {
+                    
+                    exit = true;
+                }
+
+                if(exit) break;
                 end++;
                 col++;
             }
@@ -67,13 +74,15 @@ void Lexer::lex() {
             //[[this is a comment in storm without "//"]]
             if(c == '[' && con[end + 1] == '[') {
                 end += 2;
-                while(con[end] != ']' && con[end + 1] != ']') {
+                while(end + 1 < length && (con[end] != ']' || con[end + 1] != ']')) {
                     if(con[end] == '\n') {
                         throw std::runtime_error("Comments are single line, please use [[...]] for each line");
                     }
                     end++;
                 }
 
+                end += 2;
+                std::cout << "CHARAARARA" <<  con[end] << con[end + 1];
                 
                 continue;
             }
@@ -100,8 +109,11 @@ void Lexer::lex() {
                         op += c;
                         col++;
                         end++;
+
+                        tokens.push_back({TokenType::UNARY_OP, op, line, col});
+                        continue;
                     }else if(con[end] == '=') {
-                        op += c;
+                        op += '=';
                         col++;
                         end++;
                     }
@@ -115,10 +127,11 @@ void Lexer::lex() {
                 case '*':
                     op += c;    
                     end++;
+
                     if(con[end] == '=') {
-                        op += c;
+                        op += '=';
                         col++;
-                        end++;                        
+                        end++;           
                     }
                         
                     tokens.push_back({TokenType::OPERATOR, op, line, col});
@@ -129,13 +142,30 @@ void Lexer::lex() {
                     end++;
 
                     if(con[end] == '=') {
-                        op += c;
+                        op += '=';
                         col++;
                         end++;
                     }
 
                     tokens.push_back({TokenType::OPERATOR, op, line, col});
                     break; 
+
+                case '!':
+                    op += c;
+                    end++;
+                
+                    if(con[end] == '=') {
+                        op += '=';
+                        col++;
+                        end++;
+
+                        tokens.push_back({TokenType::OPERATOR, op, line, col});
+                        continue;
+                    }
+               
+                    tokens.push_back({TokenType::UNARY_OP, op, line, col});
+                    break;
+                    
             };
 
             start = end;
@@ -147,7 +177,6 @@ void Lexer::lex() {
             std::string_view dat(con.data() + start, end - start);
             std::string data(dat);
             
-
             tokens.push_back({TokenType::IDENTIFIER, data, line, col});
             end++;
             

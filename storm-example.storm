@@ -15,8 +15,37 @@ proc void tempest() {
         echo(x);
     }
 
-    int result = get_sum(x, 2);
+    range(i = 0..50) {
+
+    }
+
+    i: int = 0;
+    double: j = 0.0
+
+    while(i < 10) {
+
+    }
+
+    if(j > 1.0) {
+        return true;
+    }
+   
+    i += 2;
+    i *= 2;
+    i /= 2;
+    i -= 2;
+    i++;
+    ++i;
+    --i;
+    i--;
+    result: int = get_sum(x, 2);
     
+}
+
+j: int = 2;
+
+for(j: int = 10;j >=;j--) {
+
 }
 
 proc int get_sum(num_one: int, num_two: int) {

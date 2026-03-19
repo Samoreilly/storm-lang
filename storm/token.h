@@ -6,6 +6,8 @@
 #include <unordered_set>
 
 enum class TokenType {
+
+    TEMPEST,// entry point in a program 
     PROC,
     STORM,
     KEYWORD,
@@ -25,6 +27,7 @@ enum class TokenType {
     IDENTIFIER,
     SYMBOL,
     OPERATOR,
+    UNARY_OP,
 
     UPTO
 };
@@ -42,7 +45,7 @@ static const bool is_symbol(char c) {
 }
 
 static const bool is_operator(char c) {
-    return c == '+' || c == '-' || c == '*' || c == '/' || c == '=' || c == '<' || c == '>';
+    return c == '+' || c == '-' || c == '*' || c == '/' || c == '=' || c == '<' || c == '>' || c == '!';
 }
 
 static const boost::unordered_map<std::string, TokenType> FEATURES = {
@@ -57,7 +60,7 @@ static const boost::unordered_map<std::string, TokenType> FEATURES = {
     { "string", TokenType::STRING  },
     { "bool",   TokenType::BOOL    },
     { "void",   TokenType::VOID    },
-    {},
+    { "tempest",TokenType::TEMPEST },
     {},
     {}
 };
@@ -67,25 +70,26 @@ static const boost::container::set<std::string> KEYWORDS = {
 };
 
 static const std::unordered_map<TokenType, std::string> token_tostring = {
-    
-    {TokenType::PROC, "PROC"},
-    {TokenType::KEYWORD, "KEYWORD"},
-    {TokenType::STORM, "STORM"},
-    {TokenType::FOR, "FOR"},
-    {TokenType::WHILE, "WHILE"},
-    {TokenType::RANGE, "RANGE"},
-    {TokenType::IF, "IF"},
+   
+    {TokenType::TEMPEST,    "TEMPEST"},
+    {TokenType::PROC,       "PROC"},
+    {TokenType::KEYWORD,    "KEYWORD"},
+    {TokenType::STORM,      "STORM"},
+    {TokenType::FOR,        "FOR"},
+    {TokenType::WHILE,      "WHILE"},
+    {TokenType::RANGE,      "RANGE"},
+    {TokenType::IF,         "IF"},
 
-    {TokenType::VOID, "VOID"},
-    {TokenType::INTEGER, "INTEGER"},
-    {TokenType::DOUBLE, "DOUBLE"},
-    {TokenType::STRING, "STRING"},
-    {TokenType::BOOL, "BOOL"},
-    {TokenType::CHAR, "CHAR"},
+    {TokenType::VOID,       "VOID"},
+    {TokenType::INTEGER,    "INTEGER"},
+    {TokenType::DOUBLE,     "DOUBLE"},
+    {TokenType::STRING,     "STRING"},
+    {TokenType::BOOL,       "BOOL"},
+    {TokenType::CHAR,       "CHAR"},
 
     {TokenType::IDENTIFIER, "IDENTIFIER"},
-    {TokenType::SYMBOL, "SYMBOL"},
-    {TokenType::OPERATOR, "OPERATOR"},
-
-    {TokenType::UPTO, "UPTO"}
+    {TokenType::SYMBOL,     "SYMBOL"},
+    {TokenType::OPERATOR,   "OPERATOR"},
+    {TokenType::UNARY_OP,   "UNARY_OP"},
+    {TokenType::UPTO,       "UPTO"}
 };
