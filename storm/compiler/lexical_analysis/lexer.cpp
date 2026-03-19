@@ -2,6 +2,7 @@
 #include "lexer.h"
 #include <cctype>
 #include <stdexcept>
+#include <string_view>
 
 void Lexer::lex() {
 
@@ -76,7 +77,8 @@ void Lexer::lex() {
                 end += 2;
                 while(end + 1 < length && (con[end] != ']' || con[end + 1] != ']')) {
                     if(con[end] == '\n') {
-                        throw std::runtime_error("Comments are single line, please use [[...]] for each line");
+                        line++;
+                        col = 1;
                     }
                     end++;
                 }

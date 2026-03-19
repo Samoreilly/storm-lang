@@ -1,5 +1,8 @@
 #include "file_handler/load_files.h"
-#include "lexical_analysis/lexer.h"
+#include "compiler/lexical_analysis/lexer.h"
+#include "token.h"
+#include <vector>
+#include <string>
 
 int main(void) {
 
@@ -9,6 +12,8 @@ int main(void) {
     Lexer lex{content};
     lex.print_tokens();
 
+    std::vector<Token>& tokens = lex.get_tokens();
  
+
     return 0;
 }

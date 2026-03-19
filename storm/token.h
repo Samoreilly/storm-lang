@@ -4,6 +4,7 @@
 #include <string>
 #include <boost/unordered_map.hpp>
 #include <unordered_set>
+#include <unordered_map>
 
 enum class TokenType {
 

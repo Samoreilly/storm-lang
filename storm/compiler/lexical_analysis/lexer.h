@@ -1,9 +1,10 @@
 #pragma once
 
-#include "../token.h"
+#include "../../token.h"
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cctype>
 
 class Lexer {
     
@@ -11,7 +12,6 @@ class Lexer {
     int line = 1, col = 1;
 
     std::string con;
-    
     std::vector<Token> tokens;
     
     void lex();
@@ -20,6 +20,10 @@ public:
 
     Lexer(const std::string& content) : con(content), length(content.length()) { 
         lex();
+    }
+
+    std::vector<Token>& get_tokens() {
+        return tokens;
     }
 
     void skip_whitespace(char c) {

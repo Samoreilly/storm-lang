@@ -28,7 +28,7 @@ proc void tempest() {
 
     }
 
-    if(j > 1.0) {
+    if(j > 1.0) 
         return true;
     }
    
