@@ -76,6 +76,56 @@ public:
     std::optional<std::string> type;// variable may already be declared so type is optional
     std::unique_ptr<Condition> init;// right side
 
+    void print() const override {
+
+    }
+};
+
+class IfNode : public Node {
+public:
+
+    std::unique_ptr<Condition> condition;
+    std::unique_ptr<BodyNode> if_body;
+
+    void print() const override {
+
+    }
+};
+
+class WhileNode : public Node {
+public:
+
+    std::unique_ptr<Condition> condition;
+    std::unique_ptr<BodyNode> while_body;
+
+    void print() const override {
+
+    }
+};
+
+class ForNode : public Node {
+public:
+
+    std::optional<std::unique_ptr<InitVariable>> init;
+    std::optional<std::unique_ptr<Condition>> condition;
+    std::optional<std::unique_ptr<Node>> incr;
+
+    std::unique_ptr<BodyNode> for_body;
+    
+    void print() const override {
+
+    }
+
+};
+
+class RangeNode : public Node {
+public:
+
+    std::unique_ptr<InitVariable> range_init;
+    std::unique_ptr<Condition> condition;
+
+    std::unique_ptr<BodyNode> range_body;
+
 };
 
 

@@ -36,7 +36,7 @@ proc void main() {
         
          init      comparison      update
 
-    for(i: int; i < 10 && i != 8; i++) {
+    for(int: i; i < 10 && i != 8; i++) {
     
     }
 
@@ -57,14 +57,6 @@ proc void main() {
     range(i = 0..10) {
 
     }    
-
-2. Outside variable declaration
-    
-    i: int = 5;
-   
-    range(i..10) {
-
-    }
 ```
 
 --- While loops

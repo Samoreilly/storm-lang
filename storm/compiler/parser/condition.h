@@ -1,6 +1,7 @@
-
+#include "../../token.h"
 #include <memory>
 #include <string>
+#include <iostream>
 /*
  pure virtual class that each node will inherit
 */
@@ -12,7 +13,7 @@ public:
 };
 
 
-class Condition {
+class Condition : public Node{
 public:
 
     virtual ~Condition() = 0;
@@ -31,3 +32,37 @@ public:
 
     }
 };
+
+class IntegerCondition : public Condition {
+public:
+
+    Token token;
+    IntegerCondition(Token t) : token(t) {}
+
+    void print() const override {
+        std::cout << token.value;
+    }
+};
+
+class DoubleCondition : public Condition {
+public:
+
+    Token token;
+    DoubleCondition(Token t) : token(t) {}
+};
+
+class BoolCondition : public  Condition {
+public:
+
+    Token token;
+    BoolCondition(Token t) : token(t) {}
+};
+
+class StringCondition : public Condition {
+public:
+
+    Token token;
+    StringCondition(Token t) : token(t) {}
+};
+
+
