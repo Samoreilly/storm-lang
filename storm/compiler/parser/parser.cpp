@@ -23,9 +23,8 @@ std::unique_ptr<ProcedureNode> Parser::parse_proc() {
     auto proc = std::make_unique<ProcedureNode>();
 
     consume(TokenType::PROC, "proc");
-    advance();
 
-    if(consume(TokenType::STRING) || consume(TokenType::INTEGER) || consume(TokenType::DOUBLE) || consume(TokenType::BOOL) || consume(TokenType::CHAR) || consume(TokenType::VOID)) {
+    if(check(TokenType::STRING) || check(TokenType::INTEGER) || check(TokenType::DOUBLE) || check(TokenType::BOOL) || check(TokenType::CHAR) || check(TokenType::VOID)) {
         proc->return_type = get_token().value;
         advance();
 
@@ -110,17 +109,17 @@ std::unique_ptr<Node> Parser::parse_statement() {
         }
 
         case TokenType::OPERATOR: {
-            parse_condition();
+            return parse_condition();
             break;
         }
 
         case TokenType::UNARY_OP: {
-            parse_condition();
+            return parse_condition();
             break;
         }
 
         case TokenType::UPTO: {
-            parse_condition();
+            return parse_condition();
             break;
         }
 
