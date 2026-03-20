@@ -58,21 +58,6 @@ std::unique_ptr<Node> Parser::parse_statement() {
             break;
         }
 
-        case TokenType::INTEGER: {
-            parse_variable();
-            break;
-        }
-
-        case TokenType::DOUBLE: {
-            parse_variable();
-            break;
-        }
-
-        case TokenType::STRING: {
-            parse_variable();
-            break;
-        }
-
         case TokenType::BOOL: {
             parse_variable();
             break;
@@ -107,7 +92,7 @@ std::unique_ptr<Node> Parser::parse_statement() {
         }
 
         default: {
-            break;
+            parse_variable();
         }
     }
 }
@@ -196,3 +181,88 @@ std::unique_ptr<BodyNode> Parser::parse_body() {
     return body;
 
 }
+
+std::unique_ptr<ForNode> Parser::parse_for() {
+
+    auto for_node = std::make_unique<ForNode>();
+    
+    consume(TokenType::FOR, "for");
+    consume(TokenType::SYMBOL, "(");
+    
+    //for(x: int = 0;i < 10;i++) { }
+
+    if(check(TokenType::SYMBOL, ";")) {
+        consume(TokenType::SYMBOL, ";");
+    }else {
+        for_node->init = parse_variable();
+    }
+
+
+    if(!check(TokenType::SYMBOL, ";")) {
+        for_node->condition = parse_condition();
+    }
+
+    consume(TokenType::SYMBOL, ";");
+
+    if(!check(TokenType::SYMBOL, ")")) {
+        for_node->incr = parse_incr();
+    }
+    
+    consume(TokenType::SYMBOL, ")");
+     
+
+    for_node->for_body = parse_body();
+
+    return for_node;
+    
+}
+
+std::unique_ptr<Node> Parser::parse_incr() {
+
+
+    Token name = get_token();
+    if(name.type != TokenType::IDENTIFIER) {
+        throw std::runtime_error("For loop increment must start with a variable name");
+    }
+
+    advance();
+
+    if(check(TokenType::UNARY_OP)) {
+        Token op = get_token();
+
+        if(op.value == "++" || op.value == "--") {
+            advance();
+            return std::make_unique<UnaryIncrNode>(name.value, op.value);
+        }
+
+    }
+    
+    if(check(TokenType::OPERATOR)) {
+        Token op = get_token();
+
+        if(op.value == "=" || op.value == "*=" || op.value == "*"
+            || op.value == "/" || op.value == "/=" || op.value == "+=" || op.value == "+" || op.value == "-" || op.value == "-="){ 
+            
+            advance();
+
+            auto value = parse_condition();
+
+            auto node = std::make_unique<VariableNode>();
+            node->name = name.value;//identifier
+            node->op = op.value;//op
+            node->init = std::move(value);//right side
+
+            advance();
+            return node;
+
+        }
+    }
+
+    throw std::runtime_error("Invalid increment in for loop. Use i++, i-- or assignment");
+    
+
+}
+
+
+
+

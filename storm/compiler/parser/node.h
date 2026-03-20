@@ -74,6 +74,7 @@ public:
     std::string name;
     std::optional<std::string> type;
     std::unique_ptr<Condition> init;
+    std::optional<std::string> op;
 
     // VariableNode(std::string name, std::optional<std::string> type) 
     // : name(std::move(name)), type(std::move(type)), init(nullptr) {}
@@ -143,6 +144,21 @@ public:
 
     void exec() override;
 
+};
+
+class UnaryIncrNode : public Node {
+public:
+
+    std::string name;
+    std::string op;
+
+    UnaryIncrNode(std::string n, std::string o) : name(std::move(n)), op(std::move(o)) {}
+
+    void print() const override {
+
+    }
+
+    void exec() override;
 };
 
 

@@ -44,7 +44,7 @@ proc void main() {
 
     i: int = 0;
 
-    for(i < 10 && i != 8; i++) {
+    for(;i < 10 && i != 8; i++) {
 
     }
 ```

@@ -26,6 +26,7 @@ class Parser {
     std::unique_ptr<Condition>     parse_function_call();
     std::unique_ptr<VariableNode>  parse_variable();                 
 
+    std::unique_ptr<Node> parse_incr();
     std::unique_ptr<Condition>     parse_return();
 
 public:
@@ -40,20 +41,21 @@ public:
         otherwise:
         token[index].type == type
     */
-    void consume(TokenType type, const std::string& expected = "") {
+    bool consume(TokenType type, const std::string& expected = "") {
         Token curr = tokens[index];
 
         if (!expected.empty()) {
             if (curr.type == type && curr.value == expected) {
                 index++;
-                return;
+                return true;
             }
         } else {
             if (curr.type == type) {
                 index++;
-                return;
+                return true;
             }
         }
+
         std::string msg = "Token '" + curr.value + "' at line: "
             + std::to_string(curr.line)
             + " col: "
