@@ -16,7 +16,7 @@ class Parser {
     std::unique_ptr<MainNode>      construct_node();
     std::unique_ptr<BodyNode>      parse_body();
     std::unique_ptr<Node>          parse_statement();
-    std::unique_ptr<Node>          parse_proc();
+    std::unique_ptr<ProcedureNode> parse_proc();
     std::unique_ptr<StormNode>     parse_storm();
     std::unique_ptr<IfNode>        parse_if();
     std::unique_ptr<WhileNode>     parse_while();
@@ -26,8 +26,13 @@ class Parser {
     std::unique_ptr<Condition>     parse_function_call();
     std::unique_ptr<VariableNode>  parse_variable();                 
 
-    std::unique_ptr<Node> parse_incr();
+    std::unique_ptr<Node>          parse_incr();
     std::unique_ptr<Condition>     parse_return();
+
+    std::unique_ptr<Condition>     parse_add();
+    std::unique_ptr<Condition>     parse_mul();
+    std::unique_ptr<Condition>     parse_primary();
+
 
 public:
 

@@ -15,7 +15,7 @@ public:
 };
 
 
-class Condition : public Node{
+class Condition : public Node {
 public:
 
     virtual ~Condition() = 0;
@@ -33,6 +33,8 @@ public:
     void print() const override {
 
     }
+
+    void exec() override;
 };
 
 class IntegerCondition : public Condition {
@@ -44,6 +46,8 @@ public:
     void print() const override {
         std::cout << token.value;
     }
+
+    void exec() override;
 };
 
 class DoubleCondition : public Condition {
@@ -51,6 +55,12 @@ public:
 
     Token token;
     DoubleCondition(Token t) : token(t) {}
+
+    void print() const override {
+        std::cout << token.value;
+    }
+
+    void exec() override;
 };
 
 class BoolCondition : public  Condition {
@@ -58,6 +68,12 @@ public:
 
     Token token;
     BoolCondition(Token t) : token(t) {}
+
+    void print() const override {
+        std::cout << token.value;
+    }
+
+    void exec() override;
 };
 
 class StringCondition : public Condition {
@@ -65,6 +81,38 @@ public:
 
     Token token;
     StringCondition(Token t) : token(t) {}
+
+    void print() const override {
+        std::cout << token.value;
+    }
+
+    void exec() override;
+};
+
+class CharCondition : public Condition {
+public:
+
+    Token token;
+    CharCondition(Token t) : token(t) {}
+
+    void print() const override {
+        std::cout << token.value;
+    }
+
+    void exec() override;
+};
+
+class IdentifierCondition : public Condition {
+public:
+
+    Token token;
+    IdentifierCondition(Token t) : token(t) {}
+
+    void print() const override {
+        std::cout << token.value;
+    }
+
+    void exec() override;
 };
 
 class ReturnNode : public Condition {

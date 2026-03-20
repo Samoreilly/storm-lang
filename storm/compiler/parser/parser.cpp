@@ -5,6 +5,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <regex>
 
 std::unique_ptr<MainNode> Parser::construct_node() {
 
@@ -17,6 +18,42 @@ std::unique_ptr<MainNode> Parser::construct_node() {
     return main_node;
 }
 
+std::unique_ptr<ProcedureNode> Parser::parse_proc() {
+
+    auto proc = std::make_unique<ProcedureNode>();
+
+    consume(TokenType::PROC, "proc");
+    advance();
+
+    if(consume(TokenType::STRING) || consume(TokenType::INTEGER) || consume(TokenType::DOUBLE) || consume(TokenType::BOOL) || consume(TokenType::CHAR) || consume(TokenType::VOID)) {
+        proc->return_type = get_token().value;
+        advance();
+
+        proc->proc_name = get_token().value;
+        advance();
+
+        consume(TokenType::SYMBOL, "(");
+
+        if(check(TokenType::SYMBOL, ")")) {
+            advance();
+
+            proc->body_node = parse_body();
+            
+            return proc;
+
+        }else if(check(TokenType::VOID, "void")) {
+            advance();
+            consume(TokenType::SYMBOL, ")");
+           
+            proc->body_node = parse_body();
+
+            return proc;
+        }
+    }
+
+    throw std::runtime_error("Invalid proc return type - Use string, int, bool, double, char or void. it ain't that hard'");
+}
+
 std::unique_ptr<Node> Parser::parse_statement() {
 
     Token curr = get_token();
@@ -24,47 +61,47 @@ std::unique_ptr<Node> Parser::parse_statement() {
     switch (curr.type) {
 
         case TokenType::TEMPEST: {
-            parse_proc();
+            return parse_proc();
             break;
         }
 
         case TokenType::PROC: {
-            parse_proc();
+            return parse_proc();
             break;
         }
 
         case TokenType::STORM: {
-            parse_storm();
+            return parse_storm();
             break;
         }
 
         case TokenType::FOR: {
-            parse_for();
+            return parse_for();
             break;
         }
 
         case TokenType::WHILE: {
-            parse_while();
+            return parse_while();
             break;
         }
 
         case TokenType::RANGE: {
-            parse_while();
+            return parse_range();
             break;
         }
 
         case TokenType::IF: {
-            parse_if();
+            return parse_if();
             break;
         }
 
         case TokenType::BOOL: {
-            parse_variable();
+            return parse_variable();
             break;
         }
 
         case TokenType::CHAR: {
-            parse_variable();
+            return parse_variable();
             break;
         }
 
@@ -92,7 +129,7 @@ std::unique_ptr<Node> Parser::parse_statement() {
         }
 
         default: {
-            parse_variable();
+            return parse_variable();
         }
     }
 }
@@ -112,9 +149,7 @@ std::unique_ptr<StormNode> Parser::parse_storm() {
     consume(TokenType::SYMBOL, "{");
     
     do {
-
         storm->storm_statements.push_back(parse_variable());
-        
     }while(!check(TokenType::SYMBOL, "}"));
 
     consume(TokenType::SYMBOL , "}");
@@ -263,7 +298,6 @@ std::unique_ptr<IfNode> Parser::parse_if() {
     consume(TokenType::SYMBOL, "(");
 
     i->condition = parse_condition();
-    advance();
 
     consume(TokenType::SYMBOL, ")");
 
@@ -314,6 +348,128 @@ std::unique_ptr<Node> Parser::parse_incr() {
 
     throw std::runtime_error("Invalid increment in for loop. Use i++, i-- or assignment");
     
+}
+
+std::unique_ptr<Condition> Parser::parse_condition() {
+    return parse_add();
+}
+
+std::unique_ptr<Condition> Parser::parse_add() {
+
+    std::unique_ptr<Condition> left = parse_mul();
+
+    while(check(TokenType::OPERATOR, "+") || check(TokenType::OPERATOR, "-")) {
+        Token op = get_token();
+        advance();
+
+        auto right = parse_mul();
+
+        auto node = std::make_unique<BinaryExpression>();
+
+        node->left = std::move(left);
+        node->op = op.value;
+        node->right = std::move(right);
+
+        left = std::move(node);
+    }
+
+    return left;
+
+}
+
+std::unique_ptr<Condition> Parser::parse_mul() {
+
+    std::unique_ptr<Condition> left = parse_primary();
+
+    while(check(TokenType::OPERATOR, "*") || check(TokenType::OPERATOR, "/")) {
+        Token op = get_token();
+        advance();
+
+        auto right = parse_primary();
+
+        auto node = std::make_unique<BinaryExpression>();
+
+        node->left = std::move(left);
+        node->op = op.value;
+        node->right = std::move(right);
+
+        left = std::move(node);
+    }
+
+    return left;
+}
+
+std::unique_ptr<Condition> Parser::parse_primary() {
+
+    Token curr = get_token();
+
+    std::regex is_alpha("[a-zA-Z]");
+    std::regex is_num("[0-9]");
+
+    switch(curr.type) {
+
+        case TokenType::STRING: {
+            advance();            
+            return std::make_unique<StringCondition>(curr);
+            break;
+        }
+
+        case TokenType::DOUBLE: {
+            advance(); 
+            if(std::regex_search(curr.value, is_alpha)) {
+                throw std::runtime_error("Characters are not allowed in integers"
+                                         + std::to_string(curr.line) + " col: "
+                                         + std::to_string(curr.col) + "\n");
+            
+            }
+
+            return std::make_unique<DoubleCondition>(curr);
+            break;
+        }
+
+        case TokenType::INTEGER: {
+            advance(); 
+            if(curr.value.find('.') || std::regex_search(curr.value, is_alpha)) {
+                throw std::runtime_error("Decimal points or characters are not allowed in integers"
+                                         + std::to_string(curr.line) + " col: "
+                                         + std::to_string(curr.col) + "\n");
+            }
+
+            return std::make_unique<IntegerCondition>(curr);
+
+        }
+
+        case TokenType::BOOL: {
+            advance(); 
+            if(curr.value != "true" && curr.value != "false") {
+                throw std::runtime_error("Boolean values can only be true or false"
+                                         + std::to_string(curr.line) + " col: "
+                                         + std::to_string(curr.col) + "\n");
+            }
+            return std::make_unique<BoolCondition>(curr);
+        }
+
+        case TokenType::CHAR: {
+            advance(); 
+            if(curr.value.length() != 1) {
+                throw std::runtime_error("Char must only be 1 character Line: "
+                                         + std::to_string(curr.line) + " col: "
+                                         + std::to_string(curr.col) + "\n");
+            }
+            
+            return std::make_unique<CharCondition>(curr);
+        }
+        
+        case TokenType::IDENTIFIER: {
+            advance();
+            return std::make_unique<IdentifierCondition>(curr);
+        }
+        //default to string is safest
+        default:
+            advance(); 
+            return std::make_unique<StringCondition>(curr);
+
+    };
 
 }
 

@@ -6,7 +6,7 @@ storm my_data {
     var_three: int
 };
 
-proc void tempest() {
+proc void tempest(void) {
 
     x: int = 5;
 

@@ -8,7 +8,7 @@ storm my_data {
     var_three: int
 };
 
-proc void tempest() {
+proc void tempest(void) {
 
     x: int = 5;
 
@@ -28,7 +28,7 @@ proc void tempest() {
 
     }
 
-    if(j > 1.0) 
+    if(j > 1.0) {
         return true;
     }
    
@@ -62,7 +62,7 @@ s m {
     v: i
 };
 
-p v t() {
+p v t(v) {
 
     x: i = 5;
 
@@ -190,13 +190,17 @@ TokenType-> SYMBOL
 Value-> (
  Line: 9 Column: 17
 
-TokenType-> SYMBOL
-Value-> )
+TokenType-> VOID
+Value-> void
  Line: 9 Column: 17
 
 TokenType-> SYMBOL
+Value-> )
+ Line: 9 Column: 21
+
+TokenType-> SYMBOL
 Value-> {
- Line: 9 Column: 18
+ Line: 9 Column: 22
 
 TokenType-> IDENTIFIER
 Value-> x
@@ -418,9 +422,9 @@ TokenType-> SYMBOL
 Value-> {
  Line: 29 Column: 14
 
-TokenType-> IDENTIFIER
+TokenType-> RETURN
 Value-> return
- Line: 30 Column: 14
+ Line: 30 Column: 8
 
 TokenType-> IDENTIFIER
 Value-> true
@@ -734,9 +738,9 @@ TokenType-> SYMBOL
 Value-> {
  Line: 51 Column: 40
 
-TokenType-> IDENTIFIER
+TokenType-> RETURN
 Value-> return
- Line: 52 Column: 10
+ Line: 52 Column: 4
 
 TokenType-> IDENTIFIER
 Value-> num_one
@@ -757,3 +761,7 @@ Value-> ;
 TokenType-> SYMBOL
 Value-> }
  Line: 53 Column: 0
+
+TokenType-> END_OF_FILE
+Value-> END_OF_FILE
+ Line: 0 Column: 0
