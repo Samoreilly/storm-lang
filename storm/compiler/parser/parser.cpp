@@ -217,8 +217,62 @@ std::unique_ptr<ForNode> Parser::parse_for() {
     
 }
 
-std::unique_ptr<Node> Parser::parse_incr() {
+std::unique_ptr<WhileNode> Parser::parse_while() {
 
+    auto whle = std::make_unique<WhileNode>();
+
+    consume(TokenType::WHILE, "while");
+    consume(TokenType::SYMBOL, "(");
+
+    whle->condition = parse_condition();
+    advance();
+
+    consume(TokenType::SYMBOL, ")");
+
+    whle->while_body = parse_body();
+    
+    return whle;
+}
+
+std::unique_ptr<RangeNode> Parser::parse_range() {
+
+    auto range = std::make_unique<RangeNode>();
+
+    consume(TokenType::RANGE, "range");
+    consume(TokenType::SYMBOL, "(");
+
+    range->name = get_token().value;
+    advance();
+    
+    consume(TokenType::OPERATOR, "=");
+    
+    range->condition = parse_condition();
+
+    consume(TokenType::SYMBOL, ")");
+
+    range->range_body = parse_body();
+
+    return range;
+}
+
+std::unique_ptr<IfNode> Parser::parse_if() {
+
+    auto i = std::make_unique<IfNode>();
+
+    consume(TokenType::IF, "if");
+    consume(TokenType::SYMBOL, "(");
+
+    i->condition = parse_condition();
+    advance();
+
+    consume(TokenType::SYMBOL, ")");
+
+    i->if_body = parse_body();
+
+    return i;
+}
+
+std::unique_ptr<Node> Parser::parse_incr() {
 
     Token name = get_token();
     if(name.type != TokenType::IDENTIFIER) {
@@ -262,7 +316,5 @@ std::unique_ptr<Node> Parser::parse_incr() {
     
 
 }
-
-
 
 

@@ -51,7 +51,20 @@ public:
     }
 
     void exec() override;
+};
 
+class ProcCallNode : public Condition {
+public:
+
+    //proc being called
+    std::string proc_name;
+    std::vector<std::unique_ptr<Condition>> arguments;
+
+    void print() const override {
+
+    }
+
+    void exec() override;
 };
 
 //same as struct in languages like C++ & C
@@ -134,7 +147,7 @@ public:
 class RangeNode : public Node {
 public:
 
-    std::unique_ptr<VariableNode> range_init;
+    std::string name;
     std::unique_ptr<Condition> condition;
     std::unique_ptr<BodyNode> range_body;
 
@@ -146,6 +159,10 @@ public:
 
 };
 
+
+/*
+    Used in for loop
+*/
 class UnaryIncrNode : public Node {
 public:
 

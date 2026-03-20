@@ -67,4 +67,8 @@ public:
     StringCondition(Token t) : token(t) {}
 };
 
+class ReturnNode : public Condition {
+    
+    std::unique_ptr<Condition> ret;
+};
 
