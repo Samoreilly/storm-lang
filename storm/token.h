@@ -12,6 +12,7 @@ enum class TokenType {
     PROC,
     STORM,
     KEYWORD,
+    RETURN,
 
     FOR,
     WHILE, 
@@ -30,7 +31,9 @@ enum class TokenType {
     OPERATOR,
     UNARY_OP,
 
-    UPTO
+    UPTO,
+    
+    END_OF_FILE
 };
 
 struct Token {
@@ -49,6 +52,12 @@ static const bool is_operator(char c) {
     return c == '+' || c == '-' || c == '*' || c == '/' || c == '=' || c == '<' || c == '>' || c == '!';
 }
 
+static const bool is_variable_type(std::string var) {
+    return var == "bool" || var == "char" 
+    || var == "string" || var == "int"
+    || var == "double";
+}
+
 static const boost::unordered_map<std::string, TokenType> FEATURES = {
     { "proc",   TokenType::PROC    },
     { "storm",  TokenType::STORM   },
@@ -62,8 +71,10 @@ static const boost::unordered_map<std::string, TokenType> FEATURES = {
     { "bool",   TokenType::BOOL    },
     { "void",   TokenType::VOID    },
     { "tempest",TokenType::TEMPEST },
+    { "return", TokenType::RETURN  },
     {},
     {}
+
 };
 
 static const boost::container::set<std::string> KEYWORDS = {
@@ -75,6 +86,7 @@ static const std::unordered_map<TokenType, std::string> token_tostring = {
     {TokenType::TEMPEST,    "TEMPEST"},
     {TokenType::PROC,       "PROC"},
     {TokenType::KEYWORD,    "KEYWORD"},
+    {TokenType::RETURN,     "RETURN"},
     {TokenType::STORM,      "STORM"},
     {TokenType::FOR,        "FOR"},
     {TokenType::WHILE,      "WHILE"},
@@ -92,5 +104,7 @@ static const std::unordered_map<TokenType, std::string> token_tostring = {
     {TokenType::SYMBOL,     "SYMBOL"},
     {TokenType::OPERATOR,   "OPERATOR"},
     {TokenType::UNARY_OP,   "UNARY_OP"},
-    {TokenType::UPTO,       "UPTO"}
+    {TokenType::UPTO,       "UPTO"},
+    
+    {TokenType::END_OF_FILE,"END_OF_FILE"}
 };

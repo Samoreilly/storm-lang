@@ -16,16 +16,15 @@ class Parser {
     std::unique_ptr<MainNode>      construct_node();
     std::unique_ptr<BodyNode>      parse_body();
     std::unique_ptr<Node>          parse_statement();
-    std::unique_ptr<Node>          parse_function();
+    std::unique_ptr<Node>          parse_proc();
+    std::unique_ptr<StormNode>     parse_storm();
     std::unique_ptr<IfNode>        parse_if();
     std::unique_ptr<WhileNode>     parse_while();
     std::unique_ptr<ForNode>       parse_for();
     std::unique_ptr<RangeNode>     parse_range();
     std::unique_ptr<Condition>     parse_condition();
     std::unique_ptr<Condition>     parse_function_call();
-                     
-    std::unique_ptr<InitVariable>  parse_init();
-    std::unique_ptr<DeclVariable>  parse_declr();
+    std::unique_ptr<VariableNode>  parse_variable();                 
 
     std::unique_ptr<Condition>     parse_return();
 
@@ -41,22 +40,56 @@ public:
         otherwise:
         token[index].type == type
     */
-    void consume(TokenType type, const std::string expected = "") {
-        if(expected.empty()) {
-            if(tokens[index].type == type && tokens[index].value == expected) {
+    void consume(TokenType type, const std::string& expected = "") {
+        Token curr = tokens[index];
+
+        if (!expected.empty()) {
+            if (curr.type == type && curr.value == expected) {
                 index++;
-            }else {
-                Token curr = tokens[index];
-                std::string msg = "Token '" + curr.value + "' at line: "
-                    + std::to_string(curr.line)
-                    + " col: "
-                    + std::to_string(curr.col)
-                    + " did not match expected type '"
-                    + token_tostring.at(type);
-                    
-                throw std::runtime_error(msg);
+                return;
             }
-        } 
+        } else {
+            if (curr.type == type) {
+                index++;
+                return;
+            }
+        }
+        std::string msg = "Token '" + curr.value + "' at line: "
+            + std::to_string(curr.line)
+            + " col: "
+            + std::to_string(curr.col)
+            + " did not match expected ";
+
+        if (!expected.empty()) {
+            msg += "value '" + expected + "'";
+        } else {
+            msg += "type";
+        }
+
+        throw std::runtime_error(msg);
     }
 
+    bool check(TokenType type, const std::string& expected = "") {
+        if(index >= length) return false;
+        if(tokens[index].type != type) return false;
+        if(!expected.empty() && tokens[index].value != expected) return false;
+
+        return true;
+    }
+
+    /*
+        Returns next tokens and moves index forward
+    */
+    Token advance() {
+        if(index + 1 < length) {
+            index++;
+        }
+
+        return tokens[index];
+
+    }
+
+    Token get_token() {
+        return tokens[index];
+    }
 };

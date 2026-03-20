@@ -1,3 +1,5 @@
+#pragma once
+
 #include "condition.h"
 
 #include <vector>
@@ -5,9 +7,7 @@
 #include <string>
 #include <optional>
 
-class DeclVariable;
-class InitVariable;
-
+class VariableNode;
 
 class MainNode : public Node {
 public:
@@ -33,7 +33,8 @@ public:
             node->print();
         } 
     }
- 
+
+    void exec() override; 
 };
 
 //encapsulates procedure data
@@ -45,10 +46,11 @@ public:
     
     std::unique_ptr<BodyNode> body_node;
 
-
     void print() const override {
         // yet to implement
     }
+
+    void exec() override;
 
 };
 
@@ -57,28 +59,31 @@ class StormNode : public Node {
 public:
 
     std::string storm_name;
-    std::vector<DeclVariable> storm_statements;
-
-};
-
-class DeclVariable : public Node {
-public:
-
-    std::string name;
-    std::string type;
-
-};
-
-class InitVariable : public Node {
-public:
-
-    std::string name;
-    std::optional<std::string> type;// variable may already be declared so type is optional
-    std::unique_ptr<Condition> init;// right side
+    std::vector<std::unique_ptr<VariableNode>> storm_statements;
 
     void print() const override {
 
     }
+
+    void exec() override;
+};
+
+class VariableNode : public Node {
+public:
+
+    std::string name;
+    std::optional<std::string> type;
+    std::unique_ptr<Condition> init;
+
+    // VariableNode(std::string name, std::optional<std::string> type) 
+    // : name(std::move(name)), type(std::move(type)), init(nullptr) {}
+
+    void print() const override {
+
+    }
+
+    void exec() override;
+
 };
 
 class IfNode : public Node {
@@ -90,6 +95,8 @@ public:
     void print() const override {
 
     }
+
+    void exec() override;
 };
 
 class WhileNode : public Node {
@@ -101,12 +108,15 @@ public:
     void print() const override {
 
     }
+
+    void exec() override;
+
 };
 
 class ForNode : public Node {
 public:
 
-    std::optional<std::unique_ptr<InitVariable>> init;
+    std::optional<std::unique_ptr<VariableNode>> init;
     std::optional<std::unique_ptr<Condition>> condition;
     std::optional<std::unique_ptr<Node>> incr;
 
@@ -116,15 +126,22 @@ public:
 
     }
 
+    void exec() override;
+
 };
 
 class RangeNode : public Node {
 public:
 
-    std::unique_ptr<InitVariable> range_init;
+    std::unique_ptr<VariableNode> range_init;
     std::unique_ptr<Condition> condition;
-
     std::unique_ptr<BodyNode> range_body;
+
+    void print() const override {
+
+    }
+
+    void exec() override;
 
 };
 

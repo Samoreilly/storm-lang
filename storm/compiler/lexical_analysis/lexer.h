@@ -20,6 +20,7 @@ public:
 
     Lexer(const std::string& content) : con(content), length(content.length()) { 
         lex();
+        tokens.push_back({TokenType::END_OF_FILE, "END_OF_FILE", 0, 0});
     }
 
     std::vector<Token>& get_tokens() {
