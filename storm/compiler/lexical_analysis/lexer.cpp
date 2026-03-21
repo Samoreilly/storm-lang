@@ -91,7 +91,7 @@ void Lexer::lex() {
 
             tokens.push_back({TokenType::SYMBOL, std::string(1, c), line, col});
             start = ++end;
-
+            col++;
             continue;
         }
 

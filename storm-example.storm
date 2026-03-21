@@ -11,16 +11,12 @@ proc void tempest(void) {
     x: int = 5;
 
     [[will print 5 to 49]]
-    range(x..50) {
-        echo(x);
-    }
-
     range(i = 0..50) {
-
+        echo(i);
     }
 
     i: int = 0;
-    double: j = 0.0
+    j: double = 0.0;
 
     while(i < 10) {
 

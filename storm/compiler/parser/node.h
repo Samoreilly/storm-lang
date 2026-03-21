@@ -20,7 +20,7 @@ public:
         }
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 class BodyNode : public Node {
@@ -34,7 +34,7 @@ public:
         } 
     }
 
-    void exec() override; 
+    void exec() override {} 
 };
 
 //encapsulates procedure data
@@ -50,12 +50,12 @@ public:
         // yet to implement
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 class ProcCallNode : public Condition {
 public:
-
+    
     //proc being called
     std::string proc_name;
     std::vector<std::unique_ptr<Condition>> arguments;
@@ -64,7 +64,7 @@ public:
 
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 //same as struct in languages like C++ & C
@@ -78,7 +78,7 @@ public:
 
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 class VariableNode : public Node {
@@ -96,8 +96,7 @@ public:
 
     }
 
-    void exec() override;
-
+    void exec() override {}
 };
 
 class IfNode : public Node {
@@ -110,7 +109,7 @@ public:
 
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 class WhileNode : public Node {
@@ -123,7 +122,7 @@ public:
 
     }
 
-    void exec() override;
+    void exec() override {}
 
 };
 
@@ -140,7 +139,7 @@ public:
 
     }
 
-    void exec() override;
+    void exec() override {}
 
 };
 
@@ -149,13 +148,14 @@ public:
 
     std::string name;
     std::unique_ptr<Condition> condition;
+    std::unique_ptr<Condition> end_val;
     std::unique_ptr<BodyNode> range_body;
-
+    
     void print() const override {
 
     }
 
-    void exec() override;
+    void exec() override {}
 
 };
 
@@ -175,7 +175,7 @@ public:
 
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 

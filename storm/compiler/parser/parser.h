@@ -23,7 +23,7 @@ class Parser {
     std::unique_ptr<ForNode>       parse_for();
     std::unique_ptr<RangeNode>     parse_range();
     std::unique_ptr<Condition>     parse_condition();
-    std::unique_ptr<Condition>     parse_function_call();
+    std::unique_ptr<Condition>     parse_proc_call();
     std::unique_ptr<VariableNode>  parse_variable();                 
 
     std::unique_ptr<Node>          parse_incr();
@@ -36,8 +36,9 @@ class Parser {
 
 public:
 
-    Parser(std::vector<Token>& t) : tokens(t), length(t.size()) {}
-
+    Parser(std::vector<Token>& t) : tokens(t), length(t.size()) {
+        construct_node();
+    }
     /*
         if expected is provided,
         token[index].type == type
@@ -93,10 +94,16 @@ public:
         }
 
         return tokens[index];
-
     }
 
     Token get_token() {
         return tokens[index];
+    }
+
+    Token peek_next(int n = 1) {
+        if(index + n < length) {
+            return tokens[index + n];
+        }
+        return tokens[index + n];
     }
 };

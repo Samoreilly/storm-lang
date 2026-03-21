@@ -9,16 +9,15 @@
 */
 class Node {
 public: 
-    virtual ~Node() = 0;
+    virtual ~Node() = default;
     virtual void print() const = 0;
     virtual void exec() = 0;
 };
 
-
 class Condition : public Node {
 public:
 
-    virtual ~Condition() = 0;
+    virtual ~Condition() = default;
     virtual void print() const = 0;
     virtual void exec() = 0;
 };
@@ -34,7 +33,7 @@ public:
 
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 class IntegerCondition : public Condition {
@@ -47,7 +46,7 @@ public:
         std::cout << token.value;
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 class DoubleCondition : public Condition {
@@ -60,7 +59,7 @@ public:
         std::cout << token.value;
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 class BoolCondition : public  Condition {
@@ -73,7 +72,7 @@ public:
         std::cout << token.value;
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 class StringCondition : public Condition {
@@ -86,7 +85,7 @@ public:
         std::cout << token.value;
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 class CharCondition : public Condition {
@@ -99,7 +98,7 @@ public:
         std::cout << token.value;
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 class IdentifierCondition : public Condition {
@@ -112,7 +111,7 @@ public:
         std::cout << token.value;
     }
 
-    void exec() override;
+    void exec() override {}
 };
 
 class ReturnNode : public Condition {

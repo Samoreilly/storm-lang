@@ -7,4 +7,5 @@ add_executable(
     storm/main.cpp
     storm/compiler/lexical_analysis/lexer.cpp    
     storm/file_handler/load_files.cpp
+    storm/compiler/parser/parser.cpp
 )

@@ -25,6 +25,7 @@ std::unique_ptr<ProcedureNode> Parser::parse_proc() {
     consume(TokenType::PROC, "proc");
 
     if(check(TokenType::STRING) || check(TokenType::INTEGER) || check(TokenType::DOUBLE) || check(TokenType::BOOL) || check(TokenType::CHAR) || check(TokenType::VOID)) {
+
         proc->return_type = get_token().value;
         advance();
 
@@ -56,7 +57,8 @@ std::unique_ptr<ProcedureNode> Parser::parse_proc() {
 std::unique_ptr<Node> Parser::parse_statement() {
 
     Token curr = get_token();
-    
+
+    std::cerr << "Parse statement" << curr.value << "\n";
     switch (curr.type) {
 
         case TokenType::TEMPEST: {
@@ -104,6 +106,13 @@ std::unique_ptr<Node> Parser::parse_statement() {
             break;
         }
 
+        case TokenType::IDENTIFIER: {
+            if(peek_next(1).value == "(") {
+                return parse_proc_call();
+            }
+            return parse_variable();
+        }
+
         case TokenType::SYMBOL: {
             break;
         }
@@ -135,11 +144,13 @@ std::unique_ptr<Node> Parser::parse_statement() {
 
 std::unique_ptr<StormNode> Parser::parse_storm() {
 
+    std::cerr << "\nEntered storm\n";
+
     auto storm = std::make_unique<StormNode>();
 
     consume(TokenType::STORM, "storm");
    
-    Token name = advance();
+    Token name = get_token();
 
     storm->storm_name = name.value;
     
@@ -147,11 +158,13 @@ std::unique_ptr<StormNode> Parser::parse_storm() {
     
     consume(TokenType::SYMBOL, "{");
     
-    do {
+    while(!check(TokenType::SYMBOL, "}")){
         storm->storm_statements.push_back(parse_variable());
-    }while(!check(TokenType::SYMBOL, "}"));
 
+        if(check(TokenType::SYMBOL, ",") || check(TokenType::SYMBOL, ";")) advance();
+    }
     consume(TokenType::SYMBOL , "}");
+    consume(TokenType::SYMBOL, ";");
 
     return storm;
 }
@@ -167,6 +180,7 @@ std::unique_ptr<VariableNode> Parser::parse_variable() {
     if(check(TokenType::OPERATOR, "=")) {
         advance();
         var->init = parse_condition();
+        consume(TokenType::SYMBOL, ";");
         return var;
     }
 
@@ -178,6 +192,7 @@ std::unique_ptr<VariableNode> Parser::parse_variable() {
     consume(TokenType::SYMBOL, ":");
     
     Token type = get_token();
+    std::cerr << "Parse variable" << type.value;
     if(!is_variable_type(type.value)) {
         throw std::runtime_error("Please follow this syntax when declaring and/or initializing variables.\n Use: " 
                                  "x: int; or x: int = 10; or x = 10 if already declared");
@@ -186,15 +201,23 @@ std::unique_ptr<VariableNode> Parser::parse_variable() {
     var->type = type.value;
     advance();
 
-    if(check(TokenType::SYMBOL, ";")) {
+    if(check(TokenType::SYMBOL, ";") || check(TokenType::SYMBOL, ",")) {
         advance();
         return var;
     }
 
+    //end of storm
+    if(check(TokenType::SYMBOL, "}")) {
+        return var;
+    }
+
+    std::cerr << "\nCurrent token: " << get_token().value << "\n";
+    std::cerr << "here\n";
     consume(TokenType::OPERATOR, "=");
-    
+    std::cerr << "here\n";
     var->init = parse_condition();
 
+    consume(TokenType::SYMBOL, ";");
     return var;
 }
 
@@ -205,9 +228,7 @@ std::unique_ptr<BodyNode> Parser::parse_body() {
     consume(TokenType::SYMBOL, "{");
 
     do {
-        
         body->statements.push_back(std::move(parse_statement()));
-
     }while(!check(TokenType::SYMBOL, "}"));
 
     consume(TokenType::SYMBOL, "}");
@@ -270,6 +291,7 @@ std::unique_ptr<WhileNode> Parser::parse_while() {
 
 std::unique_ptr<RangeNode> Parser::parse_range() {
 
+    std::cerr << "Entered range\n";
     auto range = std::make_unique<RangeNode>();
 
     consume(TokenType::RANGE, "range");
@@ -281,12 +303,41 @@ std::unique_ptr<RangeNode> Parser::parse_range() {
     consume(TokenType::OPERATOR, "=");
     
     range->condition = parse_condition();
+    
+    consume(TokenType::UPTO, "..");
+    range->end_val = parse_condition();
 
     consume(TokenType::SYMBOL, ")");
 
     range->range_body = parse_body();
 
     return range;
+}
+
+std::unique_ptr<Condition> Parser::parse_proc_call() {
+
+    auto call = std::make_unique<ProcCallNode>();
+
+    call->proc_name = get_token().value;
+    advance();
+    consume(TokenType::SYMBOL, "(");
+
+    while(!check(TokenType::SYMBOL, ")")) {
+        call->arguments.push_back(parse_condition());
+
+        if(check(TokenType::SYMBOL, ",")) {
+            advance();
+        }
+    }
+
+    consume(TokenType::SYMBOL, ")");
+   
+    if(check(TokenType::SYMBOL, ";")) {
+        consume(TokenType::SYMBOL, ";");
+    }
+   
+    std::cerr << "Current token: " << get_token().value;
+    return call;
 }
 
 std::unique_ptr<IfNode> Parser::parse_if() {
@@ -427,13 +478,16 @@ std::unique_ptr<Condition> Parser::parse_primary() {
         }
 
         case TokenType::INTEGER: {
-            advance(); 
-            if(curr.value.find('.') || std::regex_search(curr.value, is_alpha)) {
-                throw std::runtime_error("Decimal points or characters are not allowed in integers"
+             
+            std::cerr << "Integer token: " << get_token().value << "\n";
+            
+            if(curr.value.find('.') != std::string::npos || std::regex_search(curr.value, is_alpha)) {
+                throw std::runtime_error("\nDecimal points or characters are not allowed in integers line: "
                                          + std::to_string(curr.line) + " col: "
                                          + std::to_string(curr.col) + "\n");
             }
 
+            advance();
             return std::make_unique<IntegerCondition>(curr);
 
         }
@@ -460,9 +514,13 @@ std::unique_ptr<Condition> Parser::parse_primary() {
         }
         
         case TokenType::IDENTIFIER: {
+            if (peek_next(1).value == "(") {
+                return parse_proc_call();
+            }
             advance();
             return std::make_unique<IdentifierCondition>(curr);
         }
+
         //default to string is safest
         default:
             advance(); 
