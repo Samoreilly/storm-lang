@@ -27,8 +27,9 @@ class Parser {
     std::unique_ptr<VariableNode>  parse_variable();                 
 
     std::unique_ptr<Node>          parse_incr();
-    std::unique_ptr<Condition>     parse_return();
+    std::unique_ptr<ReturnNode>     parse_return();
 
+    std::unique_ptr<Condition>     parse_comparison();
     std::unique_ptr<Condition>     parse_add();
     std::unique_ptr<Condition>     parse_mul();
     std::unique_ptr<Condition>     parse_primary();

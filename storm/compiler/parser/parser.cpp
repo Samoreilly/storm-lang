@@ -58,7 +58,7 @@ std::unique_ptr<Node> Parser::parse_statement() {
 
     Token curr = get_token();
 
-    std::cerr << "Parse statement" << curr.value << "\n";
+    std::cerr << "\nParse statement" << curr.value << "\n";
     switch (curr.type) {
 
         case TokenType::TEMPEST: {
@@ -74,6 +74,10 @@ std::unique_ptr<Node> Parser::parse_statement() {
         case TokenType::STORM: {
             return parse_storm();
             break;
+        }
+
+        case TokenType::RETURN: {
+            return parse_return();
         }
 
         case TokenType::FOR: {
@@ -107,8 +111,19 @@ std::unique_ptr<Node> Parser::parse_statement() {
         }
 
         case TokenType::IDENTIFIER: {
-            if(peek_next(1).value == "(") {
+            Token next = peek_next(1);
+
+            //these look ahead must be handled here and not in parse_variable
+            //as its the only way to distinguish between unary operations, declarations and initializations
+            if(next.value == "(") {
                 return parse_proc_call();
+
+            } else if(next.value == "++" || next.value == "--" || next.value == "=" ||
+                      next.value == "+=" || next.value == "-=" || next.value == "*=" || 
+                      next.value == "/=") {
+                auto node = parse_incr();
+                consume(TokenType::SYMBOL, ";");
+                return node;
             }
             return parse_variable();
         }
@@ -121,7 +136,7 @@ std::unique_ptr<Node> Parser::parse_statement() {
             return parse_condition();
             break;
         }
-
+            
         case TokenType::UNARY_OP: {
             return parse_condition();
             break;
@@ -171,11 +186,12 @@ std::unique_ptr<StormNode> Parser::parse_storm() {
 
 std::unique_ptr<VariableNode> Parser::parse_variable() {
 
+    std::cerr << "Here: " << get_token().value << "\n";
     auto var = std::make_unique<VariableNode>();
 
     var->name = get_token().value;
     advance();
-    
+
     //prior declaration, now initializing e.g. x = 10;
     if(check(TokenType::OPERATOR, "=")) {
         advance();
@@ -184,6 +200,7 @@ std::unique_ptr<VariableNode> Parser::parse_variable() {
         return var;
     }
 
+    std::cerr << get_token().value;
     if(!check(TokenType::SYMBOL, ":")) {
         throw std::runtime_error("Variable name and type must be seperated by ':' Error on line: "
                                  + std::to_string(get_token().line) + " Column: " + std::to_string(get_token().col));
@@ -227,9 +244,15 @@ std::unique_ptr<BodyNode> Parser::parse_body() {
 
     consume(TokenType::SYMBOL, "{");
 
-    do {
-        body->statements.push_back(std::move(parse_statement()));
-    }while(!check(TokenType::SYMBOL, "}"));
+    while(!check(TokenType::SYMBOL, "}")) {
+        body->statements.push_back(parse_statement());
+
+        if(check(TokenType::SYMBOL, "}")) {
+            break;
+        }
+    }
+
+    std::cerr << "body";
 
     consume(TokenType::SYMBOL, "}");
 
@@ -238,9 +261,11 @@ std::unique_ptr<BodyNode> Parser::parse_body() {
 }
 
 std::unique_ptr<ForNode> Parser::parse_for() {
-
+    std::cerr << "Parse for: ";
     auto for_node = std::make_unique<ForNode>();
-    
+
+    std::cerr << get_token().value << "\n";
+
     consume(TokenType::FOR, "for");
     consume(TokenType::SYMBOL, "(");
     
@@ -280,8 +305,9 @@ std::unique_ptr<WhileNode> Parser::parse_while() {
     consume(TokenType::SYMBOL, "(");
 
     whle->condition = parse_condition();
-    advance();
 
+    std::cerr << "Parse while: " << get_token().value;
+    
     consume(TokenType::SYMBOL, ")");
 
     whle->while_body = parse_body();
@@ -400,8 +426,33 @@ std::unique_ptr<Node> Parser::parse_incr() {
     
 }
 
+
 std::unique_ptr<Condition> Parser::parse_condition() {
-    return parse_add();
+    return parse_comparison();
+}
+
+std::unique_ptr<Condition> Parser::parse_comparison() {
+
+    std::unique_ptr<Condition> left = parse_add();
+
+    while(check(TokenType::OPERATOR, "<") || check(TokenType::OPERATOR, ">") || 
+          check(TokenType::OPERATOR, "<=") || check(TokenType::OPERATOR, ">=") || 
+          check(TokenType::OPERATOR, "==") || check(TokenType::OPERATOR, "!=")) {
+        
+        Token op = get_token();
+        advance();
+
+        auto right = parse_add();
+
+        auto node = std::make_unique<BinaryExpression>();
+        node->left = std::move(left);
+        node->op = op.value;
+        node->right = std::move(right);
+
+        left = std::move(node);
+    }
+
+    return left;
 }
 
 std::unique_ptr<Condition> Parser::parse_add() {
@@ -530,4 +581,15 @@ std::unique_ptr<Condition> Parser::parse_primary() {
 
 }
 
+std::unique_ptr<ReturnNode> Parser::parse_return() {
 
+    auto rett = std::make_unique<ReturnNode>();
+
+    consume(TokenType::RETURN, "return");
+
+    rett->ret = parse_condition();
+
+    consume(TokenType::SYMBOL, ";");
+ 
+    return rett;
+}

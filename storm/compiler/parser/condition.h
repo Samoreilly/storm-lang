@@ -115,7 +115,13 @@ public:
 };
 
 class ReturnNode : public Condition {
-    
+public:
     std::unique_ptr<Condition> ret;
+
+    void print() const override {
+        
+    }
+
+    void exec() override {}
 };
 
