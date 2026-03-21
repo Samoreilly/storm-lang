@@ -12,7 +12,9 @@ std::unique_ptr<MainNode> Parser::construct_node() {
     auto main_node = std::make_unique<MainNode>();
 
     while(index < length) {
-        main_node->globals.push_back(parse_statement());
+        auto stmt = parse_statement();
+        if(!stmt) break;
+        main_node->globals.push_back(std::move(stmt));
     }
     
     return main_node;
@@ -48,8 +50,30 @@ std::unique_ptr<ProcedureNode> Parser::parse_proc() {
             proc->body_node = parse_body();
 
             return proc;
+        
+        //proc parameters
+        }else {
+
+            bool exit {false};
+
+            while(!check(TokenType::SYMBOL, ")")) {
+                proc->parameters.push_back(parse_variable());
+                
+                if(check(TokenType::SYMBOL, ")")) {
+                    consume(TokenType::SYMBOL, ")");
+                    exit = true;
+                }
+                if(exit) break;
+            }
         }
+
+        proc->body_node = parse_body();
+
+        return proc;
     }
+
+    std::cerr << "End of parse proc" << get_token().value << "\n";
+    consume(TokenType::SYMBOL, "}");
 
     throw std::runtime_error("Invalid proc return type - Use string, int, bool, double, char or void. it ain't that hard'");
 }
@@ -112,19 +136,25 @@ std::unique_ptr<Node> Parser::parse_statement() {
 
         case TokenType::IDENTIFIER: {
             Token next = peek_next(1);
-
             //these look ahead must be handled here and not in parse_variable
             //as its the only way to distinguish between unary operations, declarations and initializations
             if(next.value == "(") {
-                return parse_proc_call();
+                auto call = parse_proc_call();
+                consume(TokenType::SYMBOL, ";");
+                return call;
 
             } else if(next.value == "++" || next.value == "--" || next.value == "=" ||
                       next.value == "+=" || next.value == "-=" || next.value == "*=" || 
                       next.value == "/=") {
+
                 auto node = parse_incr();
+
+                std::cerr << "STATEMENT IDENT " << get_token().value << "\n";
                 consume(TokenType::SYMBOL, ";");
+                
                 return node;
             }
+
             return parse_variable();
         }
 
@@ -148,7 +178,8 @@ std::unique_ptr<Node> Parser::parse_statement() {
         }
 
         case TokenType::END_OF_FILE: {
-            break;
+            advance();
+            return nullptr;
         }
 
         default: {
@@ -225,6 +256,10 @@ std::unique_ptr<VariableNode> Parser::parse_variable() {
 
     //end of storm
     if(check(TokenType::SYMBOL, "}")) {
+        return var;
+    }
+
+    if(check(TokenType::SYMBOL, ")")) {
         return var;
     }
 
@@ -358,11 +393,7 @@ std::unique_ptr<Condition> Parser::parse_proc_call() {
 
     consume(TokenType::SYMBOL, ")");
    
-    if(check(TokenType::SYMBOL, ";")) {
-        consume(TokenType::SYMBOL, ";");
-    }
-   
-    std::cerr << "Current token: " << get_token().value;
+    std::cerr << "Current token: " << get_token().value << "\n";
     return call;
 }
 
@@ -385,12 +416,16 @@ std::unique_ptr<IfNode> Parser::parse_if() {
 std::unique_ptr<Node> Parser::parse_incr() {
 
     Token name = get_token();
+
+    std::cerr << "Parse incr: " << get_token().value << "Line" << get_token().line << "\n";
     if(name.type != TokenType::IDENTIFIER) {
         throw std::runtime_error("For loop increment must start with a variable name");
     }
 
     advance();
 
+    std::cerr << "Parse incr: " << get_token().value << "\n";
+    
     if(check(TokenType::UNARY_OP)) {
         Token op = get_token();
 
@@ -406,7 +441,8 @@ std::unique_ptr<Node> Parser::parse_incr() {
 
         if(op.value == "=" || op.value == "*=" || op.value == "*"
             || op.value == "/" || op.value == "/=" || op.value == "+=" || op.value == "+" || op.value == "-" || op.value == "-="){ 
-            
+
+            std::cerr << "Token: " << get_token().value << "\n";
             advance();
 
             auto value = parse_condition();
@@ -416,7 +452,6 @@ std::unique_ptr<Node> Parser::parse_incr() {
             node->op = op.value;//op
             node->init = std::move(value);//right side
 
-            advance();
             return node;
 
         }

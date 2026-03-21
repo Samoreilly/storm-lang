@@ -43,7 +43,8 @@ public:
 
     std::string proc_name;
     std::string return_type;
-    
+    std::vector<std::unique_ptr<VariableNode>> parameters;
+
     std::unique_ptr<BodyNode> body_node;
 
     void print() const override {

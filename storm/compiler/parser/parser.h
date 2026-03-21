@@ -27,7 +27,7 @@ class Parser {
     std::unique_ptr<VariableNode>  parse_variable();                 
 
     std::unique_ptr<Node>          parse_incr();
-    std::unique_ptr<ReturnNode>     parse_return();
+    std::unique_ptr<ReturnNode>    parse_return();
 
     std::unique_ptr<Condition>     parse_comparison();
     std::unique_ptr<Condition>     parse_add();
@@ -105,6 +105,14 @@ public:
         if(index + n < length) {
             return tokens[index + n];
         }
-        return tokens[index + n];
+        return tokens[index];
+    }
+
+    Token peek_prev(int n = 1) {
+        if(index - n >= 0) {
+            return tokens[index - n];
+        }
+        return tokens[index];
+
     }
 };

@@ -32,23 +32,25 @@ proc void tempest(void) {
     i *= 2;
     i /= 2;
     i -= 2;
-    i++;
-    ++i;
-    --i;
+    i++; 
     i--;
+
     result: int = get_sum(x, 2);
     
 }
 
 j: int = 2;
 
-for(j: int = 10;j >=;j--) {
+for(j: int = 10;j >= 0;j--) {
 
 }
 
 proc int get_sum(num_one: int, num_two: int) {
     return num_one + num_two;
 }
+
+
+
 
 
 
@@ -83,23 +85,25 @@ p v t(v) {
     i * 2;
     i / 2;
     i - 2;
-    i+;
-    +i;
-    -i;
+    i+; 
     i-;
+
     r: i = g(x, 2);
     
 }
 
 j: i = 2;
 
-f(j: i = 1;j >;j-) {
+f(j: i = 1;j > 0;j-) {
 
 }
 
 p i g(n: i, n: i) {
     r n + n;
 }
+
+
+
 
 
 TokenType-> STORM
@@ -478,253 +482,233 @@ TokenType-> SYMBOL
 Value-> ;
  Line: 33 Column: 7
 
-TokenType-> UNARY_OP
-Value-> ++
- Line: 34 Column: 6
-
 TokenType-> IDENTIFIER
 Value-> i
+ Line: 34 Column: 5
+
+TokenType-> UNARY_OP
+Value-> --
  Line: 34 Column: 7
 
 TokenType-> SYMBOL
 Value-> ;
  Line: 34 Column: 7
-
-TokenType-> UNARY_OP
-Value-> --
- Line: 35 Column: 6
-
-TokenType-> IDENTIFIER
-Value-> i
- Line: 35 Column: 7
-
-TokenType-> SYMBOL
-Value-> ;
- Line: 35 Column: 7
-
-TokenType-> IDENTIFIER
-Value-> i
- Line: 36 Column: 5
-
-TokenType-> UNARY_OP
-Value-> --
- Line: 36 Column: 7
-
-TokenType-> SYMBOL
-Value-> ;
- Line: 36 Column: 7
 
 TokenType-> IDENTIFIER
 Value-> result
- Line: 37 Column: 10
+ Line: 36 Column: 10
 
 TokenType-> SYMBOL
 Value-> :
- Line: 37 Column: 10
+ Line: 36 Column: 10
 
 TokenType-> INTEGER
 Value-> int
- Line: 37 Column: 12
+ Line: 36 Column: 12
 
 TokenType-> OPERATOR
 Value-> =
- Line: 37 Column: 17
+ Line: 36 Column: 17
 
 TokenType-> IDENTIFIER
 Value-> get_sum
- Line: 37 Column: 25
+ Line: 36 Column: 25
 
 TokenType-> SYMBOL
 Value-> (
- Line: 37 Column: 25
+ Line: 36 Column: 25
 
 TokenType-> IDENTIFIER
 Value-> x
- Line: 37 Column: 27
+ Line: 36 Column: 27
 
 TokenType-> SYMBOL
 Value-> ,
- Line: 37 Column: 27
+ Line: 36 Column: 27
 
 TokenType-> INTEGER
 Value-> 2
- Line: 37 Column: 30
+ Line: 36 Column: 30
 
 TokenType-> SYMBOL
 Value-> )
- Line: 37 Column: 30
+ Line: 36 Column: 30
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 37 Column: 31
+ Line: 36 Column: 31
 
 TokenType-> SYMBOL
 Value-> }
- Line: 39 Column: 0
+ Line: 38 Column: 0
 
 TokenType-> IDENTIFIER
 Value-> j
- Line: 41 Column: 1
+ Line: 40 Column: 1
 
 TokenType-> SYMBOL
 Value-> :
- Line: 41 Column: 1
+ Line: 40 Column: 1
 
 TokenType-> INTEGER
 Value-> int
- Line: 41 Column: 3
+ Line: 40 Column: 3
 
 TokenType-> OPERATOR
 Value-> =
- Line: 41 Column: 8
+ Line: 40 Column: 8
 
 TokenType-> INTEGER
 Value-> 2
- Line: 41 Column: 10
+ Line: 40 Column: 10
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 41 Column: 10
+ Line: 40 Column: 10
 
 TokenType-> FOR
 Value-> for
- Line: 43 Column: 0
+ Line: 42 Column: 0
 
 TokenType-> SYMBOL
 Value-> (
- Line: 43 Column: 3
+ Line: 42 Column: 3
 
 TokenType-> IDENTIFIER
 Value-> j
- Line: 43 Column: 5
+ Line: 42 Column: 5
 
 TokenType-> SYMBOL
 Value-> :
- Line: 43 Column: 5
+ Line: 42 Column: 5
 
 TokenType-> INTEGER
 Value-> int
- Line: 43 Column: 7
+ Line: 42 Column: 7
 
 TokenType-> OPERATOR
 Value-> =
- Line: 43 Column: 12
+ Line: 42 Column: 12
 
 TokenType-> INTEGER
 Value-> 10
- Line: 43 Column: 15
+ Line: 42 Column: 15
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 43 Column: 15
+ Line: 42 Column: 15
 
 TokenType-> IDENTIFIER
 Value-> j
- Line: 43 Column: 17
+ Line: 42 Column: 17
 
 TokenType-> OPERATOR
 Value-> >=
- Line: 43 Column: 20
+ Line: 42 Column: 20
+
+TokenType-> INTEGER
+Value-> 0
+ Line: 42 Column: 22
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 43 Column: 20
+ Line: 42 Column: 22
 
 TokenType-> IDENTIFIER
 Value-> j
- Line: 43 Column: 22
+ Line: 42 Column: 24
 
 TokenType-> UNARY_OP
 Value-> --
- Line: 43 Column: 24
+ Line: 42 Column: 26
 
 TokenType-> SYMBOL
 Value-> )
- Line: 43 Column: 24
+ Line: 42 Column: 26
 
 TokenType-> SYMBOL
 Value-> {
- Line: 43 Column: 26
+ Line: 42 Column: 28
 
 TokenType-> SYMBOL
 Value-> }
- Line: 45 Column: 0
+ Line: 44 Column: 0
 
 TokenType-> PROC
 Value-> proc
- Line: 47 Column: 0
+ Line: 46 Column: 0
 
 TokenType-> INTEGER
 Value-> int
- Line: 47 Column: 5
+ Line: 46 Column: 5
 
 TokenType-> IDENTIFIER
 Value-> get_sum
- Line: 47 Column: 16
+ Line: 46 Column: 16
 
 TokenType-> SYMBOL
 Value-> (
- Line: 47 Column: 16
+ Line: 46 Column: 16
 
 TokenType-> IDENTIFIER
 Value-> num_one
- Line: 47 Column: 24
+ Line: 46 Column: 24
 
 TokenType-> SYMBOL
 Value-> :
- Line: 47 Column: 24
+ Line: 46 Column: 24
 
 TokenType-> INTEGER
 Value-> int
- Line: 47 Column: 26
+ Line: 46 Column: 26
 
 TokenType-> SYMBOL
 Value-> ,
- Line: 47 Column: 29
+ Line: 46 Column: 29
 
 TokenType-> IDENTIFIER
 Value-> num_two
- Line: 47 Column: 38
+ Line: 46 Column: 38
 
 TokenType-> SYMBOL
 Value-> :
- Line: 47 Column: 38
+ Line: 46 Column: 38
 
 TokenType-> INTEGER
 Value-> int
- Line: 47 Column: 40
+ Line: 46 Column: 40
 
 TokenType-> SYMBOL
 Value-> )
- Line: 47 Column: 43
+ Line: 46 Column: 43
 
 TokenType-> SYMBOL
 Value-> {
- Line: 47 Column: 45
+ Line: 46 Column: 45
 
 TokenType-> RETURN
 Value-> return
- Line: 48 Column: 4
+ Line: 47 Column: 4
 
 TokenType-> IDENTIFIER
 Value-> num_one
- Line: 48 Column: 18
+ Line: 47 Column: 18
 
 TokenType-> OPERATOR
 Value-> +
- Line: 48 Column: 20
+ Line: 47 Column: 20
 
 TokenType-> IDENTIFIER
 Value-> num_two
- Line: 48 Column: 28
+ Line: 47 Column: 28
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 48 Column: 28
+ Line: 47 Column: 28
 
 TokenType-> SYMBOL
 Value-> }
- Line: 49 Column: 0
+ Line: 48 Column: 0
 
 TokenType-> END_OF_FILE
 Value-> END_OF_FILE

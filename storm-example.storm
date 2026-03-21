@@ -30,20 +30,22 @@ proc void tempest(void) {
     i *= 2;
     i /= 2;
     i -= 2;
-    i++;
-    ++i;
-    --i;
+    i++; 
     i--;
+
     result: int = get_sum(x, 2);
     
 }
 
 j: int = 2;
 
-for(j: int = 10;j >=;j--) {
+for(j: int = 10;j >= 0;j--) {
 
 }
 
 proc int get_sum(num_one: int, num_two: int) {
     return num_one + num_two;
 }
+
+
+
