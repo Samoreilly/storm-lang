@@ -7,7 +7,6 @@
 #include <string>
 #include <optional>
 
-
 class MainNode : public Node {
 public:
 
@@ -242,4 +241,3 @@ public:
 
     void exec() override {}
 };
-

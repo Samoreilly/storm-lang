@@ -42,6 +42,11 @@ public:
     Parser(std::vector<Token>& t) : tokens(t), length(t.size()) {
         root_node = construct_node();
     }
+    
+    std::unique_ptr<MainNode>& get_ast() {
+        return root_node;
+    }
+
     /*
         if expected is provided,
         token[index].type == type
