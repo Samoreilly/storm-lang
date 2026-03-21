@@ -37,8 +37,10 @@ class Parser {
 
 public:
 
+    std::unique_ptr<MainNode> root_node;
+
     Parser(std::vector<Token>& t) : tokens(t), length(t.size()) {
-        construct_node();
+        root_node = construct_node();
     }
     /*
         if expected is provided,

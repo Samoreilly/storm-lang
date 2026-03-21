@@ -17,6 +17,10 @@ int main(void) {
         std::vector<Token>& tokens = lex.get_tokens();
     
         Parser parser{tokens};
+        if (parser.root_node) {
+            std::cout << "\n=== Abstract Syntax Tree ===\n";
+            parser.root_node->print();
+        }
     
     }catch(const std::exception& e) {
         std::cerr << e.what();

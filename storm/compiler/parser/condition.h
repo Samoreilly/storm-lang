@@ -4,6 +4,14 @@
 #include <memory>
 #include <string>
 #include <iostream>
+
+inline int astIndentLevel = 0;
+
+inline void astPrintIndent() {
+    for (int i = 0; i < astIndentLevel; ++i) {
+        std::cout << "  ";
+    }
+}
 /*
  pure virtual class that each node will inherit
 */
@@ -30,7 +38,12 @@ public:
     std::unique_ptr<Condition> right;
 
     void print() const override {
-
+        astPrintIndent();
+        std::cout << "[BinaryExpression: " << op << "]\n";
+        astIndentLevel++;
+        if (left) left->print();
+        if (right) right->print();
+        astIndentLevel--;
     }
 
     void exec() override {}
@@ -43,7 +56,8 @@ public:
     IntegerCondition(Token t) : token(t) {}
 
     void print() const override {
-        std::cout << token.value;
+        astPrintIndent();
+        std::cout << "Integer: " << token.value << "\n";
     }
 
     void exec() override {}
@@ -56,7 +70,8 @@ public:
     DoubleCondition(Token t) : token(t) {}
 
     void print() const override {
-        std::cout << token.value;
+        astPrintIndent();
+        std::cout << "Double: " << token.value << "\n";
     }
 
     void exec() override {}
@@ -69,7 +84,8 @@ public:
     BoolCondition(Token t) : token(t) {}
 
     void print() const override {
-        std::cout << token.value;
+        astPrintIndent();
+        std::cout << "Bool: " << token.value << "\n";
     }
 
     void exec() override {}
@@ -82,7 +98,8 @@ public:
     StringCondition(Token t) : token(t) {}
 
     void print() const override {
-        std::cout << token.value;
+        astPrintIndent();
+        std::cout << "String: \"" << token.value << "\"\n";
     }
 
     void exec() override {}
@@ -95,7 +112,8 @@ public:
     CharCondition(Token t) : token(t) {}
 
     void print() const override {
-        std::cout << token.value;
+        astPrintIndent();
+        std::cout << "Char: '" << token.value << "'\n";
     }
 
     void exec() override {}
@@ -108,7 +126,8 @@ public:
     IdentifierCondition(Token t) : token(t) {}
 
     void print() const override {
-        std::cout << token.value;
+        astPrintIndent();
+        std::cout << "Identifier: " << token.value << "\n";
     }
 
     void exec() override {}
@@ -119,7 +138,11 @@ public:
     std::unique_ptr<Condition> ret;
 
     void print() const override {
-        
+        astPrintIndent();
+        std::cout << "[Return]\n";
+        astIndentLevel++;
+        if (ret) ret->print();
+        astIndentLevel--;
     }
 
     void exec() override {}
