@@ -5,13 +5,13 @@
 
 
 
-void Transpile::transpile() {
+const std::string Transpile::transpile() {
 
     inclds.clear();
     
-   std::string code = root->to_c();
+    std::string code = root->to_c();
 
-   std::string header_block;
+    std::string header_block;
     for (const auto& header : inclds) {
         header_block += header + "\n";
     }
@@ -46,6 +46,8 @@ void Transpile::transpile() {
             code += "\n\n" + main_func;
         }
     }
-
+    
     std::cout << code << std::endl;
+
+    return code;
 }

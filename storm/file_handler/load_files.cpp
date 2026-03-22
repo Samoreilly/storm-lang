@@ -26,3 +26,14 @@ const std::string Load_Files::load_file() {
     return file_content;
 }
 
+void Load_Files::write_to_file(std::string code) {
+
+    std::cerr << "try";
+    std::ofstream c_file("transpiled.c");
+
+    c_file << code;
+
+    c_file.close();
+
+}
+

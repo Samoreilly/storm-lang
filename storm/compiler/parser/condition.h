@@ -31,6 +31,7 @@ public:
     virtual void print() const = 0;
     virtual void exec() = 0;
     virtual std::string to_c(int indent = 0) override = 0;
+    virtual std::string getType() const { return "unknown"; }
 };
 
 class BinaryExpression : public Condition {
@@ -60,6 +61,10 @@ public:
 
         return code;
     }
+
+    std::string getType() const override {
+        return left->getType(); // Assume left type for now or more complex logic
+    }
 };
 
 class IntegerCondition : public Condition {
@@ -77,6 +82,10 @@ public:
 
     std::string to_c(int indent = 0) override {
         return token.value;
+    }
+
+    std::string getType() const override {
+        return "int";
     }
 };
 
@@ -96,6 +105,10 @@ public:
     std::string to_c(int indent = 0) override {
         return token.value;
     }
+
+    std::string getType() const override {
+        return "double";
+    }
 };
 
 class BoolCondition : public  Condition {
@@ -113,6 +126,10 @@ public:
     
     std::string to_c(int indent = 0) override {
         return token.value;
+    }
+
+    std::string getType() const override {
+        return "bool";
     }
 };
 
@@ -132,6 +149,10 @@ public:
     std::string to_c(int indent = 0) override {
         return token.value;
     }
+
+    std::string getType() const override {
+        return "string";
+    }
 };
 
 class CharCondition : public Condition {
@@ -150,6 +171,10 @@ public:
     std::string to_c(int indent = 0) override {
         return token.value;
     }
+
+    std::string getType() const override {
+        return "char";
+    }
 };
 
 class IdentifierCondition : public Condition {
@@ -167,6 +192,10 @@ public:
 
     std::string to_c(int indent = 0) override {
         return token.value;
+    }
+
+    std::string getType() const override {
+        return "identifier";
     }
 };
 

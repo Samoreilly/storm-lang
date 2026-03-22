@@ -3,6 +3,7 @@
 #include "compiler/parser/parser.h"
 #include "transpiler/transpile.h"
 #include "token.h"
+#include <cstdlib>
 #include <vector>
 #include <string>
 
@@ -25,9 +26,13 @@ int main(void) {
         }
 
         Transpile t{parser.get_ast()};
-        t.transpile();
+        const std::string code = t.transpile();
 
-
+        std::cerr << "writing to file";
+        l.write_to_file(code);
+        
+        std::cout << "\n";
+        system("gcc transpiled.c && ./a.out");
     
     }catch(const std::exception& e) {
         std::cerr << e.what();

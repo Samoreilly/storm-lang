@@ -103,7 +103,13 @@ public:
     std::string to_c(int indent = 0) override {
         std::string code;
 
-        if(type) code += type.value() + " ";
+        if(type) {
+            if(type.value() == "string") {
+                code += "char* ";
+            }else {
+                code += type.value() + " ";
+            }
+        }
         code += name;
 
         if(op) code += " " + op.value() + " "; // Add the operator like += or *=
@@ -203,9 +209,29 @@ public:
             inclds.insert("#include <stdio.h>");
         }
 
-        if(proc_name == "echo" || proc_name == "print" || proc_name == "printf") {
+        if(proc_name == "echo" || proc_name == "print") {
             code += "printf(";
-        }else {
+            std::string format = "";
+            for (const auto& arg : arguments) {
+                if (!arg) continue;
+                std::string type = arg->getType();
+                if (type == "int") format += "%i ";
+                else if (type == "double") format += "%f ";
+                else if (type == "string") format += "%s ";
+                else if (type == "char") format += "%c ";
+                else if (type == "bool") format += "%i ";
+                else format += "%i "; // defaults to %i for identifiers or unknown
+            }
+            if(!format.empty()) {
+                format.pop_back(); // remove trailing space
+                if(proc_name == "echo") format += "\\n";
+                code += "\"" + format + "\", ";
+            } else if(proc_name == "echo") {
+                code += "\"\\n\", ";
+            }
+        } else if (proc_name == "printf") {
+            code += "printf(";
+        } else {
             code += proc_name + "(";
         }
 

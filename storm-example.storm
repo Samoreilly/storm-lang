@@ -1,51 +1,26 @@
 
 
-storm my_data {
-    var_one: string,
-    var_two: double,
-    var_three: int
-};
 
-proc void main(void) {
-
-    x: int = 5;
-
-    [[will print 5 to 49]]
-    range(i = 0..50) {
-        echo(i);
-    }
-
-    i: int = 0;
-    j: double = 0.0;
-
-    while(i < 10) {
-
-    }
-
-    if(j > 1.0) {
-        return true;
-    }
-   
-    i += 2;
-    i *= 2;
-    i /= 2;
-    i -= 2;
-    i++; 
-    i--;
-
-    result: int = get_sum(x, 2);
-    
-}
-
-j: int = 2;
-
-for(j: int = 10;j >= 0;j--) {
-
-}
-
-proc int get_sum(num_one: int, num_two: int) {
-    return num_one + num_two;
+proc int sum(one: int, two: int) {
+    return one + two;
 }
 
 
+
+proc int fibonaci(n: int) {
+    if(n <= 1) {
+        return n;
+    }
+
+    return fibonaci(n - 1) + fibonaci(n - 2);
+}
+
+
+proc void main() {
+
+    echo(fibonaci(10));
+
+    x: int = sum(1, 2);
+    echo(x);
+}
 

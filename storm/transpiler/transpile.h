@@ -57,8 +57,11 @@ inline const std::unordered_map<std::string, std::string> includes = {
 };
 
 class Transpile {
+    
     const std::unique_ptr<MainNode>& root;
+
 public:
+ 
     Transpile(const std::unique_ptr<MainNode>& r) : root(r) {}
-    void transpile();
+    const std::string transpile();
 };
