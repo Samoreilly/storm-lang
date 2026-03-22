@@ -8,7 +8,7 @@ storm my_data {
     var_three: int
 };
 
-proc void tempest(void) {
+proc void main(void) {
 
     x: int = 5;
 
@@ -60,7 +60,7 @@ s m {
     v: i
 };
 
-p v t(v) {
+p v m(v) {
 
     x: i = 5;
 
@@ -178,25 +178,25 @@ TokenType-> VOID
 Value-> void
  Line: 9 Column: 5
 
-TokenType-> TEMPEST
-Value-> tempest
- Line: 9 Column: 10
+TokenType-> IDENTIFIER
+Value-> main
+ Line: 9 Column: 14
 
 TokenType-> SYMBOL
 Value-> (
- Line: 9 Column: 17
+ Line: 9 Column: 14
 
 TokenType-> VOID
 Value-> void
- Line: 9 Column: 18
+ Line: 9 Column: 15
 
 TokenType-> SYMBOL
 Value-> )
- Line: 9 Column: 22
+ Line: 9 Column: 19
 
 TokenType-> SYMBOL
 Value-> {
- Line: 9 Column: 24
+ Line: 9 Column: 21
 
 TokenType-> IDENTIFIER
 Value-> x
@@ -712,15 +712,14 @@ Value-> }
 
 TokenType-> END_OF_FILE
 Value-> END_OF_FILE
-Line: 0 Column: 0
-
+ Line: 0 Column: 0
 === Abstract Syntax Tree ===
 [MainNode]
   [StormDef: my_data]
     [Variable: var_one, Type: string]
     [Variable: var_two, Type: double]
     [Variable: var_three, Type: int]
-  [ProcedureDef: tempest -> void]
+  [ProcedureDef: main -> void]
     Parameters:
     [BodyNode]
       [Variable: x, Type: int]
@@ -780,3 +779,42 @@ Line: 0 Column: 0
         [BinaryExpression: +]
           Identifier: num_one
           Identifier: num_two
+#include <stdio.h>
+
+struct my_data {
+    string var_one;
+    double var_two;
+    int var_three;
+};
+
+
+int j = 2;
+for(int j = 10; j >= 0; j--) {
+}
+int get_sum (int num_one, int num_two) {
+    return num_one + num_two;
+}
+
+
+void main () {
+    int x = 5;
+    int i = 0;
+    while(i < 50) {
+        printf(i);
+        i++;
+    }
+    int i = 0;
+    double j = 0.0;
+    while(i < 10) {
+    }
+    if(j > 1.0) {
+        return true;
+    }
+    i += 2;
+    i *= 2;
+    i /= 2;
+    i -= 2;
+    i++;
+    i--;
+    int result = get_sum(x, 2);
+}

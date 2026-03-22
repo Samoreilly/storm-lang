@@ -17,9 +17,11 @@ inline void astPrintIndent() {
 */
 class Node {
 public: 
+
     virtual ~Node() = default;
     virtual void print() const = 0;
     virtual void exec() = 0;
+    virtual std::string to_c(int indent = 0) = 0;
 };
 
 class Condition : public Node {
@@ -28,6 +30,7 @@ public:
     virtual ~Condition() = default;
     virtual void print() const = 0;
     virtual void exec() = 0;
+    virtual std::string to_c(int indent = 0) override = 0;
 };
 
 class BinaryExpression : public Condition {
@@ -47,6 +50,16 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        std::string code;
+
+        code += left->to_c(indent) + " ";
+        code += op + " ";
+        code += right->to_c(indent);
+
+        return code;
+    }
 };
 
 class IntegerCondition : public Condition {
@@ -61,6 +74,10 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        return token.value;
+    }
 };
 
 class DoubleCondition : public Condition {
@@ -75,6 +92,10 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        return token.value;
+    }
 };
 
 class BoolCondition : public  Condition {
@@ -89,6 +110,10 @@ public:
     }
 
     void exec() override {}
+    
+    std::string to_c(int indent = 0) override {
+        return token.value;
+    }
 };
 
 class StringCondition : public Condition {
@@ -103,6 +128,10 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        return token.value;
+    }
 };
 
 class CharCondition : public Condition {
@@ -117,6 +146,10 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        return token.value;
+    }
 };
 
 class IdentifierCondition : public Condition {
@@ -131,10 +164,15 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        return token.value;
+    }
 };
 
 class ReturnNode : public Condition {
 public:
+
     std::unique_ptr<Condition> ret;
 
     void print() const override {
@@ -146,5 +184,8 @@ public:
     }
 
     void exec() override {}
-};
 
+    std::string to_c(int indent = 0) override {
+        return "return " + ret->to_c(indent) + ";";
+    }
+};

@@ -9,4 +9,5 @@ add_executable(
     storm/file_handler/load_files.cpp
     storm/compiler/parser/parser.cpp
     storm/compiler/parser/parser_expression.cpp
+    storm/transpiler/transpile.cpp
 )

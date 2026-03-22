@@ -1,6 +1,7 @@
 #pragma once
 
 #include "condition.h"
+#include "../../transpiler/transpile.h"
 
 #include <vector>
 #include <memory>
@@ -23,6 +24,17 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        std::string code;
+
+        for(const auto& node : globals) {
+            if(node) code += node->to_c(indent) + "\n"; 
+        }
+
+        return code;
+    }
+
 };
 
 class BodyNode : public Node {
@@ -41,6 +53,25 @@ public:
     }
 
     void exec() override {} 
+
+    std::string to_c(int indent = 0) override {
+        std::string code;
+        code += "{\n";        
+            
+        for(const auto& node : statements) {
+            if(node) {
+                std::string stmt = node->to_c(indent + 4);
+                // ensures statements have semicolons if they aren't control blocks
+                if (!stmt.empty() && stmt.back() != ';' && stmt.back() != '}') {
+                    stmt += ";";
+                }
+                code += std::string(indent + 4, ' ') + stmt + "\n";
+            }
+        }
+
+        code += std::string(indent, ' ') + "}";
+        return code;
+    }
 };
 
 class VariableNode : public Node {
@@ -68,6 +99,23 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        std::string code;
+
+        if(type) code += type.value() + " ";
+        code += name;
+
+        if(op) code += " " + op.value() + " "; // Add the operator like += or *=
+        else if(init) code += " = "; // Default to = for initializations
+        
+        if(init) {
+            code += init->to_c(indent);
+        }
+            
+        code += ";";
+        return code;
+    }
 };
 
 //encapsulates procedure data
@@ -81,26 +129,54 @@ public:
     std::unique_ptr<BodyNode> body_node;
 
     void print() const override {
+        
         astPrintIndent();
         std::cout << "[ProcedureDef: " << proc_name << " -> " << return_type << "]\n";
         astIndentLevel++;
         astPrintIndent();
+        
         std::cout << "Parameters:\n";
         astIndentLevel++;
+        
         for (const auto& param : parameters) {
             if (param) param->print();
         }
+
         astIndentLevel--;
         if (body_node) body_node->print();
         astIndentLevel--;
+
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        std::string code;
+
+        code += return_type + " ";
+        code += proc_name + " ";
+
+        code += "(";
+
+        for(const auto& node : parameters) {
+            if(node) code += node->type.value() + " " + node->name + ", ";
+        }
+
+        if(!parameters.empty()) {
+            code.pop_back(); // remove trailing space
+            code.pop_back(); // remove trailing comma
+        }
+        
+        code += ") ";
+        code += body_node->to_c(indent);
+
+        return code;
+    }
 };
 
 class ProcCallNode : public Condition {
 public:
-    
+
     //proc being called
     std::string proc_name;
     std::vector<std::unique_ptr<Condition>> arguments;
@@ -116,6 +192,37 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        std::string code;
+
+        // Automatically track headers
+        if (includes.count(proc_name)) {
+            inclds.insert(includes.at(proc_name));
+        } else if (proc_name == "echo" || proc_name == "print") {
+            inclds.insert("#include <stdio.h>");
+        }
+
+        if(proc_name == "echo" || proc_name == "print" || proc_name == "printf") {
+            code += "printf(";
+        }else {
+            code += proc_name + "(";
+        }
+
+        int prev_length = code.length();
+        for(const auto& arg : arguments) {
+            if(arg) code += arg->to_c(indent) + ", ";
+        }
+
+        if(prev_length != code.length()) {
+            code.pop_back(); // remove trailing space
+            code.pop_back(); // remove trailing comma
+        }
+        
+        code += ")";
+        
+        return code;
+    }
 };
 
 //same as struct in languages like C++ & C
@@ -136,6 +243,21 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        std::string code;
+        code += "struct " + storm_name + " {\n";
+
+        for(const auto& node : storm_statements) {
+            if(node) {
+                code += std::string(indent + 4, ' ') + node->to_c(indent + 4) + "\n";
+            }
+        }
+            
+        code += "};\n";
+        
+        return code;
+    }
 };
 
 
@@ -155,6 +277,15 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        std::string code;
+
+        code += "if(" + condition->to_c(indent) + ") ";
+        code += if_body->to_c(indent);
+
+        return code;
+    }
 };
 
 class WhileNode : public Node {
@@ -174,6 +305,14 @@ public:
 
     void exec() override {}
 
+    std::string to_c(int indent = 0) override {
+        std::string code;
+
+        code += "while(" + condition->to_c(indent) + ") ";
+        code += while_body->to_c(indent);
+        
+        return code;
+    }
 };
 
 class ForNode : public Node {
@@ -198,6 +337,36 @@ public:
 
     void exec() override {}
 
+    std::string to_c(int indent = 0) override {
+        std::string code;
+    
+        code += "for(";
+        
+        if(init) {
+            std::string init_c = init.value()->to_c(indent);
+            if(init_c.back() == ';') init_c.pop_back();
+            code += init_c + "; ";
+        } else {
+            code += "; ";
+        }
+        
+        if(condition) {
+            code += condition.value()->to_c(indent) + "; ";
+        } else {
+            code += "; ";
+        }
+        
+        if(incr) {
+            std::string incr_c = incr.value()->to_c(indent);
+            if(incr_c.back() == ';') incr_c.pop_back();
+            code += incr_c;
+        }
+        
+        code += ") ";
+        code += for_body->to_c(indent);
+
+        return code;
+    }
 };
 
 class RangeNode : public Node {
@@ -220,6 +389,29 @@ public:
 
     void exec() override {}
 
+    //will convert range node to a while loop as C doesn't have a range loop
+    std::string to_c(int indent = 0) override {
+        std::string code;
+
+        code += "int " + name + " = " + condition->to_c(indent) + ";\n"; 
+        code += std::string(indent, ' ') + "while(" + name + " < " + end_val->to_c(indent) + ") ";
+        
+        std::string body_c = range_body->to_c(indent);
+        size_t pos = body_c.rfind("}");
+        
+        if (pos != std::string::npos) {
+            // finds the last line start to insert before the brace
+            size_t start_of_brace_line = body_c.rfind("\n", pos);
+            if (start_of_brace_line == std::string::npos) start_of_brace_line = 0;
+            else start_of_brace_line++; // Skip the newline
+
+            body_c.insert(start_of_brace_line, std::string(indent + 4, ' ') + name + "++;\n");
+        }
+
+        code += body_c;
+
+        return code;
+    }
 };
 
 
@@ -240,4 +432,13 @@ public:
     }
 
     void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        std::string code;
+
+        code += name + op + ";";
+
+        return code;
+
+    }
 };
