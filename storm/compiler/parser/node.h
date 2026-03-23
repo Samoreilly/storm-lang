@@ -35,6 +35,16 @@ public:
         return code;
     }
 
+    void analyze(SymbolTable* table, int& current_offset) override {
+        
+        // for(const auto& node : globals) {
+        //     if(node) node->analyze(table, );
+        // }
+    }
+
+    std::string to_asm() override {
+        
+    }
 };
 
 class BodyNode : public Node {
@@ -72,6 +82,16 @@ public:
         code += std::string(indent, ' ') + "}";
         return code;
     }
+
+    std::string to_asm() override {
+          
+    }
+    
+    void analyze(SymbolTable* table, int& current_offset) override {
+        
+    }
+
+
 };
 
 class VariableNode : public Node {
@@ -121,6 +141,12 @@ public:
             
         code += ";";
         return code;
+    }
+    
+    void analyze(SymbolTable* table, int& current_offset) override;
+
+    std::string to_asm() override {
+        
     }
 };
 
@@ -177,6 +203,13 @@ public:
         code += body_node->to_c(indent);
 
         return code;
+    }
+
+    void analyze(SymbolTable* table, int& current_offset) override;
+
+
+    std::string to_asm() override {
+        
     }
 };
 
@@ -249,6 +282,14 @@ public:
         
         return code;
     }
+    
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+    std::string to_asm() override {
+        
+    }
 };
 
 //same as struct in languages like C++ & C
@@ -284,6 +325,14 @@ public:
         
         return code;
     }
+    
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+    std::string to_asm() override {
+        
+    }
 };
 
 
@@ -312,6 +361,14 @@ public:
 
         return code;
     }
+
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+    std::string to_asm() override {
+        
+    }
 };
 
 class WhileNode : public Node {
@@ -338,6 +395,14 @@ public:
         code += while_body->to_c(indent);
         
         return code;
+    }
+
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+    std::string to_asm() override {
+        
     }
 };
 
@@ -393,6 +458,14 @@ public:
 
         return code;
     }
+
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+    std::string to_asm() override {
+        
+    }
 };
 
 class RangeNode : public Node {
@@ -438,6 +511,14 @@ public:
 
         return code;
     }
+
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+    std::string to_asm() override {
+        
+    }
 };
 
 
@@ -466,5 +547,13 @@ public:
 
         return code;
 
+    }
+
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+    std::string to_asm() override {
+        
     }
 };

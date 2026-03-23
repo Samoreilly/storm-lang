@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../semantic_analysis/semantic.h"
 #include "../../token.h"
 #include <memory>
 #include <string>
@@ -22,6 +23,10 @@ public:
     virtual void print() const = 0;
     virtual void exec() = 0;
     virtual std::string to_c(int indent = 0) = 0;
+
+    virtual std::string to_asm() = 0;    
+    virtual void analyze(SymbolTable* table, int& current_offset) = 0;
+    
 };
 
 class Condition : public Node {
@@ -32,6 +37,10 @@ public:
     virtual void exec() = 0;
     virtual std::string to_c(int indent = 0) override = 0;
     virtual std::string getType() const { return "unknown"; }
+    
+    virtual std::string to_asm() override = 0;
+
+    virtual void analyze(SymbolTable* table, int& current_offset) override = 0;
 };
 
 class BinaryExpression : public Condition {
@@ -65,6 +74,15 @@ public:
     std::string getType() const override {
         return left->getType(); // Assume left type for now or more complex logic
     }
+
+    std::string to_asm() override {
+        
+    }
+
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    } 
+
 };
 
 class IntegerCondition : public Condition {
@@ -86,6 +104,14 @@ public:
 
     std::string getType() const override {
         return "int";
+    }
+
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+    std::string to_asm() override {
+        
     }
 };
 
@@ -109,6 +135,13 @@ public:
     std::string getType() const override {
         return "double";
     }
+    
+    void analyze(SymbolTable* table, int& current_offset) override;
+
+
+    std::string to_asm() override {
+        
+    }
 };
 
 class BoolCondition : public  Condition {
@@ -130,6 +163,14 @@ public:
 
     std::string getType() const override {
         return "bool";
+    }
+    
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+    std::string to_asm() override {
+        
     }
 };
 
@@ -153,6 +194,15 @@ public:
     std::string getType() const override {
         return "string";
     }
+    
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+
+    std::string to_asm() override {
+        
+    }
 };
 
 class CharCondition : public Condition {
@@ -174,6 +224,15 @@ public:
 
     std::string getType() const override {
         return "char";
+    }
+    
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+
+    std::string to_asm() override {
+        
     }
 };
 
@@ -197,6 +256,14 @@ public:
     std::string getType() const override {
         return "identifier";
     }
+    
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+    std::string to_asm() override {
+        
+    }
 };
 
 class ReturnNode : public Condition {
@@ -216,5 +283,13 @@ public:
 
     std::string to_c(int indent = 0) override {
         return "return " + ret->to_c(indent) + ";";
+    }
+
+    void analyze(SymbolTable* table, int& current_offset) override {
+
+    }
+
+    std::string to_asm() override {
+
     }
 };

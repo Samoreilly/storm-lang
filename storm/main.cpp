@@ -2,6 +2,7 @@
 #include "compiler/lexical_analysis/lexer.h"
 #include "compiler/parser/parser.h"
 #include "transpiler/transpile.h"
+#include "compiler/semantic_analysis/semantic.h"
 #include "token.h"
 #include <cstdlib>
 #include <vector>
@@ -20,6 +21,7 @@ int main(void) {
         std::vector<Token>& tokens = lex.get_tokens();
     
         Parser parser{tokens};
+        
         if (parser.root_node) {
             std::cout << "\n=== Abstract Syntax Tree ===\n";
             parser.root_node->print();
@@ -33,9 +35,19 @@ int main(void) {
         
         std::cout << "\n";
         system("gcc transpiled.c && ./a.out");
+
+        std::string name = "global";
+        SymbolTable* global;
+        global->name = name;
+        //semantic_analysis
+        int memory = 0;
+        parser.root_node->analyze(global, memory);
+
+
     
     }catch(const std::exception& e) {
         std::cerr << e.what();
     }
+
     return 0;
 }
