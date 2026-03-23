@@ -1,0 +1,7 @@
+
+proc void main() {
+    x: int = 7;
+    if(x > 5) {
+        echo(x);
+    }
+}

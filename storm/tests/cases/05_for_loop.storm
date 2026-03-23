@@ -1,0 +1,8 @@
+
+proc void main() {
+    cnt: int = 0;
+    for(i: int = 0; i < 5; i++) {
+        cnt = cnt + 1;
+    }
+    echo(cnt);
+}

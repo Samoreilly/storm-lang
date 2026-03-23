@@ -1,0 +1,9 @@
+
+proc int add(a: int, b: int) {
+    return a + b;
+}
+
+proc void main() {
+    x: int = add(3, 4);
+    echo(x);
+}

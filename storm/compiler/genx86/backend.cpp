@@ -228,9 +228,9 @@ std::string UnaryIncrNode::to_asm() {
     // load variable into rax using saved offset
     code += "mov rax, [rbp + " + std::to_string(saved_offset) + "]\n";
 
-    if(op == "+") {
+    if(op == "++") {
         code += "inc rax\n"; // increment
-    }else if(op == "-") {
+    }else if(op == "--") {
         code += "dec rax\n"; // decrement
     }
 

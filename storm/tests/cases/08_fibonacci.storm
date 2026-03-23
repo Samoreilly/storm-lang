@@ -8,5 +8,4 @@ proc int fib(n: int) {
 
 proc void main() {
     echo(fib(10));
-    echo(1);
 }
