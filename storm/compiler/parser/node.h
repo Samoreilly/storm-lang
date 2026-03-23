@@ -36,10 +36,7 @@ public:
     }
 
     void analyze(SymbolTable* table, int& current_offset) override;
-    
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 
 };
 
@@ -81,9 +78,7 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-          
-    }
+    std::string to_asm() override;
     
 
 };
@@ -95,6 +90,7 @@ public:
     std::optional<std::string> type;
     std::unique_ptr<Condition> init;
     std::optional<std::string> op;
+    int saved_offset {0};
 
     // VariableNode(std::string name, std::optional<std::string> type) 
     // : name(std::move(name)), type(std::move(type)), init(nullptr) {}
@@ -139,9 +135,7 @@ public:
     
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 //encapsulates procedure data
@@ -153,6 +147,7 @@ public:
     std::vector<std::unique_ptr<VariableNode>> parameters;
 
     std::unique_ptr<BodyNode> body_node;
+    int stack_frame_size {0};
 
     void print() const override {
         
@@ -202,9 +197,7 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 class ProcCallNode : public Condition {
@@ -279,9 +272,7 @@ public:
     
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 //same as struct in languages like C++ & C
@@ -320,9 +311,7 @@ public:
     
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 
@@ -354,9 +343,7 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 class WhileNode : public Node {
@@ -387,9 +374,7 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 class ForNode : public Node {
@@ -447,9 +432,7 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 class RangeNode : public Node {
@@ -459,6 +442,7 @@ public:
     std::unique_ptr<Condition> condition;
     std::unique_ptr<Condition> end_val;
     std::unique_ptr<BodyNode> range_body;
+    int saved_offset {0};
     
     void print() const override {
         astPrintIndent();
@@ -498,9 +482,7 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 
@@ -512,6 +494,7 @@ public:
 
     std::string name;
     std::string op;
+    int saved_offset {0};
 
     UnaryIncrNode(std::string n, std::string o) : name(std::move(n)), op(std::move(o)) {}
 
@@ -533,8 +516,6 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 
 };

@@ -5,6 +5,7 @@
 #include "compiler/semantic_analysis/semantic.h"
 #include "token.h"
 #include <cstdlib>
+#include <fstream>
 #include <vector>
 #include <string>
 
@@ -42,7 +43,13 @@ int main(void) {
         int memory = 0;
         parser.root_node->analyze(&global, memory);
 
+        std::string asm_code = parser.root_node->to_asm();
 
+        std::ofstream storm("storm.asm");
+
+        storm << asm_code;
+
+        storm.close();
     
     }catch(const std::exception& e) {
         std::cerr << e.what();

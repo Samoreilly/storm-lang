@@ -77,9 +77,7 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 class IntegerCondition : public Condition {
@@ -106,9 +104,7 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 class DoubleCondition : public Condition {
@@ -136,9 +132,7 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 class BoolCondition : public  Condition {
@@ -165,9 +159,7 @@ public:
     
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 class StringCondition : public Condition {
@@ -195,9 +187,7 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 class CharCondition : public Condition {
@@ -224,9 +214,7 @@ public:
     
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 class IdentifierCondition : public Condition {
@@ -254,9 +242,7 @@ public:
     
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-        
-    }
+    std::string to_asm() override;
 };
 
 class ReturnNode : public Condition {
@@ -280,7 +266,5 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override {
-
-    }
+    std::string to_asm() override;
 };

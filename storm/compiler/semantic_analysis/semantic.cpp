@@ -8,7 +8,6 @@
 void ProcedureNode::analyze(SymbolTable* table, int& curr) {
     
     std::cerr << "=====================================\n";
-    int param_offset = 16;
 
     if(proc_name == "echo") {
         throw std::runtime_error("echo is a reserved keyword\n");
@@ -17,9 +16,7 @@ void ProcedureNode::analyze(SymbolTable* table, int& curr) {
     SymbolTable proc(proc_name);
     proc.parent = table;
 
-    //check parent table, should be the global table too
     bool found = table->lookup(proc_name);
-
     if(found) {
         throw std::runtime_error("Redefintion of proc found: " + proc_name);
     }
@@ -29,21 +26,22 @@ void ProcedureNode::analyze(SymbolTable* table, int& curr) {
     entry.type = return_type;
     entry.is_function = true;
     
-    for(const auto& var : parameters) {
-        SymbolEntry v(var->name, var->type.value(), param_offset, false);
-        proc.insert(var->name, v);
-        param_offset += 8;
-    }
-
     int local_offset = 0;  
 
-    entry.stack_frame_size = local_offset;
+    // parameters live in the basement alongside locals (negative offsets)
+    for(const auto& var : parameters) {
+        local_offset -= 8;
+        SymbolEntry v(var->name, var->type.value(), local_offset, false);
+        proc.insert(var->name, v);
+    }
 
+    entry.stack_frame_size = local_offset;
     table->insert(proc_name, entry);
 
     body_node->analyze(&proc, local_offset);
     
     entry.stack_frame_size = local_offset;
+    this->stack_frame_size = local_offset;
 
     table->insert(proc_name, entry);
     std::cerr << "\nProc added: " << proc_name << "\n";
@@ -64,6 +62,7 @@ void VariableNode::analyze(SymbolTable* table, int& curr) {
             throw std::runtime_error("Redefintion of variable: " + name);
         }else {
             curr -= 8;
+            this->saved_offset = curr;
             SymbolEntry entry(name, type.value(), curr, false);
             table->insert(name, entry);
         }
@@ -74,6 +73,7 @@ void VariableNode::analyze(SymbolTable* table, int& curr) {
         if(!found) { 
             throw std::runtime_error("No definition for variable: " + name + " found");
         }
+        this->saved_offset = found->offset;
     }
 
 }
@@ -151,6 +151,7 @@ void RangeNode::analyze(SymbolTable* table, int& current_offset) {
 
     // offset for iterator
     current_offset -= 8;
+    this->saved_offset = current_offset;
     SymbolEntry entry(name, "int", current_offset, false);
     table->insert(name, entry);
 
@@ -165,6 +166,7 @@ void UnaryIncrNode::analyze(SymbolTable* table, int& current_offset) {
     if (!found) {
         throw std::runtime_error("Cannot increment undefined variable '" + name + "'!");
     }
+    this->saved_offset = found->offset;
 }
 
 void ProcCallNode::analyze(SymbolTable* table, int& current_offset) {
