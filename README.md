@@ -1,22 +1,35 @@
-# Storm Language Transpiler
+# STORM
+Status is beta.
 
-This project is a source to source compiler for the Storm programming language. It converts Storm source code into C code
+## Execution Pipeline
 
-## Architecture
+Source Code → Token Extraction → LParsing -> Semantic Analysis → x86_64 Assembly Emission → ELF64 Object Generation → Linked Linux Binary
 
-The implementation is divided into several modules
+### Linux x86_64 ELF64 Support
 
-1. Lexer. The lexer performs lexical analysis on the input file and generates a vector of tokens
-2. Parser. The parser uses the tokens to construct an abstract syntax tree. It handles statements, expressions, and control flow
-3. AST. The abstract syntax tree is composed of nodes that represent language structures for e.g. WhileNode, IfNode, etc Each node has a method to generate its C equivalent
-4. Transpiler. The transpiler manages the final output generation. it handles C header tracking and ensures the main function is placed at the end of the file
+Architecture highlights:
+Memory for local variables is managed via the stack frame using base pointer offsets.
+The first six procedure arguments are stored in registers RDI, RSI, RDX, RCX, R8, and R9 for performance.
+Return results are passed back through the RAX register.
+Linking with the C library provides access to input plus output functions like printf.
+Assembly output is formatted for the NASM assembler to produce ELF64 compatible object files.
 
-## Build Instructions - if you want to build it for some reason
+## Syntax Preview
 
-The project uses the CMake build system
+```storm
+proc int add_numbers(a: int, b: int) {
+    return a + b;
+}
 
-1. Create a build directory
-2. Run cmake .. from the build directory
-3. Run make to compile the source code
+proc void main() {
+    result: int = add_numbers(50, 50);
+    echo(result);
+}
+```
 
-The executable is named s
+```storm
+storm User {
+    id: int;
+    active: int;
+};
+```
