@@ -75,20 +75,18 @@ public:
         return left->getType(); // Assume left type for now or more complex logic
     }
 
+    void analyze(SymbolTable* table, int& current_offset) override;
+
     std::string to_asm() override {
         
     }
-
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    } 
-
 };
 
 class IntegerCondition : public Condition {
 public:
 
     Token token;
+    int saved_offset = 0;
     IntegerCondition(Token t) : token(t) {}
 
     void print() const override {
@@ -106,9 +104,7 @@ public:
         return "int";
     }
 
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
         
@@ -119,6 +115,7 @@ class DoubleCondition : public Condition {
 public:
 
     Token token;
+    int saved_offset = 0; 
     DoubleCondition(Token t) : token(t) {}
 
     void print() const override {
@@ -148,6 +145,7 @@ class BoolCondition : public  Condition {
 public:
 
     Token token;
+    int saved_offset = 0; 
     BoolCondition(Token t) : token(t) {}
 
     void print() const override {
@@ -165,9 +163,7 @@ public:
         return "bool";
     }
     
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
         
@@ -178,6 +174,7 @@ class StringCondition : public Condition {
 public:
 
     Token token;
+    int saved_offset = 0;
     StringCondition(Token t) : token(t) {}
 
     void print() const override {
@@ -195,9 +192,7 @@ public:
         return "string";
     }
     
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
 
     std::string to_asm() override {
@@ -209,8 +204,9 @@ class CharCondition : public Condition {
 public:
 
     Token token;
+    int saved_offset = 0;
     CharCondition(Token t) : token(t) {}
-
+        
     void print() const override {
         astPrintIndent();
         std::cout << "Char: '" << token.value << "'\n";
@@ -226,10 +222,7 @@ public:
         return "char";
     }
     
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
-
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
         
@@ -240,6 +233,8 @@ class IdentifierCondition : public Condition {
 public:
 
     Token token;
+    //useful to find location of variable defition
+    int saved_offset = 0;
     IdentifierCondition(Token t) : token(t) {}
 
     void print() const override {
@@ -257,9 +252,7 @@ public:
         return "identifier";
     }
     
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
         
@@ -285,9 +278,7 @@ public:
         return "return " + ret->to_c(indent) + ";";
     }
 
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
 

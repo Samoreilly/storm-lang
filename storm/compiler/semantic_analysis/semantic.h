@@ -14,6 +14,7 @@ struct SymbolEntry {
     SymbolEntry();
     SymbolEntry(std::string n, std::string t, int o, bool is_f)
     : name(n), type(t), offset(o), is_function(is_f) {}
+
 };
 
 struct SymbolTable {

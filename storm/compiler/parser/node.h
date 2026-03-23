@@ -35,16 +35,12 @@ public:
         return code;
     }
 
-    void analyze(SymbolTable* table, int& current_offset) override {
-        
-        // for(const auto& node : globals) {
-        //     if(node) node->analyze(table, );
-        // }
-    }
-
+    void analyze(SymbolTable* table, int& current_offset) override;
+    
     std::string to_asm() override {
         
     }
+
 };
 
 class BodyNode : public Node {
@@ -83,14 +79,12 @@ public:
         return code;
     }
 
+    void analyze(SymbolTable* table, int& current_offset) override;
+
     std::string to_asm() override {
           
     }
     
-    void analyze(SymbolTable* table, int& current_offset) override {
-        
-    }
-
 
 };
 
@@ -283,9 +277,7 @@ public:
         return code;
     }
     
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
         
@@ -326,9 +318,7 @@ public:
         return code;
     }
     
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
         
@@ -362,9 +352,7 @@ public:
         return code;
     }
 
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
         
@@ -397,9 +385,7 @@ public:
         return code;
     }
 
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
         
@@ -459,9 +445,7 @@ public:
         return code;
     }
 
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
         
@@ -512,9 +496,7 @@ public:
         return code;
     }
 
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
         
@@ -549,11 +531,10 @@ public:
 
     }
 
-    void analyze(SymbolTable* table, int& current_offset) override {
-
-    }
+    void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override {
         
     }
+
 };
