@@ -1,12 +1,7 @@
 
-proc int fib(n: int) {
-    if(n <= 1) {
-        return n;
-    }
-    return fib(n - 1) + fib(n - 2);
-}
 
 proc void main() {
-    echo(fib(10));
-    echo(1);
+
+    x: string = "hello world";
+    echo(x);
 }

@@ -90,6 +90,7 @@ void IdentifierCondition::analyze(SymbolTable* table, int& curr) {
 
     //useful to find location of variable defition
     this->saved_offset = entry->offset;
+    this->actual_type = entry->type;
 
 }
 

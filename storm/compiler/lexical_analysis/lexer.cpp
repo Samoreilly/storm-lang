@@ -95,6 +95,26 @@ void Lexer::lex() {
             continue;
         }
 
+        if (c == '"') {
+            start = ++end;
+            while (end < length && con[end] != '"') {
+                if (con[end] == '\n') {
+                    line++;
+                    col = 0;
+                }
+                end++;
+                col++;
+            }
+
+            std::string data(con.data() + start, end - start);
+            tokens.push_back({TokenType::STRING, data, line, col});
+
+            end++;
+            col++;
+            start = end;
+            continue;
+        }
+
         if(is_operator(c)) {
             start = end;
             col++;

@@ -22,6 +22,7 @@ std::string MainNode::to_asm() {
     
     final_code += "\nsection .data\n";
     final_code += "format_int: db \"%d\", 10, 0\n";// print statement
+    final_code += "format_str: db \"%s\", 10, 0\n";// print string statement
     final_code += data;
 
     return final_code;
@@ -101,7 +102,14 @@ std::string ProcCallNode::to_asm() {
     if (proc_name == "echo") {
         code += "mov rsi, rdi\n"; 
         code += "extern printf\n";
-        code += "lea rdi, [format_int]\n"; 
+        
+        // Select format string based on argument type
+        if (!arguments.empty() && arguments[0]->getType() == "string") {
+            code += "lea rdi, [format_str]\n";
+        } else {
+            code += "lea rdi, [format_int]\n"; 
+        }
+
         code += "mov rax, 0\n"; 
         code += "call printf\n";
     } else {

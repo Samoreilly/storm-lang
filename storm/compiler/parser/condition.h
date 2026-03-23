@@ -223,6 +223,7 @@ public:
     Token token;
     //useful to find location of variable defition
     int saved_offset = 0;
+    std::string actual_type;
     IdentifierCondition(Token t) : token(t) {}
 
     void print() const override {
@@ -237,7 +238,7 @@ public:
     }
 
     std::string getType() const override {
-        return "identifier";
+        return actual_type;
     }
     
     void analyze(SymbolTable* table, int& current_offset) override;
