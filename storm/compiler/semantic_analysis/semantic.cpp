@@ -7,7 +7,12 @@
 
 void ProcedureNode::analyze(SymbolTable* table, int& curr) {
     
+    std::cerr << "=====================================\n";
     int param_offset = 16;
+
+    if(proc_name == "echo") {
+        throw std::runtime_error("echo is a reserved keyword\n");
+    }
 
     SymbolTable proc(proc_name);
     proc.parent = table;
@@ -24,20 +29,25 @@ void ProcedureNode::analyze(SymbolTable* table, int& curr) {
     entry.type = return_type;
     entry.is_function = true;
     
-
     for(const auto& var : parameters) {
         SymbolEntry v(var->name, var->type.value(), param_offset, false);
         proc.insert(var->name, v);
         param_offset += 8;
     }
 
-    int local_offset = 0;
-    body_node->analyze(&proc, local_offset);
+    int local_offset = 0;  
 
     entry.stack_frame_size = local_offset;
 
     table->insert(proc_name, entry);
+
+    body_node->analyze(&proc, local_offset);
     
+    entry.stack_frame_size = local_offset;
+
+    table->insert(proc_name, entry);
+    std::cerr << "\nProc added: " << proc_name << "\n";
+
 }
 
 void VariableNode::analyze(SymbolTable* table, int& curr) {
@@ -100,33 +110,6 @@ void BinaryExpression::analyze(SymbolTable* table, int& curr) {
     this->right->analyze(table, curr);
 }
 
-
-//empty
-void IntegerCondition::analyze(SymbolTable* table, int& curr) {
-
-}
-
-void StringCondition::analyze(SymbolTable* table, int& curr) {
-
-}
-
-void DoubleCondition::analyze(SymbolTable* table, int& curr) {
-
-}
-
-void CharCondition::analyze(SymbolTable* table, int& curr) {
-    
-}
-
-void BoolCondition::analyze(SymbolTable* table, int& curr) {
-    
-}
-
-void ReturnNode::analyze(SymbolTable* table, int& curr) {
-   
-    if (ret) ret->analyze(table, curr);
-}
-
 void MainNode::analyze(SymbolTable* table, int& current_offset) {
     for (const auto& node : globals) {
         if (node) node->analyze(table, current_offset);
@@ -183,3 +166,61 @@ void UnaryIncrNode::analyze(SymbolTable* table, int& current_offset) {
         throw std::runtime_error("Cannot increment undefined variable '" + name + "'!");
     }
 }
+
+void ProcCallNode::analyze(SymbolTable* table, int& current_offset) {
+    
+    //built in function so we skip lookup and error handling
+    if (proc_name == "echo") {
+        for (const auto& arg : arguments) {
+            if (arg) arg->analyze(table, current_offset);
+        }
+        return;
+    }
+
+    SymbolEntry* found = table->lookup(proc_name);
+    if (!found) {
+        throw std::runtime_error("Calling undefined function: " + proc_name);
+    }
+
+    for (const auto& arg : arguments) {
+        if (arg) arg->analyze(table, current_offset);
+    }
+}
+
+void StormNode::analyze(SymbolTable* table, int& current_offset) {
+    if (table->lookup(storm_name)) {
+        throw std::runtime_error("Redefinition of storm (struct): " + storm_name);
+    }
+    SymbolEntry entry(storm_name, "storm", 0, false);
+    table->insert(storm_name, entry);
+    for (const auto& stmt : storm_statements) {
+        if (stmt) stmt->analyze(table, current_offset);
+    }
+}
+
+//empty
+void IntegerCondition::analyze(SymbolTable* table, int& curr) {
+
+}
+
+void StringCondition::analyze(SymbolTable* table, int& curr) {
+
+}
+
+void DoubleCondition::analyze(SymbolTable* table, int& curr) {
+
+}
+
+void CharCondition::analyze(SymbolTable* table, int& curr) {
+    
+}
+
+void BoolCondition::analyze(SymbolTable* table, int& curr) {
+    
+}
+
+void ReturnNode::analyze(SymbolTable* table, int& curr) {   
+    if (ret) ret->analyze(table, curr);
+}
+
+

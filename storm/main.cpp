@@ -27,21 +27,20 @@ int main(void) {
             parser.root_node->print();
         }
 
-        Transpile t{parser.get_ast()};
-        const std::string code = t.transpile();
+        // Transpile t{parser.get_ast()};
+        // const std::string code = t.transpile();
 
-        std::cerr << "writing to file";
-        l.write_to_file(code);
-        
-        std::cout << "\n";
-        system("gcc transpiled.c && ./a.out");
+        // std::cerr << "writing to file";
+        // l.write_to_file(code);
+        // 
+        // std::cout << "\n";
+        // system("gcc transpiled.c && ./a.out");
 
-        std::string name = "global";
-        SymbolTable* global;
-        global->name = name;
+        std::cerr << "\n\n=== SEMANTIC ANALYSIS ===\n\n";
+        SymbolTable global("global-scope"); 
         //semantic_analysis
         int memory = 0;
-        parser.root_node->analyze(global, memory);
+        parser.root_node->analyze(&global, memory);
 
 
     

@@ -4,14 +4,14 @@
 #include <map>
 
 struct SymbolEntry {
-    std::string name;
-    std::string type;
-    int offset;
+    std::string name = "";
+    std::string type = "";
+    int offset = 0;
     bool is_function {false};
     
-    int stack_frame_size;
+    int stack_frame_size {0};
 
-    SymbolEntry();
+    SymbolEntry() = default;
     SymbolEntry(std::string n, std::string t, int o, bool is_f)
     : name(n), type(t), offset(o), is_function(is_f) {}
 

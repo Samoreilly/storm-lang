@@ -10,4 +10,5 @@ add_executable(
     storm/compiler/parser/parser.cpp
     storm/compiler/parser/parser_expression.cpp
     storm/transpiler/transpile.cpp
+    storm/compiler/semantic_analysis/semantic.cpp
 )
