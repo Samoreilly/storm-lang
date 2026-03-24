@@ -5,8 +5,6 @@
 #include <string>
 #include <set>
 
-
-
 void ProcedureNode::analyze(SymbolTable* table, int& curr) {
     
     std::cerr << "=====================================\n";
@@ -36,7 +34,7 @@ void ProcedureNode::analyze(SymbolTable* table, int& curr) {
 
         unique_params.insert(var->name);
         
-        SymbolEntry v(var->name, var->type.value(), local_offset, false);
+        SymbolEntry v(var->name, var->type.value(), local_offset, false, 0);
         proc_scope.insert(var->name, v);
     }
 
@@ -86,7 +84,7 @@ void VariableNode::analyze(SymbolTable* table, int& curr) {
         
         this->saved_offset = curr;
         
-        SymbolEntry entry(name, type.value(), curr, false);
+        SymbolEntry entry(name, type.value(), curr, false, 0);
         table->insert(name, entry);
         
 
@@ -150,7 +148,7 @@ void MainNode::analyze(SymbolTable* table, int& current_offset) {
     //load all functins into symbol table
     for (const auto& node : globals) {
         if (auto proc = dynamic_cast<ProcedureNode*>(node.get())) {
-            SymbolEntry entry(proc->proc_name, proc->return_type, 0, true);
+            SymbolEntry entry(proc->proc_name, proc->return_type, 0, true, proc->parameters.size());
             table->insert(proc->proc_name, entry);
         }
     }
@@ -196,7 +194,7 @@ void RangeNode::analyze(SymbolTable* table, int& current_offset) {
     // offset for iterator
     current_offset -= 8;
     this->saved_offset = current_offset;
-    SymbolEntry entry(name, "int", current_offset, false);
+    SymbolEntry entry(name, "int", current_offset, false, 0);
     table->insert(name, entry);
 
     if (condition) condition->analyze(table, current_offset);
@@ -232,16 +230,21 @@ void ProcCallNode::analyze(SymbolTable* table, int& current_offset) {
     std::cerr << "\nProc: " << proc_name << " with type: " << found->type << "\n";
     this->actual_type = found->type;
 
+    if(found->param_counter != arguments.size()) {
+        throw std::runtime_error("\nNumber of arguments in `" + proc_name + "` must match number of argument in proc call\n\n");
+    }
+
     for (const auto& arg : arguments) {
         if (arg) arg->analyze(table, current_offset);
     }
+    
 }
 
 void StormNode::analyze(SymbolTable* table, int& current_offset) {
     if (table->lookup(storm_name)) {
         throw std::runtime_error("Redefinition of storm (struct): " + storm_name);
     }
-    SymbolEntry entry(storm_name, "storm", 0, false);
+    SymbolEntry entry(storm_name, "storm", 0, false, 0);
     table->insert(storm_name, entry);
     for (const auto& stmt : storm_statements) {
         if (stmt) stmt->analyze(table, current_offset);

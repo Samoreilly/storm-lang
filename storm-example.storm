@@ -18,7 +18,7 @@ proc void main() {
 
     for (i: int = 1; i <= limit; i++) {
 
-        result: int = solve_factorial(i);
+        result: int = solve_factorial(i, 0);
 
         [[echo(i);]]
         echo(result);

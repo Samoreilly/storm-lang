@@ -79,6 +79,8 @@ cmp rax, 0
 je FOR_END_5
 mov rax, [rbp + -24]
 push rax
+push 0
+pop rsi
 pop rdi
 call solve_factorial
 push rax

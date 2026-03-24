@@ -12,9 +12,11 @@ struct SymbolEntry {
     
     int stack_frame_size {0};
 
+    int param_counter {0};
+
     SymbolEntry() = default;
-    SymbolEntry(std::string n, std::string t, int o, bool is_f)
-    : name(n), type(t), offset(o), is_function(is_f) {}
+    SymbolEntry(std::string n, std::string t, int o, bool is_f, int n_params)
+    : name(n), type(t), offset(o), is_function(is_f), param_counter(n_params) {}
 
 };
 
@@ -27,9 +29,7 @@ struct SymbolTable {
     SymbolTable(std::string n) : name(n) {}
     //key = identifier, value = metadata of the object
     std::map<std::string, SymbolEntry> table;
-
-
-    //whole chain lookup
+        //whole chain lookup
     inline SymbolEntry* lookup(std::string name) {
         SymbolEntry* local = lookup_local(name);
         if (local) return local;
