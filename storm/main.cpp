@@ -48,7 +48,6 @@ int main(void) {
     
         parser.root_node->analyze(&global, memory);
 
-
         std::string asm_code = parser.root_node->to_asm();
 
         auto end_full = std::chrono::steady_clock::now();

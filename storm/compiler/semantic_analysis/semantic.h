@@ -4,6 +4,7 @@
 #include <map>
 
 struct SymbolEntry {
+
     std::string name = "";
     std::string type = "";
     int offset = 0;
@@ -18,6 +19,7 @@ struct SymbolEntry {
 };
 
 struct SymbolTable {
+
     SymbolTable* parent = nullptr;//pointer to previous scope
     std::string name;
 

@@ -3,6 +3,8 @@
 #include "../parser/condition.h"
 #include <stdexcept>
 #include <string>
+#include <set>
+
 
 
 void ProcedureNode::analyze(SymbolTable* table, int& curr) {
@@ -13,37 +15,37 @@ void ProcedureNode::analyze(SymbolTable* table, int& curr) {
         throw std::runtime_error("echo is a reserved keyword\n");
     }
 
-    SymbolTable proc(proc_name);
-    proc.parent = table;
-
-    bool found = table->lookup(proc_name);
-    if(found) {
-        throw std::runtime_error("Redefintion of proc found: " + proc_name);
+    SymbolEntry* proc_entry = table->lookup(proc_name);
+    if(!proc_entry) {
+        throw std::runtime_error("Proc was not registered: " + proc_name);
     }
-
-    SymbolEntry entry;
-    entry.name = proc_name;
-    entry.type = return_type;
-    entry.is_function = true;
     
-    int local_offset = 0;  
+    SymbolTable proc_scope(proc_name);
+    proc_scope.parent = table;
 
-    // parameters live in the basement alongside locals (negative offsets)
+    int local_offset = 0;  
+    std::set<std::string> unique_params;
+
+    // parameters (negative offsets)
     for(const auto& var : parameters) {
         local_offset -= 8;
+
+        if(unique_params.find(var->name) != unique_params.end()) {
+            throw std::runtime_error("\nError: Parameters in function " + this->proc_name + " must have unique names\n");
+        }
+
+        unique_params.insert(var->name);
+        
         SymbolEntry v(var->name, var->type.value(), local_offset, false);
-        proc.insert(var->name, v);
+        proc_scope.insert(var->name, v);
     }
 
-    entry.stack_frame_size = local_offset;
-    table->insert(proc_name, entry);
+    body_node->analyze(&proc_scope, local_offset);
 
-    body_node->analyze(&proc, local_offset);
-    
-    entry.stack_frame_size = local_offset;
+    proc_entry->stack_frame_size = local_offset;
+    //full stack fram size including params
     this->stack_frame_size = local_offset;
 
-    table->insert(proc_name, entry);
     std::cerr << "\nProc added: " << proc_name << "\n";
 
 }
@@ -51,28 +53,59 @@ void ProcedureNode::analyze(SymbolTable* table, int& curr) {
 void VariableNode::analyze(SymbolTable* table, int& curr) {
 
     if(init) {
+
         init->analyze(table, curr);
+            
+        std::string right_type = init->getType();
+
+        std::cerr << "Right-type: " << right_type;
+        
+        if(type.has_value()) {
+            //this checks for i: int = "string" which would be invalid
+            if(type.value() != right_type) {
+                throw std::runtime_error("\n\n\nError: Variable must be initialized to the same type\n"
+                    + right_type + " : " + type.value() + "\n\n");
+            }
+        }
     }
 
+
     if(type.has_value()) {
+
         //check globally for redefintion
         SymbolEntry* found = table->lookup(this->name);
+        
+        if(found) throw std::runtime_error("Redefintion of variable: " + name);
 
-        if(found) {
-            throw std::runtime_error("Redefintion of variable: " + name);
-        }else {
-            curr -= 8;
-            this->saved_offset = curr;
-            SymbolEntry entry(name, type.value(), curr, false);
-            table->insert(name, entry);
+        if(init && type.value() != init->getType()) {
+            throw std::runtime_error("\n\nError: Type mismatch: Cannot initialize" + name + "(" + type.value() + ") with " + init->getType());
         }
 
+        std::cerr << "\n\nvanalyze:" << type.value() << ":" << name << "\n\n";
+        curr -= 8;
+        
+        this->saved_offset = curr;
+        
+        SymbolEntry entry(name, type.value(), curr, false);
+        table->insert(name, entry);
+        
+
     }else {
+
+        if(!init) {
+            throw std::runtime_error("\nError: No assignment on variable: " + this->name + "\n\n");
+        }
+
         SymbolEntry* found = table->lookup(this->name);
 
         if(!found) { 
-            throw std::runtime_error("No definition for variable: " + name + " found");
+            throw std::runtime_error("Undefined variable: " + name + " found");
         }
+        //type checking for x = 50;
+        if(found->type != init->getType()) {
+            throw std::runtime_error("Variable must be initialized to the same type it was declared as" + found->type + ":" + type.value() + "\n\n");
+        }    
+
         this->saved_offset = found->offset;
     }
 
@@ -96,9 +129,12 @@ void IdentifierCondition::analyze(SymbolTable* table, int& curr) {
 
 void BinaryExpression::analyze(SymbolTable* table, int& curr) {
     
+    if (this->left) this->left->analyze(table, curr);
+    if (this->right) this->right->analyze(table, curr);
+
     std::string left_type = this->left->getType();
     std::string right_type = this->right->getType();
-    
+
     if(left_type == "string" || right_type == "string"
         || left_type == "bool" || right_type == "bool") {
     
@@ -106,12 +142,19 @@ void BinaryExpression::analyze(SymbolTable* table, int& curr) {
             throw std::runtime_error("Invalid math operation on type: " + left_type);
         }
     }
-    
-    this->left->analyze(table, curr);
-    this->right->analyze(table, curr);
+
 }
 
 void MainNode::analyze(SymbolTable* table, int& current_offset) {
+   
+    //load all functins into symbol table
+    for (const auto& node : globals) {
+        if (auto proc = dynamic_cast<ProcedureNode*>(node.get())) {
+            SymbolEntry entry(proc->proc_name, proc->return_type, 0, true);
+            table->insert(proc->proc_name, entry);
+        }
+    }
+
     for (const auto& node : globals) {
         if (node) node->analyze(table, current_offset);
     }
@@ -182,8 +225,12 @@ void ProcCallNode::analyze(SymbolTable* table, int& current_offset) {
 
     SymbolEntry* found = table->lookup(proc_name);
     if (!found) {
-        throw std::runtime_error("Calling undefined function: " + proc_name);
+        throw std::runtime_error("Calling undefined function: " + proc_name + "\n");
     }
+
+    //get the procedures type
+    std::cerr << "\nProc: " << proc_name << " with type: " << found->type << "\n";
+    this->actual_type = found->type;
 
     for (const auto& arg : arguments) {
         if (arg) arg->analyze(table, current_offset);

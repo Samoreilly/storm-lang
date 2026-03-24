@@ -207,6 +207,8 @@ public:
     std::string proc_name;
     std::vector<std::unique_ptr<Condition>> arguments;
 
+    std::string actual_type = "void";
+
     void print() const override {
         astPrintIndent();
         std::cout << "[ProcedureCall: " << proc_name << "()]\n";
@@ -218,6 +220,10 @@ public:
     }
 
     void exec() override {}
+
+    std::string getType() const override {
+        return actual_type;
+    }
 
     std::string to_c(int indent = 0) override {
         std::string code;

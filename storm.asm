@@ -7,14 +7,15 @@ push rbp
 mov rbp, rsp
 sub rsp, 32
 mov [rbp + -8], rdi
-push 1
-pop rax
-mov [rbp + -16], rax
+mov [rbp + -16], rsi
 push 1
 pop rax
 mov [rbp + -24], rax
+push 1
+pop rax
+mov [rbp + -32], rax
 FOR_START_1:
-mov rax, [rbp + -24]
+mov rax, [rbp + -32]
 push rax
 
 mov rax, [rbp + -8]
@@ -29,16 +30,16 @@ push rax
 pop rax
 cmp rax, 0
 je FOR_END_2
-mov rax, [rbp + -24]
+mov rax, [rbp + -32]
 push rax
 pop rax
-mov [rbp + -16], rax
-mov rax, [rbp + -24]
-inc rax
 mov [rbp + -24], rax
+mov rax, [rbp + -32]
+inc rax
+mov [rbp + -32], rax
 jmp FOR_START_1
 FOR_END_2:
-mov rax, [rbp + -16]
+mov rax, [rbp + -24]
 push rax
 pop rax
 jmp solve_factorial_EXIT_0

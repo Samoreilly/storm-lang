@@ -102,6 +102,10 @@ public:
         return "int";
     }
 
+    std::string get_value() {
+        return token.value;
+    }
+
     void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override;
