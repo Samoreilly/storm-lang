@@ -8,12 +8,15 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <chrono>
 
 int main(void) {
 
     try{
 
-        Load_Files l{};
+        auto start_full = std::chrono::steady_clock::now();
+
+        Load_Files l {};
         const std::string content = l.load_file();
 
         Lexer lex{content};
@@ -38,12 +41,21 @@ int main(void) {
         // system("gcc transpiled.c && ./a.out");
 
         std::cerr << "\n\n=== SEMANTIC ANALYSIS ===\n\n";
-        SymbolTable global("global-scope"); 
+        SymbolTable global("global-scope");
+
         //semantic_analysis
         int memory = 0;
+    
         parser.root_node->analyze(&global, memory);
 
+
         std::string asm_code = parser.root_node->to_asm();
+
+        auto end_full = std::chrono::steady_clock::now();
+
+        auto full = end_full - start_full;
+
+        std::cout << "Pipeline duration: " << full.count() << "\n";
 
         std::ofstream storm("storm.asm");
 

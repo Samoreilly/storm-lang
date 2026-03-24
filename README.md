@@ -33,3 +33,5 @@ storm User {
     active: int;
 };
 ```
+
+#  make clean && make && ./s && nasm -f elf64 storm.asm -o storm.o && gcc storm.o -o storm_run -no-pie
