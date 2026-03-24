@@ -23,6 +23,7 @@ std::string MainNode::to_asm() {
     final_code += "\nsection .data\n";
     final_code += "format_int: db \"%d\", 10, 0\n";// print statement
     final_code += "format_str: db \"%s\", 10, 0\n";// print string statement
+    final_code += "format_dbl: db \"%f\", 10, 0\n";// print double statement
     final_code += data;
 
     return final_code;
@@ -100,23 +101,32 @@ std::string ProcCallNode::to_asm() {
     }
 
     if (proc_name == "echo") {
-        code += "mov rsi, rdi\n"; 
         code += "extern printf\n";
         
-        // Select format string based on argument type
+        // selects format string based on argument type
         if (!arguments.empty() && arguments[0]->getType() == "string") {
+            code += "mov rsi, rdi\n"; 
             code += "lea rdi, [format_str]\n";
+            code += "mov rax, 0\n"; 
+        } else if (!arguments.empty() && arguments[0]->getType() == "double") {
+            code += "movq xmm0, rdi\n";
+            code += "lea rdi, [format_dbl]\n"; 
+            code += "mov rax, 1\n"; 
         } else {
+            code += "mov rsi, rdi\n"; 
             code += "lea rdi, [format_int]\n"; 
+            code += "mov rax, 0\n"; 
         }
 
-        code += "mov rax, 0\n"; 
         code += "call printf\n";
     } else {
+        code += "mov rax, 0\n"; // 0 xmm registers for normal proc calls unless they take floats
         code += "call " + proc_name + "\n";
     }
 
-    code += "push rax\n";
+    if (actual_type != "void") {
+        code += "push rax\n";
+    }
     return code;
 
 }
@@ -337,8 +347,8 @@ std::string DoubleCondition::to_asm() {
     std::string data_line = label + ":  dq " + token.value + "\n";
     data += data_line;
 
-    //loads address into rax
-    std::string code = "lea rax, [" + label + "]\n";
+    //loads value into rax from the data section label
+    std::string code = "mov rax, [" + label + "]\n";
     //push onto stack
     code += "push rax\n";
 

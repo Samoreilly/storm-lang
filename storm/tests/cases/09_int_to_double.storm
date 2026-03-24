@@ -1,0 +1,4 @@
+proc void main() {
+    d: double = 5;
+    echo(d);
+}

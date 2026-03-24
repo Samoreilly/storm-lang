@@ -83,6 +83,96 @@ public:
 
 };
 
+class IntegerToDoubleNode : public Condition {
+public:
+
+    std::unique_ptr<Condition> node;
+
+    IntegerToDoubleNode(std::unique_ptr<Condition> n) : node(std::move(n)) {}
+
+    std::string getType() const override {
+        return "double";
+    }
+
+    void analyze(SymbolTable* table, int& current_offset) override;
+
+    void print() const override {
+        astPrintIndent();
+        std::cout << "[IntegerToDouble]\n";
+        if (node) {
+            astIndentLevel++;
+            node->print();
+            astIndentLevel--;
+        }
+    }
+
+    void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        return "(double)(" + node->to_c(indent) + ")";
+    }
+
+    std::string to_asm() override {
+        std::string code;
+        if (node) code += node->to_asm();
+
+        code += "pop rax\n";
+        //converts int to double
+        code += "cvtsi2sd xmm0, rax\n";
+        //moves quadword into rax
+        code += "movq rax, xmm0\n";
+
+        code += "push rax\n";
+
+        return code;
+    }
+};
+
+class DoubleToIntegerNode : public Condition {
+public:
+
+    std::unique_ptr<Condition> node;
+
+    DoubleToIntegerNode(std::unique_ptr<Condition> n) : node(std::move(n)) {}
+
+    std::string getType() const override {
+        return "int";
+    }
+
+    void analyze(SymbolTable* table, int& current_offset) override;
+
+    void print() const override {
+        astPrintIndent();
+        std::cout << "[DoubleToInteger]\n";
+        if (node) {
+            astIndentLevel++;
+            node->print();
+            astIndentLevel--;
+        }
+    }
+
+    void exec() override {}
+
+    std::string to_c(int indent = 0) override {
+        return "(int)(" + node->to_c(indent) + ")";
+    }
+
+    std::string to_asm() override {
+        std::string code;
+        if (node) code += node->to_asm();
+
+        code += "pop rax\n";
+
+        code += "movq xmm0, rax\n";
+        //converts double to int
+        code += "cvttsd2si rax, xmm0\n";
+
+        code += "push rax\n";
+
+        return code;
+    }
+};
+
 class VariableNode : public Node {
 public:
 

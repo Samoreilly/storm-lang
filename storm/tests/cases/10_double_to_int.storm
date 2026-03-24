@@ -1,0 +1,4 @@
+proc void main() {
+    i: int = 5.5;
+    echo(i);
+}

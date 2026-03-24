@@ -1,6 +1,7 @@
 #include "../parser/node.h"
 #include "semantic.h"
 #include "../parser/condition.h"
+#include "conversion.h"
 #include <stdexcept>
 #include <string>
 #include <set>
@@ -57,12 +58,21 @@ void VariableNode::analyze(SymbolTable* table, int& curr) {
         std::string right_type = init->getType();
 
         std::cerr << "Right-type: " << right_type;
-        
+
         if(type.has_value()) {
+
+            if(type.value() == "int" && right_type == "double") {
+                this->init = std::make_unique<DoubleToIntegerNode>(std::move(this->init));
+                right_type = "int";
+            } else if (type.value() == "double" && right_type == "int") {
+                this->init = std::make_unique<IntegerToDoubleNode>(std::move(this->init));
+                right_type = "double";
+            }
+
             //this checks for i: int = "string" which would be invalid
             if(type.value() != right_type) {
                 throw std::runtime_error("\n\n\nError: Variable must be initialized to the same type\n"
-                    + right_type + " : " + type.value() + "\n\n");
+                    + type.value() + " : " + right_type + "\n\n");
             }
         }
     }
@@ -100,8 +110,17 @@ void VariableNode::analyze(SymbolTable* table, int& curr) {
             throw std::runtime_error("Undefined variable: " + name + " found");
         }
         //type checking for x = 50;
-        if(found->type != init->getType()) {
-            throw std::runtime_error("Variable must be initialized to the same type it was declared as" + found->type + ":" + type.value() + "\n\n");
+        std::string right_type = init->getType();
+        if(found->type == "int" && right_type == "double") {
+            this->init = std::make_unique<DoubleToIntegerNode>(std::move(this->init));
+            right_type = "int";
+        } else if (found->type == "double" && right_type == "int") {
+            this->init = std::make_unique<IntegerToDoubleNode>(std::move(this->init));
+            right_type = "double";
+        }
+
+        if(found->type != right_type) {
+            throw std::runtime_error("Variable must be initialized to the same type it was declared as " + found->type + " : " + right_type + "\n\n");
         }    
 
         this->saved_offset = found->offset;
@@ -274,6 +293,14 @@ void BoolCondition::analyze(SymbolTable* table, int& curr) {
 
 void ReturnNode::analyze(SymbolTable* table, int& curr) {   
     if (ret) ret->analyze(table, curr);
+}
+
+void IntegerToDoubleNode::analyze(SymbolTable* table, int& current_offset) {
+    if (node) node->analyze(table, current_offset);
+}
+
+void DoubleToIntegerNode::analyze(SymbolTable* table, int& current_offset) {
+    if (node) node->analyze(table, current_offset);
 }
 
 

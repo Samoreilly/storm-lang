@@ -120,11 +120,17 @@ std::unique_ptr<Condition> Parser::parse_primary() {
 
         case TokenType::DOUBLE: {
             advance(); 
-            if(std::regex_search(curr.value, is_alpha)) {
-                throw std::runtime_error("Characters are not allowed in integers"
-                                         + std::to_string(curr.line) + " col: "
-                                         + std::to_string(curr.col) + "\n");
             
+            bool found_dot {false};
+            for(char c : curr.value) {
+                if(!(std::isdigit(c) || c == '.') || (found_dot && c == '.')){ 
+                    throw std::runtime_error("Characters are not allowed in integers    line"
+                                            + std::to_string(curr.line) + " col: "
+                                            + std::to_string(curr.col) + "\n");            
+                }else if(c == '.') {
+                    found_dot = true;
+                }
+                
             }
 
             return std::make_unique<DoubleCondition>(curr);
