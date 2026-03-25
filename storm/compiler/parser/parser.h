@@ -11,6 +11,8 @@ class Parser {
 
     std::vector<Token>& tokens;
 
+    std::vector<MainNode> nodes;
+
     int index = 0, length = 0;
 
     std::unique_ptr<MainNode>      construct_node();

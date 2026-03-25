@@ -1,10 +1,14 @@
 
+#include "../../token.h"
 #include "lexer.h"
 #include <cctype>
 #include <stdexcept>
 #include <string_view>
 
-void Lexer::lex() {
+std::vector<Token> Lexer::lex(std::string con) {
+    
+    line = 1, col = 1, start = 0, end = 0, length = con.length();
+    std::vector<Token> tokens;
 
     while(end < length ) {
         char c = con[end];
@@ -206,6 +210,11 @@ void Lexer::lex() {
             continue;
         }
     }
+
+    file_tokens.push_back(tokens);
+
+    return tokens;
+
 }
 
 

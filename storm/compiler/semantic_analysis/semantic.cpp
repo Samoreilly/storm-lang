@@ -172,6 +172,11 @@ void MainNode::analyze(SymbolTable* table, int& current_offset) {
         }
     }
 
+    if(table->table.empty()) {
+        throw std::runtime_error("\nError: No procedure was defined\n");
+    }
+
+    //semantic analyse
     for (const auto& node : globals) {
         if (node) node->analyze(table, current_offset);
     }

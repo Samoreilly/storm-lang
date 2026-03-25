@@ -11,20 +11,16 @@ class Lexer {
     int start = 0, end = 0, length = 0;
     int line = 1, col = 1;
 
-    std::string con;
-    std::vector<Token> tokens;
-    
-    void lex();
-
 public:
 
-    Lexer(const std::string& content) : con(content), length(content.length()) { 
-        lex();
-        tokens.push_back({TokenType::END_OF_FILE, "END_OF_FILE", 0, 0});
-    }
+    std::vector<std::vector<Token>> file_tokens;
 
-    std::vector<Token>& get_tokens() {
-        return tokens;
+    std::vector<Token> lex(std::string con);
+
+    Lexer() {}
+
+    std::vector<std::vector<Token>>& get_all_tokens() {
+        return file_tokens;
     }
 
     void skip_whitespace(char c) {
@@ -33,11 +29,13 @@ public:
     } 
 
     void print_tokens() {
-        
-        for(auto t : tokens) {
-            std::cout << "\n\nTokenType-> " << token_tostring.at(t.type) << "\n"
-                      << "Value-> " << t.value << "\n"
-                      << " Line: " << t.line << " Column: " << t.col;
+       
+        for(const auto& tok : file_tokens) {        
+            for(auto t : tok) {
+                std::cout << "\n\nTokenType-> " << token_tostring.at(t.type) << "\n"
+                        << "Value-> " << t.value << "\n"
+                        << " Line: " << t.line << " Column: " << t.col;
+            }
         }
     }
 

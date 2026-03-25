@@ -13,6 +13,8 @@ public:
 
     std::vector<std::unique_ptr<Node>> globals;
 
+    MainNode() {}
+
     void print() const override {
         astPrintIndent();
         std::cout << "[MainNode]\n";
