@@ -1,37 +1,46 @@
-# STORM
-Status is beta.
-
-## Execution Pipeline
-
-Source Code → Token Extraction → LParsing -> Semantic Analysis → x86_64 Assembly Emission → ELF64 Object Generation → Linked Linux Binary
-
-### Linux x86_64 ELF64 Support
-
-Architecture highlights:
-Memory for local variables is managed via the stack frame using base pointer offsets.
-The first six procedure arguments are stored in registers RDI, RSI, RDX, RCX, R8, and R9 for performance.
-Return results are passed back through the RAX register.
-Linking with the C library provides access to input plus output functions like printf.
-Assembly output is formatted for the NASM assembler to produce ELF64 compatible object files.
-
-## Syntax Preview
-
-```storm
-proc int add_numbers(a: int, b: int) {
-    return a + b;
-}
-
-proc void main() {
-    result: int = add_numbers(50, 50);
-    echo(result);
-}
+```       __                        
+  _______/  |_  ___________  _____  
+ /  ___/\   __\/  _ \_  __ \/     \ 
+ \___ \  |  | (  <_> )  | \/  Y Y  \
+/____  > |__|  \____/|__|  |__|_|  /
+     \/                          \/ 
 ```
 
-```storm
-storm User {
-    id: int;
-    active: int;
-};
+
+Storm is a procedural C-styled languaage, it's being developed solely for learning purposes but feel free to make a pull request if your interested in helping out!
+
+### Features
+---
+
+- Procedures aka functions
+- Procedure calls / recursion
+- Various integrated types - int, double, string, bool, char, void (built in data-structures soon)
+- Multiple files / folder support
+- Narrowing / widening conversion
+- Storm library coming soon
+
+### Example
 ```
 
-#  make clean && make && ./s && nasm -f elf64 storm.asm -o storm.o && gcc storm.o -o storm_run -no-pie
+proc int fib(num: int) {
+    if(num < 2) {
+        return num;
+    }
+
+    return fib(n - 1) + fib(n - 2);
+}
+
+proc void main(void) {
+
+    range(i = 0..50) {
+        echo(i);
+    }
+
+    fib_result: int = fib(45);
+    echo(fib_result);
+}
+
+```
+
+### Details
+- Compiler currently produces assembly, im using NASM and gcc to build the elf64 file.
