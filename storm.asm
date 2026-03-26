@@ -5,7 +5,29 @@ global main
 main:
 push rbp
 mov rbp, rsp
-sub rsp, 16
+sub rsp, 32
+push 1
+
+push 5
+
+pop rbx
+pop rax
+cmp rax, rbx
+setl al
+movzx rax, al
+push rax
+pop rax
+cmp rax, 0
+je IF_1
+lea rax, [STR_0]
+push rax
+pop rdi
+extern printf
+mov rsi, rdi
+lea rdi, [format_str]
+mov rax, 0
+call printf
+IF_1:
 push 5
 pop rax
 mov [rbp + -8], rax
@@ -25,6 +47,21 @@ push rax
 pop rax
 mov [rbp + -16], rax
 mov rax, [rbp + -16]
+push rax
+pop rdi
+extern printf
+mov rsi, rdi
+lea rdi, [format_int]
+mov rax, 0
+call printf
+push 2
+pop rdi
+mov rax, 0
+call fib
+push rax
+pop rax
+mov [rbp + -24], rax
+mov rax, [rbp + -24]
 push rax
 pop rdi
 extern printf
@@ -54,12 +91,12 @@ movzx rax, al
 push rax
 pop rax
 cmp rax, 0
-je IF_2
+je IF_3
 mov rax, [rbp + -8]
 push rax
 pop rax
-jmp fib_EXIT_1
-IF_2:
+jmp fib_EXIT_2
+IF_3:
 mov rax, [rbp + -8]
 push rax
 
@@ -93,8 +130,8 @@ pop rax
 add rax, rbx
 push rax
 pop rax
-jmp fib_EXIT_1
-fib_EXIT_1:
+jmp fib_EXIT_2
+fib_EXIT_2:
 mov rsp, rbp
 pop rbp
 ret
@@ -104,4 +141,4 @@ format_int: db "%d", 10, 0
 format_str: db "%s", 10, 0
 format_dbl: db "%f", 10, 0
 section .data 
-	
+	STR_0: db "hello", 10, 0

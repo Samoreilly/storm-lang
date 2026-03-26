@@ -93,7 +93,8 @@ Address VariableNode::gen_ir(Ir& context) {
 
         Address in = init->gen_ir(context);
         Address var(ADDR_TYPE::VARIABLE, name , name);
-
+        
+        std::cerr << name << name << name;
         //turns x *= 5 into x = x * 5
         if(op.has_value()) {
             std::string& op = this->op.value();
@@ -106,10 +107,16 @@ Address VariableNode::gen_ir(Ir& context) {
                 context.instructions.push_back({var, var, OPCODE::DIV, in});
             }else if(op == "-=") {
                 context.instructions.push_back({var, var, OPCODE::MINUS, in});
-            } 
+            }
+
         }else {
             //x = 5;
-            context.instructions.push_back({var, in, OPCODE::ASSIGN, Address{}});
+            if(!context.instructions.empty() && dynamic_cast<ProcCallNode*>(init.get())) {
+                Instruction& last = context.instructions.back();
+                last.result = var;
+            }else {
+                context.instructions.push_back({var, in, OPCODE::ASSIGN, Address{}});
+            }
         }
     }
 

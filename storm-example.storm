@@ -3,12 +3,18 @@
 
 
 proc void main() {
-    
+
+    if(1 < 5) {
+        echo("hello");
+    }
+
     total: int = 5;
     echo(total);
 
     x: int = fib(40);
     echo(x);
 
+    y: int = fib(2);
+    echo(y);
 }
 
