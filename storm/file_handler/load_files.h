@@ -9,7 +9,7 @@ class Load_Files {
 public:
 
     std::vector<std::string> load_files(char* argv[], int size);
-    std::vector<std::string> load_folder();
+    std::vector<std::string> load_folder(std::string dir = "");
     std::string get_file_content(std::string file_content);
     void write_to_file(std::string code);
 

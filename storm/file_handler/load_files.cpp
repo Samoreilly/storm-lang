@@ -8,6 +8,10 @@
 
 std::vector<std::string> Load_Files::load_files(char* argv[], int size) {
 
+    if(size == 2 && std::filesystem::is_directory(argv[1])) {
+        return load_folder(std::string(argv[1]));
+    }
+
     std::vector<std::string> file_contents;
     int len = 0;
 
@@ -19,18 +23,23 @@ std::vector<std::string> Load_Files::load_files(char* argv[], int size) {
     return file_contents;
 }
 
-std::vector<std::string> Load_Files::load_folder() {
+std::vector<std::string> Load_Files::load_folder(std::string dir) {
 
     std::vector<std::string> file_contents;
-
-    std::filesystem::path curr = std::filesystem::current_path();
+    std::filesystem::path curr; 
+    
+    if(dir.empty()) {
+       curr = std::filesystem::current_path();
+    }else {
+        curr = std::filesystem::path(dir);
+    }
 
     std::cerr << curr.string();
 
     for(const auto& f : std::filesystem::directory_iterator(curr)) {
         
         if(f.is_regular_file() && f.path().extension() == ".storm") {
-            file_contents.push_back(get_file_content(f.path().filename().string()));
+            file_contents.push_back(get_file_content(f.path().string()));
         }
     }
 
