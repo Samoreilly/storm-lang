@@ -3,6 +3,7 @@
 #include "compiler/parser/parser.h"
 #include "transpiler/transpile.h"
 #include "compiler/semantic_analysis/semantic.h"
+#include "compiler/ir/ir.h"
 #include "token.h"
 #include <cstdlib>
 #include <fstream>
@@ -51,7 +52,13 @@ int main(int argc, char* argv[]) {
         SymbolTable master_table("master-node");
         
         master_node->analyze(&master_table, memory);
-    
+   
+        //intermediate representation
+        Ir ir{master_node};
+        ir.gen_ir(ir);
+        ir.print();
+       
+
         std::string asm_code = master_node->to_asm();
 
         std::ofstream storm("storm.asm");

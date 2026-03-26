@@ -2,7 +2,6 @@
 
 #include "condition.h"
 #include "../../transpiler/transpile.h"
-
 #include <vector>
 #include <memory>
 #include <string>
@@ -39,6 +38,8 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
     std::string to_asm() override;
+
+    Address gen_ir(Ir& context) override;
 
 };
 
@@ -81,7 +82,8 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override;
-    
+
+    Address gen_ir(Ir& context) override;
 
 };
 
@@ -128,7 +130,9 @@ public:
 
         return code;
     }
+    Address gen_ir(Ir& context) override;
 };
+
 
 class DoubleToIntegerNode : public Condition {
 public:
@@ -173,7 +177,9 @@ public:
 
         return code;
     }
+    Address gen_ir(Ir& context) override;
 };
+
 
 class VariableNode : public Node {
 public:
@@ -228,6 +234,9 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override;
+
+    Address gen_ir(Ir& context) override;
+
 };
 
 //encapsulates procedure data
@@ -290,6 +299,9 @@ public:
 
 
     std::string to_asm() override;
+
+    Address gen_ir(Ir& context) override;
+
 };
 
 class ProcCallNode : public Condition {
@@ -371,6 +383,9 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override;
+
+    Address gen_ir(Ir& context) override;
+
 };
 
 //same as struct in languages like C++ & C
@@ -410,6 +425,9 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override;
+
+    Address gen_ir(Ir& context) override;
+
 };
 
 
@@ -442,6 +460,9 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override;
+
+    Address gen_ir(Ir& context) override;
+
 };
 
 class WhileNode : public Node {
@@ -473,6 +494,9 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override;
+
+    Address gen_ir(Ir& context) override;
+
 };
 
 class ForNode : public Node {
@@ -531,6 +555,9 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override;
+
+    Address gen_ir(Ir& context) override;
+
 };
 
 class RangeNode : public Node {
@@ -581,6 +608,9 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override;
+
+    Address gen_ir(Ir& context) override;
+
 };
 
 
@@ -615,5 +645,8 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override;
+
+    Address gen_ir(Ir& context) override;
+
 
 };

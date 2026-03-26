@@ -2,6 +2,40 @@ extern printf
 section .text
 global main
 
+main:
+push rbp
+mov rbp, rsp
+sub rsp, 16
+push 5
+pop rax
+mov [rbp + -8], rax
+mov rax, [rbp + -8]
+push rax
+pop rdi
+extern printf
+mov rsi, rdi
+lea rdi, [format_int]
+mov rax, 0
+call printf
+push 40
+pop rdi
+mov rax, 0
+call fib
+push rax
+pop rax
+mov [rbp + -16], rax
+mov rax, [rbp + -16]
+push rax
+pop rdi
+extern printf
+mov rsi, rdi
+lea rdi, [format_int]
+mov rax, 0
+call printf
+main_EXIT_0:
+mov rsp, rbp
+pop rbp
+ret
 fib:
 push rbp
 mov rbp, rsp
@@ -20,12 +54,12 @@ movzx rax, al
 push rax
 pop rax
 cmp rax, 0
-je IF_1
+je IF_2
 mov rax, [rbp + -8]
 push rax
 pop rax
-jmp fib_EXIT_0
-IF_1:
+jmp fib_EXIT_1
+IF_2:
 mov rax, [rbp + -8]
 push rax
 
@@ -59,42 +93,8 @@ pop rax
 add rax, rbx
 push rax
 pop rax
-jmp fib_EXIT_0
-fib_EXIT_0:
-mov rsp, rbp
-pop rbp
-ret
-main:
-push rbp
-mov rbp, rsp
-sub rsp, 16
-push 5
-pop rax
-mov [rbp + -8], rax
-mov rax, [rbp + -8]
-push rax
-pop rdi
-extern printf
-mov rsi, rdi
-lea rdi, [format_int]
-mov rax, 0
-call printf
-push 40
-pop rdi
-mov rax, 0
-call fib
-push rax
-pop rax
-mov [rbp + -16], rax
-mov rax, [rbp + -16]
-push rax
-pop rdi
-extern printf
-mov rsi, rdi
-lea rdi, [format_int]
-mov rax, 0
-call printf
-main_EXIT_2:
+jmp fib_EXIT_1
+fib_EXIT_1:
 mov rsp, rbp
 pop rbp
 ret

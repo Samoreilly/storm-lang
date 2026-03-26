@@ -12,4 +12,5 @@ add_executable(
     storm/transpiler/transpile.cpp
     storm/compiler/semantic_analysis/semantic.cpp
     storm/compiler/genx86/backend.cpp
+    storm/compiler/ir/ir.cpp
 )
