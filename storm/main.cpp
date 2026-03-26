@@ -18,9 +18,15 @@ int main(int argc, char* argv[]) {
 
         auto start_full = std::chrono::steady_clock::now();
 
+        std::vector<std::string> file_contents;
+        
         Load_Files l {};
-        std::vector<std::string> file_contents = l.load_files(argv, argc);
-
+        
+        if(argc <= 1) {
+            file_contents = l.load_folder();
+        }else {
+            file_contents = l.load_files(argv, argc);
+        }
         Lexer lex;
         for(const auto& content : file_contents) {
             std::vector<Token> tok = lex.lex(content); 

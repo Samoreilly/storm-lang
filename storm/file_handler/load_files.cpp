@@ -1,5 +1,6 @@
 
 #include "load_files.h"
+#include <filesystem>
 #include <stdexcept>
 #include <vector>
 #include <iostream>
@@ -18,8 +19,29 @@ std::vector<std::string> Load_Files::load_files(char* argv[], int size) {
     return file_contents;
 }
 
+std::vector<std::string> Load_Files::load_folder() {
+
+    std::vector<std::string> file_contents;
+
+    std::filesystem::path curr = std::filesystem::current_path();
+
+    std::cerr << curr.string();
+
+    for(const auto& f : std::filesystem::directory_iterator(curr)) {
+        
+        if(f.is_regular_file() && f.path().extension() == ".storm") {
+            file_contents.push_back(get_file_content(f.path().filename().string()));
+        }
+    }
+
+    return file_contents;
+
+}
+
 std::string Load_Files::get_file_content(std::string file_name) {
-    
+   
+    std::cerr << file_name << "\n";
+
     std::ifstream file(file_name);
 
     if(!file.is_open()) {
