@@ -67,6 +67,38 @@ std::unique_ptr<Condition> Parser::parse_add() {
         advance();
 
         auto right = parse_mul();
+        
+        //can fold into one int
+        auto l = dynamic_cast<IntegerCondition*>(left.get());
+        auto r = dynamic_cast<IntegerCondition*>(right.get());
+
+        if (l && r) {
+
+            if(op.value == "+") {
+
+                int l_val = std::stoi(l->token.value);
+                int r_val = std::stoi(r->token.value);
+                int comb_val = l_val + r_val;
+                
+                Token t = l->token;
+                t.value = std::to_string(comb_val);
+
+                left = std::make_unique<IntegerCondition>(t);
+                continue;
+
+            }else if(op.value == "-") {
+                
+                int l_val = std::stoi(l->token.value);
+                int r_val = std::stoi(r->token.value);
+                int comb_val = l_val - r_val;
+                
+                Token t = l->token;
+                t.value = std::to_string(comb_val);
+
+                left = std::make_unique<IntegerCondition>(t);
+                continue;
+            }
+        }
 
         auto node = std::make_unique<BinaryExpression>();
 
@@ -90,6 +122,39 @@ std::unique_ptr<Condition> Parser::parse_mul() {
         advance();
 
         auto right = parse_primary();
+        
+        //can fold into one int
+        auto l = dynamic_cast<IntegerCondition*>(left.get());
+        auto r = dynamic_cast<IntegerCondition*>(right.get());
+
+        if (l && r) {
+
+            if(op.value == "*") {
+
+                int l_val = std::stoi(l->token.value);
+                int r_val = std::stoi(r->token.value);
+                int comb_val = l_val * r_val;
+                
+                Token t = l->token;
+                t.value = std::to_string(comb_val);
+
+                left = std::make_unique<IntegerCondition>(t);
+                continue;
+
+            }else if(op.value == "/") {
+                
+                int l_val = std::stoi(l->token.value);
+                int r_val = std::stoi(r->token.value);
+                int comb_val = l_val / r_val;
+                
+                Token t = l->token;
+                t.value = std::to_string(comb_val);
+
+                left = std::make_unique<IntegerCondition>(t);
+                continue;
+            }
+        }
+
 
         auto node = std::make_unique<BinaryExpression>();
 

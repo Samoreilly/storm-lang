@@ -47,8 +47,11 @@ int main(int argc, char* argv[]) {
             for(auto& sub_global : p.root_node->globals) {
                 master_node->globals.push_back(std::move(sub_global));
             }
-
+         
         }
+
+        std::cout << "\n";
+        master_node->print();
 
         std::cerr << "\n\n=== SEMANTIC ANALYSIS ===\n\n";
 

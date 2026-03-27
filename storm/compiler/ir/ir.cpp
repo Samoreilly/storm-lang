@@ -206,7 +206,7 @@ Address ForNode::gen_ir(Ir& context) {
     Address cond_addr = condition.value()->gen_ir(context);
     Address end_for = context.get_label();
 
-    context.emit_if_false(cond_addr,  end_for);
+    context.emit_if_false(cond_addr, end_for);
 
     for_body->gen_ir(context);
 

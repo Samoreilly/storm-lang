@@ -1,0 +1,700 @@
+
+
+
+
+p v m() {
+    
+    r: i = 2 * 8;
+
+    i(1 < 5) {
+        r 1;
+        e(");
+    }
+
+    t: i = 5;
+    e(t);
+
+    i(5 < 5) {
+        e(");
+    }
+
+    x: i = f(4);
+    e(x);
+
+    y: i = f(2);
+    e(y);
+}
+
+
+
+p i f(n: i) {
+    i(n < 2){
+        r n;
+    }
+
+    r f(n - 1) + f(n - 2);
+
+    e(");
+}
+
+p i n(n: i){
+    r n;
+}
+
+
+TokenType-> PROC
+Value-> proc
+ Line: 5 Column: 0
+
+TokenType-> VOID
+Value-> void
+ Line: 5 Column: 5
+
+TokenType-> IDENTIFIER
+Value-> main
+ Line: 5 Column: 14
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 5 Column: 14
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 5 Column: 15
+
+TokenType-> SYMBOL
+Value-> {
+ Line: 5 Column: 17
+
+TokenType-> IDENTIFIER
+Value-> res
+ Line: 7 Column: 7
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 7 Column: 7
+
+TokenType-> INTEGER
+Value-> int
+ Line: 7 Column: 9
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 7 Column: 14
+
+TokenType-> INTEGER
+Value-> 2
+ Line: 7 Column: 16
+
+TokenType-> OPERATOR
+Value-> *
+ Line: 7 Column: 18
+
+TokenType-> INTEGER
+Value-> 8
+ Line: 7 Column: 20
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 7 Column: 20
+
+TokenType-> IF
+Value-> if
+ Line: 9 Column: 4
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 9 Column: 6
+
+TokenType-> INTEGER
+Value-> 1
+ Line: 9 Column: 8
+
+TokenType-> OPERATOR
+Value-> <
+ Line: 9 Column: 10
+
+TokenType-> INTEGER
+Value-> 5
+ Line: 9 Column: 12
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 9 Column: 12
+
+TokenType-> SYMBOL
+Value-> {
+ Line: 9 Column: 14
+
+TokenType-> RETURN
+Value-> return
+ Line: 10 Column: 8
+
+TokenType-> INTEGER
+Value-> 1
+ Line: 10 Column: 16
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 10 Column: 16
+
+TokenType-> IDENTIFIER
+Value-> echo
+ Line: 11 Column: 12
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 11 Column: 12
+
+TokenType-> STRING
+Value-> hello
+ Line: 11 Column: 18
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 11 Column: 19
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 11 Column: 20
+
+TokenType-> SYMBOL
+Value-> }
+ Line: 12 Column: 4
+
+TokenType-> IDENTIFIER
+Value-> total
+ Line: 14 Column: 9
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 14 Column: 9
+
+TokenType-> INTEGER
+Value-> int
+ Line: 14 Column: 11
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 14 Column: 16
+
+TokenType-> INTEGER
+Value-> 5
+ Line: 14 Column: 18
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 14 Column: 18
+
+TokenType-> IDENTIFIER
+Value-> echo
+ Line: 15 Column: 8
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 15 Column: 8
+
+TokenType-> IDENTIFIER
+Value-> total
+ Line: 15 Column: 14
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 15 Column: 14
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 15 Column: 15
+
+TokenType-> IF
+Value-> if
+ Line: 17 Column: 4
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 17 Column: 6
+
+TokenType-> INTEGER
+Value-> 50
+ Line: 17 Column: 9
+
+TokenType-> OPERATOR
+Value-> <
+ Line: 17 Column: 11
+
+TokenType-> INTEGER
+Value-> 51
+ Line: 17 Column: 14
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 17 Column: 14
+
+TokenType-> SYMBOL
+Value-> {
+ Line: 17 Column: 16
+
+TokenType-> IDENTIFIER
+Value-> echo
+ Line: 18 Column: 12
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 18 Column: 12
+
+TokenType-> STRING
+Value-> bumba
+ Line: 18 Column: 18
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 18 Column: 19
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 18 Column: 20
+
+TokenType-> SYMBOL
+Value-> }
+ Line: 19 Column: 4
+
+TokenType-> IDENTIFIER
+Value-> x
+ Line: 21 Column: 5
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 21 Column: 5
+
+TokenType-> INTEGER
+Value-> int
+ Line: 21 Column: 7
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 21 Column: 12
+
+TokenType-> IDENTIFIER
+Value-> fib
+ Line: 21 Column: 16
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 21 Column: 16
+
+TokenType-> INTEGER
+Value-> 40
+ Line: 21 Column: 19
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 21 Column: 19
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 21 Column: 20
+
+TokenType-> IDENTIFIER
+Value-> echo
+ Line: 22 Column: 8
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 22 Column: 8
+
+TokenType-> IDENTIFIER
+Value-> x
+ Line: 22 Column: 10
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 22 Column: 10
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 22 Column: 11
+
+TokenType-> IDENTIFIER
+Value-> y
+ Line: 24 Column: 5
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 24 Column: 5
+
+TokenType-> INTEGER
+Value-> int
+ Line: 24 Column: 7
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 24 Column: 12
+
+TokenType-> IDENTIFIER
+Value-> fib
+ Line: 24 Column: 16
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 24 Column: 16
+
+TokenType-> INTEGER
+Value-> 2
+ Line: 24 Column: 18
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 24 Column: 18
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 24 Column: 19
+
+TokenType-> IDENTIFIER
+Value-> echo
+ Line: 25 Column: 8
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 25 Column: 8
+
+TokenType-> IDENTIFIER
+Value-> y
+ Line: 25 Column: 10
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 25 Column: 10
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 25 Column: 11
+
+TokenType-> SYMBOL
+Value-> }
+ Line: 26 Column: 0
+
+TokenType-> PROC
+Value-> proc
+ Line: 3 Column: 0
+
+TokenType-> INTEGER
+Value-> int
+ Line: 3 Column: 5
+
+TokenType-> IDENTIFIER
+Value-> fib
+ Line: 3 Column: 12
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 3 Column: 12
+
+TokenType-> IDENTIFIER
+Value-> n
+ Line: 3 Column: 14
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 3 Column: 14
+
+TokenType-> INTEGER
+Value-> int
+ Line: 3 Column: 16
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 3 Column: 19
+
+TokenType-> SYMBOL
+Value-> {
+ Line: 3 Column: 21
+
+TokenType-> IF
+Value-> if
+ Line: 4 Column: 4
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 4 Column: 6
+
+TokenType-> IDENTIFIER
+Value-> n
+ Line: 4 Column: 8
+
+TokenType-> OPERATOR
+Value-> <
+ Line: 4 Column: 10
+
+TokenType-> INTEGER
+Value-> 2
+ Line: 4 Column: 12
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 4 Column: 12
+
+TokenType-> SYMBOL
+Value-> {
+ Line: 4 Column: 13
+
+TokenType-> RETURN
+Value-> return
+ Line: 5 Column: 8
+
+TokenType-> IDENTIFIER
+Value-> n
+ Line: 5 Column: 16
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 5 Column: 16
+
+TokenType-> SYMBOL
+Value-> }
+ Line: 6 Column: 4
+
+TokenType-> RETURN
+Value-> return
+ Line: 8 Column: 4
+
+TokenType-> IDENTIFIER
+Value-> fib
+ Line: 8 Column: 14
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 8 Column: 14
+
+TokenType-> IDENTIFIER
+Value-> n
+ Line: 8 Column: 16
+
+TokenType-> OPERATOR
+Value-> -
+ Line: 8 Column: 18
+
+TokenType-> INTEGER
+Value-> 1
+ Line: 8 Column: 20
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 8 Column: 20
+
+TokenType-> OPERATOR
+Value-> +
+ Line: 8 Column: 23
+
+TokenType-> IDENTIFIER
+Value-> fib
+ Line: 8 Column: 27
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 8 Column: 27
+
+TokenType-> IDENTIFIER
+Value-> n
+ Line: 8 Column: 29
+
+TokenType-> OPERATOR
+Value-> -
+ Line: 8 Column: 31
+
+TokenType-> INTEGER
+Value-> 2
+ Line: 8 Column: 33
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 8 Column: 33
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 8 Column: 34
+
+TokenType-> IDENTIFIER
+Value-> echo
+ Line: 10 Column: 8
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 10 Column: 8
+
+TokenType-> STRING
+Value-> ==============
+ Line: 10 Column: 23
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 10 Column: 24
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 10 Column: 25
+
+TokenType-> SYMBOL
+Value-> }
+ Line: 11 Column: 0
+
+TokenType-> PROC
+Value-> proc
+ Line: 13 Column: 0
+
+TokenType-> INTEGER
+Value-> int
+ Line: 13 Column: 5
+
+TokenType-> IDENTIFIER
+Value-> num
+ Line: 13 Column: 12
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 13 Column: 12
+
+TokenType-> IDENTIFIER
+Value-> n
+ Line: 13 Column: 14
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 13 Column: 14
+
+TokenType-> INTEGER
+Value-> int
+ Line: 13 Column: 16
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 13 Column: 19
+
+TokenType-> SYMBOL
+Value-> {
+ Line: 13 Column: 20
+
+TokenType-> RETURN
+Value-> return
+ Line: 14 Column: 4
+
+TokenType-> IDENTIFIER
+Value-> n
+ Line: 14 Column: 12
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 14 Column: 12
+
+TokenType-> SYMBOL
+Value-> }
+ Line: 15 Column: 0
+[MainNode]
+  [ProcedureDef: main -> void]
+    Parameters:
+    [BodyNode]
+      [Variable: res, Type: int]
+        Integer: 16
+      [IfStatement]
+        [BinaryExpression: <]
+          Integer: 1
+          Integer: 5
+        [BodyNode]
+          [Return]
+            Integer: 1
+          [ProcedureCall: echo()]
+            String: "hello"
+      [Variable: total, Type: int]
+        Integer: 5
+      [ProcedureCall: echo()]
+        Identifier: total
+      [IfStatement]
+        [BinaryExpression: <]
+          Integer: 50
+          Integer: 51
+        [BodyNode]
+          [ProcedureCall: echo()]
+            String: "bumba"
+      [Variable: x, Type: int]
+        [ProcedureCall: fib()]
+          Integer: 40
+      [ProcedureCall: echo()]
+        Identifier: x
+      [Variable: y, Type: int]
+        [ProcedureCall: fib()]
+          Integer: 2
+      [ProcedureCall: echo()]
+        Identifier: y
+  [ProcedureDef: fib -> int]
+    Parameters:
+      [Variable: n, Type: int]
+    [BodyNode]
+      [IfStatement]
+        [BinaryExpression: <]
+          Identifier: n
+          Integer: 2
+        [BodyNode]
+          [Return]
+            Identifier: n
+      [Return]
+        [BinaryExpression: +]
+          [ProcedureCall: fib()]
+            [BinaryExpression: -]
+              Identifier: n
+              Integer: 1
+          [ProcedureCall: fib()]
+            [BinaryExpression: -]
+              Identifier: n
+              Integer: 2
+      [ProcedureCall: echo()]
+        String: "=============="
+  [ProcedureDef: num -> int]
+    Parameters:
+      [Variable: n, Type: int]
+    [BodyNode]
+      [Return]
+        Identifier: n
+
+--- Generated IR ---
+main:
+  res = 16
+  t0 = 1 LT 5
+  IF_FALSE t0 GOTO L0
+  RETURN 1
+L0:
+  total = 5
+  ARG total
+  CALL echo
+  t1 = 50 LT 51
+  IF_FALSE t1 GOTO L1
+  ARG bumba
+  CALL echo
+L1:
+  ARG 40
+  x = CALL fib
+  ARG x
+  CALL echo
+  ARG 2
+  y = CALL fib
+  ARG y
+  CALL echo
+fib:
+  PARAM n
+  t4 = n LT 2
+  IF_FALSE t4 GOTO L2
+  RETURN n
+L2:
+  t5 = n SUB 1
+  ARG t5
+  t6 = CALL fib
+  t7 = n SUB 2
+  ARG t7
+  t8 = CALL fib
+  t9 = t6 ADD t8
+  RETURN t9
+num:
+  PARAM n
+  RETURN n
+--------------------
+
+Pipeline done

@@ -10,6 +10,6 @@ proc int fib(n: int) {
     echo("==============");
 }
 
-proc void num(n: int){
-    echo(n);
+proc int num(n: int){
+    return n;
 }

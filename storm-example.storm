@@ -3,16 +3,20 @@
 
 
 proc void main() {
+    
+    res: int = 2 * 8;
 
     if(1 < 5) {
         return 1;
         echo("hello");
     }
 
-    num(2);
-
     total: int = 5;
     echo(total);
+
+    if(50 < 51) {
+        echo("bumba");
+    }
 
     x: int = fib(40);
     echo(x);
