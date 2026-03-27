@@ -100,13 +100,13 @@ Address VariableNode::gen_ir(Ir& context) {
             std::string& op = this->op.value();
 
             if(op == "*=") {
-                context.instructions.push_back({var, var, OPCODE::MUL, in});
+                context.emit(var, var, OPCODE::MUL, in);
             }else if(op == "+=") {
-                context.instructions.push_back({var, var, OPCODE::ADD, in});
+                context.emit(var, var, OPCODE::ADD, in);
             }else if(op == "/=") {
-                context.instructions.push_back({var, var, OPCODE::DIV, in});
+                context.emit(var, var, OPCODE::DIV, in);
             }else if(op == "-=") {
-                context.instructions.push_back({var, var, OPCODE::MINUS, in});
+                context.emit(var, var, OPCODE::MINUS, in);
             }
 
         }else {
@@ -115,7 +115,7 @@ Address VariableNode::gen_ir(Ir& context) {
                 Instruction& last = context.instructions.back();
                 last.result = var;
             }else {
-                context.instructions.push_back({var, in, OPCODE::ASSIGN, Address{}});
+                context.emit(var, in, OPCODE::ASSIGN, Address{});
             }
         }
     }
@@ -130,7 +130,7 @@ Address ProcedureNode::gen_ir(Ir& context) {
 
     for(const auto& param : parameters) {                
         Address p_addr(ADDR_TYPE::PARAM, param->name, param->name);
-        context.instructions.push_back({p_addr, p_addr, OPCODE::PARAM, p_addr});
+        context.emit(p_addr, p_addr, OPCODE::PARAM, p_addr);
     }
 
     body_node->gen_ir(context);
@@ -142,7 +142,7 @@ Address ProcCallNode::gen_ir(Ir& context) {
 
     for(const auto& args : arguments) {
         Address arg = args->gen_ir(context);        
-        context.instructions.push_back({arg, arg, OPCODE::ARG, arg});
+        context.emit(arg, arg, OPCODE::ARG, arg);
     }
 
     Address res_proc = Address{};
@@ -154,7 +154,7 @@ Address ProcCallNode::gen_ir(Ir& context) {
     Address proc_label(ADDR_TYPE::VARIABLE, proc_name, proc_name);
 
     //e.g. t1 = get_sum(1, 2);
-    context.instructions.push_back({res_proc, proc_label, OPCODE::CALL, Address{}});
+    context.emit(res_proc, proc_label, OPCODE::CALL, Address{});
 
     return res_proc;
 }
@@ -242,13 +242,14 @@ Address UnaryIncrNode::gen_ir(Ir& context) {
 }
 
 Address BinaryExpression::gen_ir(Ir& context) {
+
     Address left_addr = left->gen_ir(context);
     Address right_addr = right->gen_ir(context);
     OPCODE opcode = get_opcode(op); 
     
     Address temp = context.get_temp();
 
-    context.instructions.push_back({temp, left_addr, opcode, right_addr});
+    context.emit(temp, left_addr, opcode, right_addr);
 
     return temp;
 }
@@ -280,7 +281,7 @@ Address IdentifierCondition::gen_ir(Ir& context) {
 Address ReturnNode::gen_ir(Ir& context) {
     Address r = ret->gen_ir(context);
 
-    context.instructions.push_back({Address{}, Address{}, OPCODE::RETURN, r});
+    context.emit(Address{}, Address{}, OPCODE::RETURN, r);
     
     return r;
 }

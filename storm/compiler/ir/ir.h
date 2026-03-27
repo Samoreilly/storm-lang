@@ -23,6 +23,9 @@ public:
     std::vector<Instruction> instructions;
     std::unique_ptr<MainNode>& master_node;
 
+    //set to true when a return node is found, reset when a label is found
+    bool is_unreachable {false};
+
     int temp_counter = 0;// t1, t2, t3, will be set to 1 once scope is changed
     int label_counter = 0;
     int proc_counter = 0;
@@ -31,8 +34,6 @@ public:
 
     Address gen_ir(Ir& context);
     void print();
-    
-
 
     inline Address get_temp() {
         return {ADDR_TYPE::TEMP, "t" + std::to_string(temp_counter++), " "};
@@ -47,24 +48,37 @@ public:
     }
 
     void emit(Address res, Address L, OPCODE op, Address R) {
-        instructions.push_back({res, L, op, R});
+        
+        if(op == OPCODE::LABEL) {
+            is_unreachable = false;
+        }
+
+        if(!is_unreachable) {
+            instructions.push_back({res, L, op, R});
+        }
+
+        if(op == OPCODE::RETURN || op == OPCODE::GOTO) {
+            is_unreachable = true;
+        }
+   
+
     }
 
     void emitLabel(Address label) {
-        instructions.push_back({label, Address{}, OPCODE::LABEL, Address{}});
+        emit(label, Address{}, OPCODE::LABEL, Address{});
     }
 
     void emitParam() {
         Address param{ADDR_TYPE::PARAM, "param", "param"};
-        instructions.push_back({param, param, OPCODE::PARAM, param});
+        emit(param, param, OPCODE::PARAM, param);
     }
 
     //if false it jumps to end of loop
     void emit_if_false(Address cond, Address label) {
-        instructions.push_back({label, cond, OPCODE::IF_FALSE, Address{}});
+        emit(label, cond, OPCODE::IF_FALSE, Address{});
     }
 
     void emitGoto(Address target) {
-        instructions.push_back({Address{}, Address{}, OPCODE::GOTO, target});
+        emit(Address{}, Address{}, OPCODE::GOTO, target);
     }
 };

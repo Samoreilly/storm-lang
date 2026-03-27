@@ -19,6 +19,9 @@ push rax
 pop rax
 cmp rax, 0
 je IF_1
+push 1
+pop rax
+jmp main_EXIT_0
 lea rax, [STR_0]
 push rax
 pop rdi
@@ -28,6 +31,10 @@ lea rdi, [format_str]
 mov rax, 0
 call printf
 IF_1:
+push 2
+pop rdi
+mov rax, 0
+call num
 push 5
 pop rax
 mov [rbp + -8], rax
@@ -131,7 +138,32 @@ add rax, rbx
 push rax
 pop rax
 jmp fib_EXIT_2
+lea rax, [STR_1]
+push rax
+pop rdi
+extern printf
+mov rsi, rdi
+lea rdi, [format_str]
+mov rax, 0
+call printf
 fib_EXIT_2:
+mov rsp, rbp
+pop rbp
+ret
+num:
+push rbp
+mov rbp, rsp
+sub rsp, 16
+mov [rbp + -8], rdi
+mov rax, [rbp + -8]
+push rax
+pop rdi
+extern printf
+mov rsi, rdi
+lea rdi, [format_int]
+mov rax, 0
+call printf
+num_EXIT_4:
 mov rsp, rbp
 pop rbp
 ret
@@ -142,3 +174,4 @@ format_str: db "%s", 10, 0
 format_dbl: db "%f", 10, 0
 section .data 
 	STR_0: db "hello", 10, 0
+STR_1: db "==============", 10, 0

@@ -5,8 +5,11 @@
 proc void main() {
 
     if(1 < 5) {
+        return 1;
         echo("hello");
     }
+
+    num(2);
 
     total: int = 5;
     echo(total);
