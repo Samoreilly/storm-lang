@@ -77,7 +77,7 @@ std::unique_ptr<Condition> Parser::parse_add() {
         if (l_int && r_int) {
 
             if(op.value == "+") {
-
+                std::cout << "plus================= " << right->getType(); 
                 int l_val = std::stoi(l_int->token.value);
                 int r_val = std::stoi(r_int->token.value);
                 int comb_val = l_val + r_val;

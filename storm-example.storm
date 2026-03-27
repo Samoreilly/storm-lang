@@ -3,25 +3,10 @@
 
 
 proc void main() {
-    
-    res: int = 7 * 8 + 2 + 5 * 9 * 3;
 
-    if(1 < 5) {
-        return 1;
-        echo("hello");
-    }
-
-    total: int = 5;
-    echo(total);
-
-    if(50 < 51) {
-        echo("bumba");
-    }
-
-    x: int = fib(40);
-    echo(x);
-
-    y: int = fib(2);
-    echo(y);
+    a: int = 10;
+    b: int = 20;
+    a = 30;
+    echo(a);
 }
 

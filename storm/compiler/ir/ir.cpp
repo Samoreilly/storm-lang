@@ -6,6 +6,7 @@ Address Ir::gen_ir(Ir& context) {
     if(master_node) {
         return master_node->gen_ir(context);
     }
+
     return {};
 }
 
@@ -58,7 +59,7 @@ void Ir::print() {
             std::cout << inst.result.name << " = " << inst.left_operand.name 
                       << " " << opToString(inst.op) << " " << inst.right_operand.name;
         }
-        std::cout << std::endl;
+        std::cout << "\n";
     }
     std::cout << "--------------------\n" << "\n";
 }
@@ -67,6 +68,7 @@ Address MainNode::gen_ir(Ir& context) {
     for(auto& node : globals) {
         if(node) node->gen_ir(context);
     }
+    context.remove_unused_variables();
     return {};
 }
 
