@@ -68,19 +68,21 @@ std::unique_ptr<Condition> Parser::parse_add() {
 
         auto right = parse_mul();
         
-        //can fold into one int
-        auto l = dynamic_cast<IntegerCondition*>(left.get());
-        auto r = dynamic_cast<IntegerCondition*>(right.get());
+        auto l_int = dynamic_cast<IntegerCondition*>(left.get());
+        auto r_int = dynamic_cast<IntegerCondition*>(right.get());
 
-        if (l && r) {
+        auto l_double = dynamic_cast<DoubleCondition*>(left.get());
+        auto r_double = dynamic_cast<DoubleCondition*>(right.get());
+        
+        if (l_int && r_int) {
 
             if(op.value == "+") {
 
-                int l_val = std::stoi(l->token.value);
-                int r_val = std::stoi(r->token.value);
+                int l_val = std::stoi(l_int->token.value);
+                int r_val = std::stoi(r_int->token.value);
                 int comb_val = l_val + r_val;
                 
-                Token t = l->token;
+                Token t = l_int->token;
                 t.value = std::to_string(comb_val);
 
                 left = std::make_unique<IntegerCondition>(t);
@@ -88,15 +90,101 @@ std::unique_ptr<Condition> Parser::parse_add() {
 
             }else if(op.value == "-") {
                 
-                int l_val = std::stoi(l->token.value);
-                int r_val = std::stoi(r->token.value);
+                int l_val = std::stoi(l_int->token.value);
+                int r_val = std::stoi(r_int->token.value);
                 int comb_val = l_val - r_val;
                 
-                Token t = l->token;
+                Token t = l_int->token;
                 t.value = std::to_string(comb_val);
 
                 left = std::make_unique<IntegerCondition>(t);
                 continue;
+            }
+        
+        }else if(l_double && r_double) {
+            
+            if(op.value == "+") {
+
+                double l_val = std::stod(l_double->token.value);
+                double r_val = std::stod(r_double->token.value);
+                double comb_val = l_val + r_val;
+                
+                Token t = l_double->token;
+                t.value = std::to_string(comb_val);
+
+                left = std::make_unique<DoubleCondition>(t);
+                continue;
+
+            }else if(op.value == "-") {
+                
+                double l_val = std::stod(l_double->token.value);
+                double r_val = std::stod(r_double->token.value);
+                double comb_val = l_val - r_val;
+                
+                Token t = l_double->token;
+                t.value = std::to_string(comb_val);
+
+                left = std::make_unique<DoubleCondition>(t);
+                continue;
+            }
+        
+        }else if((l_double || l_int) && (r_double || r_int)) {
+           
+            if(l_double && r_int) {
+                
+                if(op.value == "+") {               
+                    double l_val = std::stod(l_double->token.value);
+                    int r_val = std::stoi(r_int->token.value);
+                    double comb_val = l_val + r_val;
+
+                    Token t = l_double->token;
+                    t.value = std::to_string(comb_val);
+
+                    left = std::make_unique<DoubleCondition>(t);
+
+                    continue;
+
+                }else if(op.value == "-") {
+
+                    double l_val = std::stod(l_double->token.value);
+                    int r_val = std::stoi(r_int->token.value);
+                    double comb_val = l_val - r_val;
+                    
+                    Token t = l_double->token;
+                    t.value = std::to_string(comb_val);
+
+                    left = std::make_unique<DoubleCondition>(t);
+                    
+                    continue;
+                }
+
+            } else if(l_int && r_double) {
+                
+                if(op.value == "+") {               
+                    int l_val = std::stoi(l_int->token.value);
+                    double r_val = std::stod(r_double->token.value);
+                    double comb_val = l_val + r_val;
+
+                    Token t = r_double->token;
+                    t.value = std::to_string(comb_val);
+
+                    left = std::make_unique<DoubleCondition>(t);
+
+                    continue;
+
+                }else if(op.value == "-") {
+
+                    int l_val = std::stoi(l_int->token.value);
+                    double r_val = std::stod(r_double->token.value);
+                    double comb_val = l_val - r_val;
+                    
+                    Token t = r_double->token;
+                    t.value = std::to_string(comb_val);
+
+                    left = std::make_unique<DoubleCondition>(t);
+                    
+                    continue;
+                }
             }
         }
 
@@ -124,18 +212,21 @@ std::unique_ptr<Condition> Parser::parse_mul() {
         auto right = parse_primary();
         
         //can fold into one int
-        auto l = dynamic_cast<IntegerCondition*>(left.get());
-        auto r = dynamic_cast<IntegerCondition*>(right.get());
+        auto l_int = dynamic_cast<IntegerCondition*>(left.get());
+        auto r_int = dynamic_cast<IntegerCondition*>(right.get());
 
-        if (l && r) {
+        auto l_double = dynamic_cast<DoubleCondition*>(left.get());
+        auto r_double = dynamic_cast<DoubleCondition*>(right.get());
+        
+        if (l_int && r_int) {
 
             if(op.value == "*") {
 
-                int l_val = std::stoi(l->token.value);
-                int r_val = std::stoi(r->token.value);
+                int l_val = std::stoi(l_int->token.value);
+                int r_val = std::stoi(r_int->token.value);
                 int comb_val = l_val * r_val;
                 
-                Token t = l->token;
+                Token t = l_int->token;
                 t.value = std::to_string(comb_val);
 
                 left = std::make_unique<IntegerCondition>(t);
@@ -143,18 +234,124 @@ std::unique_ptr<Condition> Parser::parse_mul() {
 
             }else if(op.value == "/") {
                 
-                int l_val = std::stoi(l->token.value);
-                int r_val = std::stoi(r->token.value);
+                int l_val = std::stoi(l_int->token.value);
+                int r_val = std::stoi(r_int->token.value);
                 int comb_val = l_val / r_val;
                 
-                Token t = l->token;
+                if(r_val == 0) {
+                    throw std::runtime_error("Division by zero is not allowed.\n line "
+                                             + std::to_string(r_int->token.line) + " col " + std::to_string(r_int->token.col));
+                }
+
+                Token t = l_int->token;
                 t.value = std::to_string(comb_val);
 
                 left = std::make_unique<IntegerCondition>(t);
                 continue;
             }
-        }
 
+        }else if(l_double && r_double) {
+            
+            if(op.value == "*") {
+
+                double l_val = std::stod(l_double->token.value);
+                double r_val = std::stod(r_double->token.value);
+                double comb_val = l_val * r_val;
+                
+                Token t = l_double->token;
+                t.value = std::to_string(comb_val);
+
+                left = std::make_unique<DoubleCondition>(t);
+                continue;
+
+            }else if(op.value == "/") {
+                
+                double l_val = std::stod(l_double->token.value);
+                double r_val = std::stod(r_double->token.value);
+                double comb_val = l_val / r_val;
+                
+                if(r_val == 0) {
+                    throw std::runtime_error("Division by zero is not allowed.\n line "
+                                             + std::to_string(r_double->token.line) + " col " + std::to_string(r_double->token.col));
+                }
+
+                Token t = l_double->token;
+                t.value = std::to_string(comb_val);
+
+                left = std::make_unique<DoubleCondition>(t);
+                continue;
+            }
+        
+        }else if((l_double || l_int) && (r_double || r_int)) {
+           
+            if(l_double && r_int) {
+                
+                if(op.value == "*") {               
+                    double l_val = std::stod(l_double->token.value);
+                    int r_val = std::stoi(r_int->token.value);
+                    double comb_val = l_val * r_val;
+
+                    Token t = l_double->token;
+                    t.value = std::to_string(comb_val);
+
+                    left = std::make_unique<DoubleCondition>(t);
+
+                    continue;
+
+                }else if(op.value == "/") {
+
+                    double l_val = std::stod(l_double->token.value);
+                    int r_val = std::stoi(r_int->token.value);
+                    double comb_val = l_val / r_val;
+                    
+                    if(r_val == 0) {
+                        throw std::runtime_error("Division by zero is not allowed.\n line "
+                                                + std::to_string(r_int->token.line) + " col " + std::to_string(r_int->token.col));
+                    }
+
+                    Token t = l_double->token;
+                    t.value = std::to_string(comb_val);
+
+                    left = std::make_unique<DoubleCondition>(t);
+                    
+                    continue;
+                }
+
+            } else if(l_int && r_double) {
+                
+                if(op.value == "*") {               
+                    double l_val = std::stod(l_int->token.value);
+                    double r_val = std::stod(r_double->token.value);
+                    double comb_val = l_val * r_val;
+
+                    Token t = r_double->token;
+                    t.value = std::to_string(comb_val);
+
+                    left = std::make_unique<DoubleCondition>(t);
+
+                    continue;
+
+                }else if(op.value == "/") {
+
+                    int l_val = std::stod(l_int->token.value);
+                    double r_val = std::stod(r_double->token.value);
+                    
+                    if(r_val == 0) {
+                        throw std::runtime_error("Division by zero is not allowed.\n line "
+                                                + std::to_string(r_double->token.line) + " col " + std::to_string(r_double->token.col));
+                    }
+
+                    double comb_val = l_val / r_val;
+
+                    Token t = l_int->token;
+                    t.value = std::to_string(comb_val);
+
+                    left = std::make_unique<DoubleCondition>(t);
+                    
+                    continue;
+                }
+            }
+        }             
 
         auto node = std::make_unique<BinaryExpression>();
 

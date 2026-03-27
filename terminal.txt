@@ -4,7 +4,7 @@
 
 p v m() {
     
-    r: i = 2 * 8;
+    r: i = 7 * 8 + 2 + 5 * 9 * 3;
 
     i(1 < 5) {
         r 1;
@@ -83,7 +83,7 @@ Value-> =
  Line: 7 Column: 14
 
 TokenType-> INTEGER
-Value-> 2
+Value-> 7
  Line: 7 Column: 16
 
 TokenType-> OPERATOR
@@ -94,9 +94,41 @@ TokenType-> INTEGER
 Value-> 8
  Line: 7 Column: 20
 
+TokenType-> OPERATOR
+Value-> +
+ Line: 7 Column: 22
+
+TokenType-> INTEGER
+Value-> 2
+ Line: 7 Column: 24
+
+TokenType-> OPERATOR
+Value-> +
+ Line: 7 Column: 26
+
+TokenType-> INTEGER
+Value-> 5
+ Line: 7 Column: 28
+
+TokenType-> OPERATOR
+Value-> *
+ Line: 7 Column: 30
+
+TokenType-> INTEGER
+Value-> 9
+ Line: 7 Column: 32
+
+TokenType-> OPERATOR
+Value-> *
+ Line: 7 Column: 34
+
+TokenType-> INTEGER
+Value-> 3
+ Line: 7 Column: 36
+
 TokenType-> SYMBOL
 Value-> ;
- Line: 7 Column: 20
+ Line: 7 Column: 36
 
 TokenType-> IF
 Value-> if
@@ -594,7 +626,7 @@ Value-> }
     Parameters:
     [BodyNode]
       [Variable: res, Type: int]
-        Integer: 16
+        Integer: 193
       [IfStatement]
         [BinaryExpression: <]
           Integer: 1
@@ -657,7 +689,7 @@ Value-> }
 
 --- Generated IR ---
 main:
-  res = 16
+  res = 193
   t0 = 1 LT 5
   IF_FALSE t0 GOTO L0
   RETURN 1

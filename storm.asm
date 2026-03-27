@@ -6,7 +6,7 @@ main:
 push rbp
 mov rbp, rsp
 sub rsp, 32
-push 16
+push 193
 pop rax
 mov [rbp + -8], rax
 push 1
