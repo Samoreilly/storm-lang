@@ -27,7 +27,6 @@ public:
     Backend(std::vector<Instruction>& i, SymbolTable* t)
     : instructions(i), table(t) {}
 
-
     std::string gen_asm();
 
     inline std::string get_addr(Address addr) {

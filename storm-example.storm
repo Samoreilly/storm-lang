@@ -1,36 +1,21 @@
 
 
-storm Node {
-    x: int;
-    y: int;
-};
 
-
-
-proc void main() {
-
-    n : Node{1, 2};
-
-    echo(n.y);
-    n.y = 5;
-    echo(n.y);
-
-    x: int = fib(500000000);
-    echo(x);
-
+proc int add(a: int, b: int) {
+    return a + b;
 }
 
-proc int fib(n: int) {
-
-    a: int = 0;
-    b: int = 1;
+proc int run(n: int) {
+    sum: int = 0;
 
     for(i: int = 0;i < n;i++) {
-        tmp: int = a + b;
-        a = b;
-        b = tmp;
+        sum = sum + i;
     }
+    return sum;
+}
 
-    return a;
-    
+proc void main() {
+    for(i: int = 0;i < 50;i++) {
+        echo(run(100000));
+    }
 }
