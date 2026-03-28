@@ -8,5 +8,19 @@ proc void main() {
     b: int = 20;
     a = 30;
     echo(a);
+
+    total: int = 0;
+
+    fun(0, 0);
+
+}
+
+proc void fun(var_one: int, var_two: int) {
+    
+    var_one += 1;
+    var_two += var_two;
+    echo(var_one);
+
+    return fun(var_two, var_one);
 }
 

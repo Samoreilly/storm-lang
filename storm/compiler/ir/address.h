@@ -7,9 +7,9 @@ enum class OPCODE {ADD, MINUS, MUL, DIV, LT, GT, LOE, GOE, RETURN, GOTO, IF_FALS
 enum class ADDR_TYPE {CONSTANT, TEMP, VARIABLE, PARAM, ARGS};
 
 struct Address {
-    ADDR_TYPE type;
     std::string name;
     std::string value;
+    ADDR_TYPE type;
     Address(ADDR_TYPE t, std::string n, std::string v) : type(t), name(n), value(v) {}
     Address() {}
 };

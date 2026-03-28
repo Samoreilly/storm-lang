@@ -18,9 +18,9 @@ struct Instruction {
 
 struct Metadata {
     Instruction instr;
-    bool is_used;
     int vec_index;
-    
+    bool is_used;
+
     Metadata() {}
     Metadata(Instruction i, bool u, int idx) : instr(i), is_used(u), vec_index(idx) {}
 };
@@ -54,19 +54,24 @@ public:
 
     std::vector<Instruction> instructions;
     std::unique_ptr<MainNode>& master_node;
-
+    
     //set to true when a return node is found, reset when a label is found
     bool is_unreachable {false};
 
     int temp_counter = 0;// t1, t2, t3, will be set to 1 once scope is changed
     int label_counter = 0;
     int proc_counter = 0;
+    std::string curr_proc = "main";// for tail call optimization
 
     Ir(std::unique_ptr<MainNode>& main) : master_node(main) {}
 
     Address gen_ir(Ir& context);
-    void print();
 
+    std::vector<Address> curr_params;
+    void tco(Ir& context);
+    
+    void print();
+    
     inline Address get_temp() {
         return {ADDR_TYPE::TEMP, "t" + std::to_string(temp_counter++), " "};
     }
@@ -84,7 +89,6 @@ public:
         if(variables.count(L.name)) variables[L.name].is_used = true;
         if(variables.count(R.name)) variables[R.name].is_used = true;
 
-
         if(res.type == ADDR_TYPE::VARIABLE && op != OPCODE::LABEL
             && op != OPCODE::ARG && op != OPCODE::PARAM && op != OPCODE::CALL) {
             if(variables.count(res.value)) {
@@ -95,8 +99,7 @@ public:
             }
 
             int current_index = instructions.size();
-            variables[res.value] = Metadata{{res, L, op, R}, false, current_index};
-        
+            variables[res.value] = Metadata{{res, L, op, R}, false, current_index}; 
         }
             
         //set everthing prior to used, so its not deleted

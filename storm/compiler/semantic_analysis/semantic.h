@@ -7,13 +7,11 @@ struct SymbolEntry {
 
     std::string name = "";
     std::string type = "";
-    int offset = 0;
-    bool is_function {false};
-    
+    int offset = 0;   
     int stack_frame_size {0};
-
     int param_counter {0};
-
+    bool is_function {false};
+ 
     SymbolEntry() = default;
     SymbolEntry(std::string n, std::string t, int o, bool is_f, int n_params)
     : name(n), type(t), offset(o), is_function(is_f), param_counter(n_params) {}

@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
         }else {
             file_contents = l.load_files(argv, argc);
         }
+
         Lexer lex;
         for(const auto& content : file_contents) {
             std::vector<Token> tok = lex.lex(content); 

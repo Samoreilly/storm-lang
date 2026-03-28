@@ -5,7 +5,7 @@ global main
 main:
 push rbp
 mov rbp, rsp
-sub rsp, 16
+sub rsp, 32
 push 10
 pop rax
 mov [rbp + -8], rax
@@ -23,7 +23,51 @@ mov rsi, rdi
 lea rdi, [format_int]
 mov rax, 0
 call printf
+push 0
+pop rax
+mov [rbp + -24], rax
+push 0
+push 0
+pop rsi
+pop rdi
+mov rax, 0
+call fun
 main_EXIT_0:
+mov rsp, rbp
+pop rbp
+ret
+fun:
+push rbp
+mov rbp, rsp
+sub rsp, 16
+mov [rbp + -8], rdi
+mov [rbp + -16], rsi
+push 1
+pop rax
+mov [rbp + -8], rax
+mov rax, [rbp + -16]
+push rax
+pop rax
+mov [rbp + -16], rax
+mov rax, [rbp + -8]
+push rax
+pop rdi
+extern printf
+mov rsi, rdi
+lea rdi, [format_int]
+mov rax, 0
+call printf
+mov rax, [rbp + -16]
+push rax
+mov rax, [rbp + -8]
+push rax
+pop rsi
+pop rdi
+mov rax, 0
+call fun
+pop rax
+jmp fun_EXIT_1
+fun_EXIT_1:
 mov rsp, rbp
 pop rbp
 ret

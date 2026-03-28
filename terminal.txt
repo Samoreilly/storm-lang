@@ -8,6 +8,20 @@ p v m() {
     b: i = 2;
     a = 3;
     e(a);
+
+    t: i = 0;
+
+    f(0, 0);
+
+}
+
+p v f(v: i, v: i) {
+    
+    v + 1;
+    v + v;
+    e(v);
+
+    r f(v, v);
 }
 
 
@@ -121,9 +135,201 @@ TokenType-> SYMBOL
 Value-> ;
  Line: 10 Column: 11
 
+TokenType-> IDENTIFIER
+Value-> total
+ Line: 12 Column: 9
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 12 Column: 9
+
+TokenType-> INTEGER
+Value-> int
+ Line: 12 Column: 11
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 12 Column: 16
+
+TokenType-> INTEGER
+Value-> 0
+ Line: 12 Column: 18
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 12 Column: 18
+
+TokenType-> IDENTIFIER
+Value-> fun
+ Line: 14 Column: 7
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 14 Column: 7
+
+TokenType-> INTEGER
+Value-> 0
+ Line: 14 Column: 9
+
+TokenType-> SYMBOL
+Value-> ,
+ Line: 14 Column: 9
+
+TokenType-> INTEGER
+Value-> 0
+ Line: 14 Column: 12
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 14 Column: 12
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 14 Column: 13
+
 TokenType-> SYMBOL
 Value-> }
- Line: 11 Column: 0
+ Line: 16 Column: 0
+
+TokenType-> PROC
+Value-> proc
+ Line: 18 Column: 0
+
+TokenType-> VOID
+Value-> void
+ Line: 18 Column: 5
+
+TokenType-> IDENTIFIER
+Value-> fun
+ Line: 18 Column: 13
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 18 Column: 13
+
+TokenType-> IDENTIFIER
+Value-> var_one
+ Line: 18 Column: 21
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 18 Column: 21
+
+TokenType-> INTEGER
+Value-> int
+ Line: 18 Column: 23
+
+TokenType-> SYMBOL
+Value-> ,
+ Line: 18 Column: 26
+
+TokenType-> IDENTIFIER
+Value-> var_two
+ Line: 18 Column: 35
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 18 Column: 35
+
+TokenType-> INTEGER
+Value-> int
+ Line: 18 Column: 37
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 18 Column: 40
+
+TokenType-> SYMBOL
+Value-> {
+ Line: 18 Column: 42
+
+TokenType-> IDENTIFIER
+Value-> var_one
+ Line: 20 Column: 11
+
+TokenType-> OPERATOR
+Value-> +=
+ Line: 20 Column: 14
+
+TokenType-> INTEGER
+Value-> 1
+ Line: 20 Column: 16
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 20 Column: 16
+
+TokenType-> IDENTIFIER
+Value-> var_two
+ Line: 21 Column: 11
+
+TokenType-> OPERATOR
+Value-> +=
+ Line: 21 Column: 14
+
+TokenType-> IDENTIFIER
+Value-> var_two
+ Line: 21 Column: 22
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 21 Column: 22
+
+TokenType-> IDENTIFIER
+Value-> echo
+ Line: 22 Column: 8
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 22 Column: 8
+
+TokenType-> IDENTIFIER
+Value-> var_one
+ Line: 22 Column: 16
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 22 Column: 16
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 22 Column: 17
+
+TokenType-> RETURN
+Value-> return
+ Line: 24 Column: 4
+
+TokenType-> IDENTIFIER
+Value-> fun
+ Line: 24 Column: 14
+
+TokenType-> SYMBOL
+Value-> (
+ Line: 24 Column: 14
+
+TokenType-> IDENTIFIER
+Value-> var_two
+ Line: 24 Column: 22
+
+TokenType-> SYMBOL
+Value-> ,
+ Line: 24 Column: 22
+
+TokenType-> IDENTIFIER
+Value-> var_one
+ Line: 24 Column: 31
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 24 Column: 31
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 24 Column: 32
+
+TokenType-> SYMBOL
+Value-> }
+ Line: 25 Column: 0
 [MainNode]
   [ProcedureDef: main -> void]
     Parameters:
@@ -136,12 +342,49 @@ Value-> }
         Integer: 30
       [ProcedureCall: echo()]
         Identifier: a
+      [Variable: total, Type: int]
+        Integer: 0
+      [ProcedureCall: fun()]
+        Integer: 0
+        Integer: 0
+  [ProcedureDef: fun -> void]
+    Parameters:
+      [Variable: var_one, Type: int]
+      [Variable: var_two, Type: int]
+    [BodyNode]
+      [Variable: var_one, Op: +=]
+        Integer: 1
+      [Variable: var_two, Op: +=]
+        Identifier: var_two
+      [ProcedureCall: echo()]
+        Identifier: var_one
+      [Return]
+        [ProcedureCall: fun()]
+          Identifier: var_two
+          Identifier: var_one
 
 --- Generated IR ---
 main:
   a = 10
+  b = 20
   ARG a
   CALL echo
+  total = 0
+  ARG 0
+  ARG 0
+  CALL fun
+fun:
+  PARAM var_one
+  PARAM var_two
+  var_one = var_one ADD 1
+  var_two = var_two ADD var_two
+  ARG var_one
+  CALL echo
+  t0 = var_two
+  t1 = var_one
+  var_one = t0
+  var_two = t1
+  GOTO fun
 --------------------
 
 Pipeline done

@@ -1,6 +1,7 @@
 #include "ir.h"
 #include "../parser/node.h"
 #include "address.h"
+#include <algorithm>
 
 Address Ir::gen_ir(Ir& context) {
     if(master_node) {
@@ -77,7 +78,7 @@ Address BodyNode::gen_ir(Ir& context) {
     for(auto& node : statements) {
         if(node) node->gen_ir(context);
     }
-
+    
     return {};
 }
 
@@ -127,11 +128,16 @@ Address VariableNode::gen_ir(Ir& context) {
 
 Address ProcedureNode::gen_ir(Ir& context) {
 
+    //keeping track of current proc name for TCO
+    context.curr_proc = proc_name;
+
     Address start_proc(ADDR_TYPE::VARIABLE, proc_name, proc_name);
     context.emitLabel(start_proc);
 
-    for(const auto& param : parameters) {                
+    context.curr_params.clear();
+    for(const auto& param : parameters) {
         Address p_addr(ADDR_TYPE::PARAM, param->name, param->name);
+        context.curr_params.push_back(p_addr);
         context.emit(p_addr, p_addr, OPCODE::PARAM, p_addr);
     }
 
@@ -283,7 +289,49 @@ Address IdentifierCondition::gen_ir(Ir& context) {
 Address ReturnNode::gen_ir(Ir& context) {
     Address r = ret->gen_ir(context);
 
+    //tco optimization, function calls itself
+    if(context.instructions.back().op == OPCODE::CALL && context.instructions.back().left_operand.name == context.curr_proc) {
+        context.tco(context);
+        return r;
+    }
+
     context.emit(Address{}, Address{}, OPCODE::RETURN, r);
     
     return r;
+}
+
+void Ir::tco(Ir& context) {
+    
+    //pops the CALL instruction
+    context.instructions.pop_back();
+
+    std::vector<Address> arg_values;
+    size_t num_params = context.curr_params.size();
+    
+    //extract and remove the trailing ARG instructions
+    for (size_t i = 0; i < num_params; ++i) {
+        if (!context.instructions.empty() && context.instructions.back().op == OPCODE::ARG) {
+            arg_values.push_back(context.instructions.back().left_operand);
+            context.instructions.pop_back();
+        }
+    }
+
+    //reverse to match param order
+    std::reverse(arg_values.begin(), arg_values.end());
+
+    //stage arg values into temps to prevent swap problem
+    std::vector<Address> temps;
+    for (const auto& arg : arg_values) {
+        Address t = context.get_temp();
+        context.emit(t, arg, OPCODE::ASSIGN, Address{});
+        temps.push_back(t);
+    }
+
+    //assign params there values, prevents values being overwritten
+    for (size_t i = 0; i < temps.size(); ++i) {
+        context.emit(context.curr_params[i], temps[i], OPCODE::ASSIGN, Address{});
+    }
+
+    //jump back to the start of the current function
+    context.emit(Address{}, Address{}, OPCODE::GOTO, Address{ADDR_TYPE::CONSTANT, context.curr_proc, context.curr_proc });
 }

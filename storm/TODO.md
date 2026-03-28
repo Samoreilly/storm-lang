@@ -11,7 +11,7 @@
 4. Copy propagation, remove unnecessary variable assignments | SEMI DONE
    - Implemented for proc calls
    - 
-5. Remove unused variables
+5. Remove unused variables | SEMI DONE
 6. Tail call optimization
 
 ## Lexical Analysis
