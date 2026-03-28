@@ -2,6 +2,7 @@
 #include "condition.h"
 #include "parser.h"
 #include "../../token.h"
+#include <cctype>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -369,9 +370,6 @@ std::unique_ptr<Condition> Parser::parse_primary() {
 
     Token curr = get_token();
 
-    std::regex is_alpha("[a-zA-Z]");
-    std::regex is_num("[0-9]");
-
     switch(curr.type) {
 
         case TokenType::STRING: {
@@ -402,11 +400,14 @@ std::unique_ptr<Condition> Parser::parse_primary() {
         case TokenType::INTEGER: {
              
             std::cerr << "Integer token: " << get_token().value << "\n";
-            
-            if(curr.value.find('.') != std::string::npos || std::regex_search(curr.value, is_alpha)) {
-                throw std::runtime_error("\nDecimal points or characters are not allowed in integers line: "
-                                         + std::to_string(curr.line) + " col: "
-                                         + std::to_string(curr.col) + "\n");
+
+            for(char c : curr.value) {
+                if(curr.value.find('.') != std::string::npos || std::isalpha(c)) {
+                    throw std::runtime_error("\nDecimal points or characters are not allowed in integers line: "
+                                                        + std::to_string(curr.line) + " col: "
+                                                        + std::to_string(curr.col) + "\n");
+                            
+                }
             }
 
             advance();

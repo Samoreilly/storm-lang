@@ -68,6 +68,8 @@ public:
     Address gen_ir(Ir& context);
 
     std::vector<Address> curr_params;
+
+    void unroll(Ir& context, ForNode& for_node);
     void tco(Ir& context);
     
     void print();

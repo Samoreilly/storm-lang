@@ -204,14 +204,33 @@ Address WhileNode::gen_ir(Ir& context) {
 }
 
 Address ForNode::gen_ir(Ir& context) {
+    std::cout << "\nENTERED FOR NODE\n\n";
+    if(init.has_value()) init.value()->gen_ir(context);
 
-    init.value()->gen_ir(context);
+    //check if binary expression for potential loop unrolling
+    if(auto bin = dynamic_cast<BinaryExpression*>(condition.value().get())) {
+        
+        if(init && init.has_value()) {            
+            auto right = dynamic_cast<IntegerCondition*>(bin->right.get());
+            auto left = dynamic_cast<IntegerCondition*>(bin->left.get());
+            // if both sides are constant (control is decided by user logic)
+            if((left || right) && !(left && right)) {
+                //no unrolling with loops over 500
+                if(!(left && std::stoi(left->get_value()) > 500 || right && std::stoi(right->get_value()) > 500)) {
+                    context.unroll(context, *this); 
+                    return {};
+                }
+            }
+        }
+    }
 
     Address start_for = context.get_label();
     context.emitLabel(start_for);
 
     //if cond false, exit for loop
     Address cond_addr = condition.value()->gen_ir(context);
+
+    std::cout << "-========================--=====FOR LOOP CONDITION===========================: " << cond_addr.value << ":" << cond_addr.name << "\n";
     Address end_for = context.get_label();
 
     context.emit_if_false(cond_addr, end_for);
@@ -225,6 +244,64 @@ Address ForNode::gen_ir(Ir& context) {
     context.emitLabel(end_for);
 
     return {};
+}
+
+void Ir::unroll(Ir& context, ForNode& for_node) {
+
+    auto init = for_node.init->get();
+    //static casting is safe as type is known
+    auto bin = static_cast<BinaryExpression*>(for_node.condition.value().get());
+    
+    auto left = dynamic_cast<IntegerCondition*>(bin->left.get());
+    auto right = dynamic_cast<IntegerCondition*>(bin->right.get());
+
+    int n = left ? std::stoi(left->token.value) : std::stoi(right->token.value);
+    
+    
+
+    int start {0};
+    auto init_var = dynamic_cast<VariableNode*>(for_node.init.value().get());
+
+    
+    
+    if(init_var && init_var->init) {
+        if(auto i = dynamic_cast<IntegerCondition*>(init_var->init.get())) {
+            start = std::stoi(i->token.value);
+        }
+    }
+
+    int number_of_tasks_per_iteration = (n > 250) ? 8 : 4;
+
+    int n_instr = (n - start) / number_of_tasks_per_iteration;
+    int remaining_instr = (n - start) % number_of_tasks_per_iteration;
+
+    //needed so loop doesnt execute n + remaining instructions
+    if(left) {
+        left->token.value = std::to_string(n - remaining_instr);
+    }
+    if(right) {
+        right->token.value = std::to_string(n - remaining_instr);
+    }
+    Address start_for = context.get_label();
+    context.emitLabel(start_for);
+    Address end_for = context.get_label();
+
+    context.emit_if_false(for_node.condition.value()->gen_ir(context), end_for);
+
+    for(int i = 0;i < number_of_tasks_per_iteration;i++) {
+        //body then increment
+        for_node.for_body->gen_ir(context);
+        for_node.incr.value()->gen_ir(context);
+    }
+
+    context.emitGoto(start_for);
+    context.emitLabel(end_for);
+
+    for(int rem = 0; rem < remaining_instr;rem++){     
+        for_node.for_body->gen_ir(context);
+        for_node.incr.value()->gen_ir(context);
+    }
+ 
 }
 
 Address RangeNode::gen_ir(Ir& context) {
@@ -246,7 +323,14 @@ Address RangeNode::gen_ir(Ir& context) {
 }
 
 Address UnaryIncrNode::gen_ir(Ir& context) {
-    return {ADDR_TYPE::VARIABLE, op, op};
+    Address var(ADDR_TYPE::VARIABLE, name, name);
+    Address constant(ADDR_TYPE::CONSTANT, "1", "1");
+
+    OPCODE op_code = (op == "++") ? OPCODE::ADD : OPCODE::MINUS;
+
+    context.emit(var, var, op_code, constant);
+
+    return var;
 }
 
 Address BinaryExpression::gen_ir(Ir& context) {

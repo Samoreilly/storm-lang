@@ -1,5 +1,5 @@
 # TODO list
-1. Implement multi file support
+1. Implement multi file support | DONE
 2. Add a debug mode for prints to keep output clean
 3. Implement common data-structures such as array, stack, queue 
 
@@ -12,7 +12,13 @@
    - Implemented for proc calls
    - 
 5. Remove unused variables | SEMI DONE
-6. Tail call optimization
+6. Tail call optimization | DONE
+7. Partial loop unrolling
+   Plan - only unroll if right condition is a constant so i < 10
+   instruction per loop is n / k, if (n % k != 0) do another loop of n % k for
+   remaining instructions
+
+8. Gauss trick
 
 ## Lexical Analysis
 1. Remove regex find as its slow | DONE
@@ -26,7 +32,6 @@
 
 # Later on
 1. Move to a register/stack operations
-
 
 
 ## Multiple files
