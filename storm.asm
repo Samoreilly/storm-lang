@@ -1,116 +1,73 @@
+section .data 
+	string_0: db `%i\n`, 0
+	
+
 extern printf
-section .text
 global main
 
+section .text
 main:
-push rbp
-mov rbp, rsp
-sub rsp, 48
-pop rax
-mov [rbp + -8], rax
-push 10
-pop rax
-mov [rbp + -16], rax
-push 20
-pop rax
-mov [rbp + -24], rax
-push 30
-pop rax
-mov [rbp + -16], rax
-mov rax, [rbp + -16]
-push rax
-pop rdi
-extern printf
-mov rsi, rdi
-lea rdi, [format_int]
-mov rax, 0
-call printf
-push 0
-pop rax
-mov [rbp + -32], rax
-push 0
-push 0
-pop rsi
-pop rdi
-mov rax, 0
-call fun
-push 1
-pop rax
-mov [rbp + -40], rax
-FOR_START_1:
-mov rax, [rbp + -40]
-push rax
-
-push 345
-
-pop rbx
-pop rax
-cmp rax, rbx
-setl al
-movzx rax, al
-push rax
-pop rax
-cmp rax, 0
-je FOR_END_2
-push 5
-pop rax
-mov [rbp + -48], rax
-mov rax, [rbp + -48]
-push rax
-pop rdi
-extern printf
-mov rsi, rdi
-lea rdi, [format_int]
-mov rax, 0
-call printf
-mov rax, [rbp + -40]
-inc rax
-mov [rbp + -40], rax
-jmp FOR_START_1
-FOR_END_2:
-main_EXIT_0:
-mov rsp, rbp
-pop rbp
-ret
-fun:
-push rbp
-mov rbp, rsp
-sub rsp, 16
-mov [rbp + -8], rdi
-mov [rbp + -16], rsi
-push 1
-pop rax
-mov [rbp + -8], rax
-mov rax, [rbp + -16]
-push rax
-pop rax
-mov [rbp + -16], rax
-mov rax, [rbp + -8]
-push rax
-pop rdi
-extern printf
-mov rsi, rdi
-lea rdi, [format_int]
-mov rax, 0
-call printf
-mov rax, [rbp + -16]
-push rax
-mov rax, [rbp + -8]
-push rax
-pop rsi
-pop rdi
-mov rax, 0
-call fun
-pop rax
-jmp fun_EXIT_3
-fun_EXIT_3:
-mov rsp, rbp
-pop rbp
-ret
-
-section .data
-format_int: db "%d", 10, 0
-format_str: db "%s", 10, 0
-format_dbl: db "%f", 10, 0
-section .data 
-	
+	push rbp
+	mov rbp, rsp
+	sub rsp, 16
+	mov rax, 1
+	mov qword [rbp -8], rax
+	mov rax, 2
+	mov qword [rbp -16], rax
+	mov rdi, string_0
+	mov rsi, qword [rbp -16]
+	mov al, 0
+	call printf
+	mov rax, 5
+	mov qword [rbp -16], rax
+	mov rdi, string_0
+	mov rsi, qword [rbp -16]
+	mov al, 0
+	call printf
+	mov rdi, 500000000
+	mov al, 0
+	call fib
+	mov qword [rbp -16], rax
+	mov rdi, string_0
+	mov rsi, qword [rbp -16]
+	mov al, 0
+	call printf
+	leave
+	ret
+fib:
+	push rbp
+	mov rbp, rsp
+	sub rsp, 48
+	mov qword [rbp -8], rdi
+	mov rax, 0
+	mov qword [rbp -16], rax
+	mov rax, 1
+	mov qword [rbp -24], rax
+	mov rax, 0
+	mov qword [rbp -32], rax
+L0:
+	mov rax, qword [rbp -32]
+	cmp rax, qword [rbp -8]
+	setl al
+	movzx rax, al
+	mov qword [rbp -1008], rax
+	mov rax, qword [rbp -1008]
+	cmp rax, 0
+	je L1
+	mov rax, qword [rbp -16]
+	add rax, qword [rbp -24]
+	mov qword [rbp -1016], rax
+	mov rax, qword [rbp -1016]
+	mov qword [rbp -40], rax
+	mov rax, qword [rbp -24]
+	mov qword [rbp -16], rax
+	mov rax, qword [rbp -40]
+	mov qword [rbp -24], rax
+	mov rax, qword [rbp -32]
+	add rax, 1
+	mov qword [rbp -32], rax
+	jmp L0
+L1:
+	mov rax, qword [rbp -16]
+	leave
+	ret

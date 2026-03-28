@@ -74,8 +74,9 @@ public:
     
     void print();
     
-    inline Address get_temp() {
-        return {ADDR_TYPE::TEMP, "t" + std::to_string(temp_counter++), " "};
+    inline Address get_temp(std::string dt = "") {
+        int offset = -1000 - (temp_counter * 8); 
+        return {ADDR_TYPE::TEMP, "t" + std::to_string(temp_counter++), " ", dt, offset};
     }
 
     inline Address get_label() {

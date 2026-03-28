@@ -27,7 +27,6 @@ struct SymbolTable {
     SymbolTable* parent = nullptr;//pointer to previous scope
     std::string name;
 
-
     SymbolTable(std::string n) : name(n) {}
     //key = identifier, value = metadata of the object
     std::map<std::string, SymbolEntry> table;

@@ -27,7 +27,6 @@ public:
     virtual void exec() = 0;
 
     virtual std::string to_c(int indent = 0) = 0;
-    virtual std::string to_asm() = 0;    
     virtual Address gen_ir(Ir& context) = 0;
     virtual void analyze(SymbolTable* table, int& current_offset) = 0;
     
@@ -43,7 +42,6 @@ public:
     virtual std::string getType() const { return "unknown"; }
     
     virtual Address gen_ir(Ir& context) override = 0;
-    virtual std::string to_asm() override = 0;
 
     virtual void analyze(SymbolTable* table, int& current_offset) override = 0;
 };
@@ -82,7 +80,6 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override;
 
     Address gen_ir(Ir& context) override;
 
@@ -116,7 +113,6 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override;
 
     Address gen_ir(Ir& context) override;
 
@@ -147,7 +143,6 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
 
-    std::string to_asm() override;
 
     Address gen_ir(Ir& context) override;
 
@@ -177,7 +172,6 @@ public:
     
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override;
 
     Address gen_ir(Ir& context) override;
 
@@ -208,7 +202,6 @@ public:
     void analyze(SymbolTable* table, int& current_offset) override;
 
 
-    std::string to_asm() override;
 
     Address gen_ir(Ir& context) override;
 
@@ -238,7 +231,6 @@ public:
     
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override;
 
     Address gen_ir(Ir& context) override;
 
@@ -270,7 +262,6 @@ public:
     
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override;
 
     Address gen_ir(Ir& context) override;
 
@@ -297,7 +288,6 @@ public:
 
     void analyze(SymbolTable* table, int& current_offset) override;
 
-    std::string to_asm() override;
 
     Address gen_ir(Ir& context) override;
 

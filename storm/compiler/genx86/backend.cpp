@@ -1,409 +1,253 @@
-#include "../semantic_analysis/semantic.h"
 #include "backend.h"
-#include "../parser/node.h"
-#include "../parser/condition.h"
-#include <iostream>
-#include <string>
 
+std::string Backend::gen_asm() {
 
-std::string MainNode::to_asm() {
-    std::string final_code;
-   
-    //headers
-    final_code += "extern printf\n";
-    final_code += "section .text\n";
-    final_code += "global main\n\n";
-
-    //functions/globals
-    for(const auto& node : globals) {
-        if(node) final_code += node->to_asm();
-    }
-
-    
-    final_code += "\nsection .data\n";
-    final_code += "format_int: db \"%d\", 10, 0\n";// print statement
-    final_code += "format_str: db \"%s\", 10, 0\n";// print string statement
-    final_code += "format_dbl: db \"%f\", 10, 0\n";// print double statement
-    final_code += data;
-
-    return final_code;
-}
-std::string BodyNode::to_asm() {
+    std::string main_code = "extern printf\nglobal main\n\nsection .text\n";
     std::string code;
 
-    for(const auto& node : statements) {
-        if(node) code += node->to_asm();
-    }
+    std::vector<std::string> int_regs = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+    std::vector<std::string> double_regs = {"xmm0", "xmm1", "xmm2", "xmm3", "xmm4", "xmm5", "xmm6", "xmm7"};
 
-    return code;
-}
+    int int_arg_idx = 0;
+    int double_arg_idx = 0;
 
-std::string VariableNode::to_asm() {
-    std::string code;
+    int int_param_idx = 0;
+    int double_param_idx = 0;
 
-    if(init) code += init->to_asm();
-
-    code += "pop rax\n";
-
-    //store value in new slot
-    code += "mov [rbp + " + std::to_string(this->saved_offset) + "], rax\n";
-
-    return code;
-}
-
-std::string ProcedureNode::to_asm() {
-    std::string code;
-    // create a unique exit door for this function
-    std::string my_exit = proc_name + "_EXIT_" + std::to_string(if_counter++);
-    std::string prev_exit = current_exit_label;
-    current_exit_label = my_exit;
-
-    code += proc_name + ":\n";
-    code += "push rbp\n";
-    code += "mov rbp, rsp\n";
-
-    // stack alignment: linux requires rsp to be a multiple of 16 before a call
-    int size = std::abs(stack_frame_size);
-    int aligned_size = (size % 16 == 0) ? size : size + (16 - size % 16);
-    code += "sub rsp, " + std::to_string(aligned_size) + "\n";
-
-    // save register arguments into their basement slots (negative offsets)
-    std::vector<std::string> arg_regs = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
-    for (int i = 0; i < (int)parameters.size() && i < 6; ++i) {
-        int offset = -((i + 1) * 8);
-        code += "mov [rbp + " + std::to_string(offset) + "], " + arg_regs[i] + "\n";
-    }
-
-    code += body_node->to_asm();
-
-    // all returns jump here
-    code += my_exit + ":\n";
-    code += "mov rsp, rbp\n";
-    code += "pop rbp\n";
-    code += "ret\n";
-    
-    current_exit_label = prev_exit;
-    return code;
-}
-
-std::string ProcCallNode::to_asm() {
-    std::string code;
-    
-    //parameter registersI
-    std::vector<std::string> arg_regs = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
-
-    for (const auto& arg : arguments) {
-        if (arg) code += arg->to_asm();
-    }
-
-    for (int i = arguments.size() - 1; i >= 0; --i) {
-        if (i < 6) code += "pop " + arg_regs[i] + "\n";
-    }
-
-    if (proc_name == "echo") {
-        code += "extern printf\n";
+    for(const auto& instr : instructions) {
         
-        // selects format string based on argument type
-        if (!arguments.empty() && arguments[0]->getType() == "string") {
-            code += "mov rsi, rdi\n"; 
-            code += "lea rdi, [format_str]\n";
-            code += "mov rax, 0\n"; 
-        } else if (!arguments.empty() && arguments[0]->getType() == "double") {
-            code += "movq xmm0, rdi\n";
-            code += "lea rdi, [format_dbl]\n"; 
-            code += "mov rax, 1\n"; 
-        } else {
-            code += "mov rsi, rdi\n"; 
-            code += "lea rdi, [format_int]\n"; 
-            code += "mov rax, 0\n"; 
+        switch (instr.op) {
+       
+            case OPCODE::ADD: {
+                if(instr.result.data_type == "double") {
+                    code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
+                    code += "\taddsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tmovsd " + get_addr(instr.result) + ", xmm0\n";
+               }else {
+                    code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tadd rax, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                }
+                break;
+            }
+            
+            case OPCODE::MINUS: {
+                if(instr.result.data_type == "double") {
+                    code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tsubsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tmovsd " + get_addr(instr.result) + ", xmm0\n";
+               }else {
+                    code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tsub rax, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                }
+                break;
+            }
+            
+            case OPCODE::MUL: {
+                if(instr.result.data_type == "double") {
+                    code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tmulsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tmovsd " + get_addr(instr.result) + ", xmm0\n";
+               }else {
+                    code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                    code += "\timul rax, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                }
+                break;
+            }
+            
+            case OPCODE::DIV: {
+                if(instr.result.data_type == "double") {
+                    code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tdivsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tmovsd " + get_addr(instr.result) + ", xmm0\n";
+               }else {
+                    code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcqto\n";
+                    code += "\tidiv qword " + get_addr(instr.right_operand) + "\n";
+                    code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                }
+                break;
+            }
+            
+            case OPCODE::LT: {
+                if(instr.left_operand.data_type == "double") {
+                    code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcomisd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tsetb al\n"; // below = less than for double
+                } else {
+                    code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcmp rax, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tsetl al\n"; // less than for signed int
+                }
+                code += "\tmovzx rax, al\n";
+                code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                break;
+            }
+            
+            case OPCODE::GT: {
+                if(instr.left_operand.data_type == "double") {
+                    code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcomisd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tseta al\n"; // above = greater than for double
+                } else {
+                    code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcmp rax, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tsetg al\n"; // greater than for signed int
+                }
+                code += "\tmovzx rax, al\n";
+                code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                break;
+            }
+            
+            case OPCODE::LOE: {
+                if(instr.left_operand.data_type == "double") {
+                    code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcomisd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tsetbe al\n"; // below or equal
+                } else {
+                    code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcmp rax, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tsetle al\n"; // less or equal for signed int
+                }
+                code += "\tmovzx rax, al\n";
+                code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                break;
+            }
+            
+            case OPCODE::GOE: {
+                if(instr.left_operand.data_type == "double") {
+                    code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcomisd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tsetae al\n"; // above or equal
+                } else {
+                    code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcmp rax, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tsetge al\n"; // greater or equal for signed int
+                }
+                code += "\tmovzx rax, al\n";
+                code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                break;
+            }
+            
+            case OPCODE::RETURN: {
+                if (instr.right_operand.name != "") {
+                    // return value in rax or xmm0 based on standard abi
+                    if (instr.right_operand.data_type == "double") {
+                        code += "\tmovsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    } else {
+                        code += "\tmov rax, " + get_addr(instr.right_operand) + "\n";
+                    }
+                }
+                // emit standard stack frame teardown
+                code += "\tleave\n";
+                code += "\tret\n";
+                break;
+            }
+            
+            case OPCODE::GOTO: {
+                code += "\tjmp " + instr.right_operand.name + "\n";
+                break;
+            }
+            
+            case OPCODE::IF_FALSE: {
+                code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                code += "\tcmp rax, 0\n";
+                code += "\tje " + instr.result.name + "\n"; // jump if truthy value is false (0)
+                break;
+            }
+            
+            case OPCODE::ASSIGN: {
+                if(instr.result.data_type == "double") {
+                    code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tmovsd " + get_addr(instr.result) + ", xmm0\n";
+                } else {
+                    code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                }
+                break;
+            }
+            
+            case OPCODE::LABEL: {
+                code += instr.result.name + ":\n";
+                // reset param counters when a new function/label starts
+                int_param_idx = 0;
+                double_param_idx = 0;
+
+                // add function prologue if this label is a registered function
+                SymbolEntry* fn_entry = table->lookup(instr.result.name);
+                if (fn_entry && fn_entry->is_function) {
+                    //push fp and set new fp
+                     code += "\tpush rbp\n";
+                     code += "\tmov rbp, rsp\n";
+                     
+                     // aligns stack for local variables
+                     int alloc = -(fn_entry->stack_frame_size);
+                     if (alloc % 16 != 0) alloc += (16 - (alloc % 16));
+                     if (alloc > 0) code += "\tsub rsp, " + std::to_string(alloc) + "\n";
+                }
+                break;
+            }
+            
+            case OPCODE::CALL: {
+               
+                code += "\tmov al, " + std::to_string(double_arg_idx) + "\n";
+                code += "\tcall " + instr.left_operand.name + "\n";
+
+                // return values are stored in rax
+                if (instr.result.name != "" && instr.result.data_type != "void") {
+                    if (instr.result.data_type == "double") {
+                        code += "\tmovsd " + get_addr(instr.result) + ", xmm0\n";
+                    } else {
+                        code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                    }
+                }
+
+                // reset arg counters after a call is complete
+                int_arg_idx = 0;
+                double_arg_idx = 0;
+                break;
+            }
+            
+            case OPCODE::PARAM: {
+                if (instr.result.data_type == "double") {
+                    if (double_param_idx < double_regs.size()) {
+                        code += "\tmovsd " + get_addr(instr.result) + ", " + double_regs[double_param_idx++] + "\n";
+                    } else {
+                        
+                    }
+                } else {
+                    if (int_param_idx < int_regs.size()) {
+                        code += "\tmov " + get_addr(instr.result) + ", " + int_regs[int_param_idx++] + "\n";
+                    }
+                }
+                break;
+            }
+            
+            case OPCODE::ARG: {
+                if (instr.left_operand.data_type == "double") {
+                    if (double_arg_idx < double_regs.size()) {
+                        code += "\tmovsd " + double_regs[double_arg_idx++] + ", " + get_addr(instr.left_operand) + "\n";
+                    }
+                } else {
+
+                    if (int_arg_idx < int_regs.size()) {
+                        code += "\tmov " + int_regs[int_arg_idx++] + ", " + get_addr(instr.left_operand) + "\n";
+                    }
+                }
+                break;
+            }
+            
+            case OPCODE::STORM_DEF: {
+                break;
+            }
+            
+            case OPCODE::STORM_INIT: {
+                break;
+            }
         }
-
-        code += "call printf\n";
-    } else {
-        code += "mov rax, 0\n"; // 0 xmm registers for normal proc calls unless they take floats
-        code += "call " + proc_name + "\n";
     }
 
-    if (actual_type != "void") {
-        code += "push rax\n";
-    }
-    return code;
-
+    return data + "\n\n" + main_code + code;
 }
-
-std::string StormNode::to_asm() {
-    return "";
-}
-
-std::string IfNode::to_asm() {
-    std::string code;
-
-    code += condition->to_asm();
-
-    code += "pop rax\n";//get the true or false from the binary expression
-    code += "cmp rax, 0\n";//sets flag to 1 if rax is 0;
-    
-    std::string if_label("IF_" + std::to_string(if_counter++));
-
-    code += "je "+ if_label + "\n";//jump past body if condition is false
-
-    code += if_body->to_asm();
-    
-    code += if_label + ":\n";
-
-    return code;
-}
-
-std::string WhileNode::to_asm() {
-    std::string code;
-    
-    std::string start_while("IF_" + std::to_string(if_counter++));
-    std::string end_while("IF_" + std::to_string(if_counter++));
-
-    code += start_while + ":\n";
-
-    code += condition->to_asm();
-
-    code += "pop rax\n";//get the true or false from the binary expression
-    code += "cmp rax, 0\n";//if rax is 0, it sets the zero flag
-    
-    code += "je " + end_while + "\n";//jump past body if zero flag is set
-    code += while_body->to_asm();
-
-    code += "jmp " + start_while + "\n";
-    code += end_while + ":\n";
-
-
-    return code;
-}
-
-std::string ForNode::to_asm() {
-
-    //if statement counter is just for everything cuz why not
-    std::string code;
-    std::string start_label = "FOR_START_" + std::to_string(if_counter++);
-    std::string end_label = "FOR_END_" + std::to_string(if_counter++);
-
-    // initialize loop variable
-    if (init && init.value()) code += init.value()->to_asm();
-
-    code += start_label + ":\n";
-
-    // check condition if it exists
-    if (condition && condition.value()) {
-        code += condition.value()->to_asm();
-        code += "pop rax\n";
-        code += "cmp rax, 0\n";
-        code += "je " + end_label + "\n"; // exit if false
-    }
-
-    // run loop body
-    code += for_body->to_asm();
-
-    // run increment step
-    if (incr && incr.value()) code += incr.value()->to_asm();
-
-    code += "jmp " + start_label + "\n";
-    code += end_label + ":\n";
-
-    return code;
-}
-
-std::string RangeNode::to_asm() {
-    std::string code;
-    std::string start_label = "RANGE_START_" + std::to_string(if_counter++);
-    std::string end_label = "RANGE_END_" + std::to_string(if_counter++);
-
-    // set initial value of iterator
-    code += condition->to_asm();
-    code += "pop rax\n";
-    code += "mov [rbp + " + std::to_string(saved_offset) + "], rax\n";
-
-    code += start_label + ":\n";
-
-    // check if iterator < end_val
-    code += end_val->to_asm();
-    code += "mov rax, [rbp + " + std::to_string(saved_offset) + "]\n";
-    code += "pop rbx\n";
-    code += "cmp rax, rbx\n";
-    code += "jge " + end_label + "\n";
-
-    code += range_body->to_asm();
-
-    // increment iterator
-    code += "mov rax, [rbp + " + std::to_string(saved_offset) + "]\n";
-    code += "inc rax\n";
-    code += "mov [rbp + " + std::to_string(saved_offset) + "], rax\n";
-
-    code += "jmp " + start_label + "\n";
-    code += end_label + ":\n";
-    return code;
-}
-
-std::string UnaryIncrNode::to_asm() {
-    std::string code;
-
-    // load variable into rax using saved offset
-    code += "mov rax, [rbp + " + std::to_string(saved_offset) + "]\n";
-
-    if(op == "++") {
-        code += "inc rax\n"; // increment
-    }else if(op == "--") {
-        code += "dec rax\n"; // decrement
-    }
-
-    // save updated value back to stack
-    code += "mov [rbp + " + std::to_string(saved_offset) + "], rax\n";
-
-    return code;
-}
-
-std::string BinaryExpression::to_asm() {
-    std::string code;
-   
-
-    code += left->to_asm() + "\n";
-    code += right->to_asm() + "\n";
-    
-    code += "pop rbx\n";
-    code += "pop rax\n";
-
-    if(op == "<") {
-        code += "cmp rax, rbx\n";
-        code += "setl al\n"; //sets the al register to 0/1 based on the last comparison
-        code += "movzx rax, al\n"; //moves bits to rax and filling as al is only 8 bits
-        code += "push rax\n";
-
-        return code;
-
-    }else if(op == ">") {
-        code += "cmp rax, rbx\n";
-        code += "setg al\n";
-        code += "movzx rax, al\n";
-        code += "push rax\n";
-
-        return code;
-    
-    }else if(op == "==") {
-        code += "cmp rax, rbx\n";
-        code += "sete al\n";
-        code += "movzx rax, al\n";
-        code += "push rax\n";
-        
-        return code;
-    
-    }else if(op == "<=") {
-        code += "cmp rax, rbx\n";
-        code += "setle al\n";
-        code += "movzx rax, al\n";
-        code += "push rax\n";
-        
-        return code;
-        
-    }else if(op == ">=") {
-        code += "cmp rax, rbx\n";
-        code += "setge al\n";
-        code += "movzx rax, al\n";
-        code += "push rax\n";
-        
-        return code;
-    }
-
-    if(op == "/") {
-        code += "cqo\n"; //extends the register into rdx spanning 128 bits
-        code += "idiv rbx\n"; // rax is a special reg, so idiv knows about it rax = rax / rbx
-        code += "push rax\n"; 
-        return code;
-    }
-
-    std::string operand;
-    if(op == "*") {
-        operand = "imul";
-    }else if(op == "+") {
-        operand = "add";
-    }else if(op == "-") {
-        operand = "sub";
-    }
-
-    code += operand + " rax, " + "rbx\n";
-    code += "push rax\n";
-
-    return code;
-    
-}
-
-std::string IntegerCondition::to_asm() {
-    std::string code;
-
-    code += "push " + token.value + "\n";
-
-    return code;
-}
-
-std::string DoubleCondition::to_asm() {
-
-    std::string label = "DBL_" + std::to_string(double_counter++);
-  
-    std::string data_line = label + ":  dq " + token.value + "\n";
-    data += data_line;
-
-    //loads value into rax from the data section label
-    std::string code = "mov rax, [" + label + "]\n";
-    //push onto stack
-    code += "push rax\n";
-
-    return code;
-}
-
-std::string BoolCondition::to_asm() {
-    std::string code;
-
-    std::string bin = token.value == "true" ? "1" : "0";
-    code += "push " + bin + "\n";
-    
-    return code;
-}
-
-std::string StringCondition::to_asm() {
-  
-    std::string label = "STR_" + std::to_string(string_counter++);
-  
-    std::string data_line = label + ": db \"" + token.value + "\", 10, 0\n";
-    data += data_line;
-
-    //loads address into rax
-    std::string code = "lea rax, [" + label + "]\n";
-    //push onto stack
-    code += "push rax\n";
-
-    return code;
-}
-
-std::string CharCondition::to_asm() {
-    return "";
-}
-
-std::string IdentifierCondition::to_asm() {
-    std::string code;
-    code += "mov rax, [rbp + " + std::to_string(this->saved_offset) + "]\n";
-    code += "push rax\n";
-    return code;
-}
-
-std::string ReturnNode::to_asm() {
-    std::string code;
-    if (ret) {
-        code += ret->to_asm(); // Pushes result to stack
-        code += "pop rax\n";   // Function returns always go in RAX
-    }
-    
-    // Jump to the exit label of the current function to clean up
-    if (!current_exit_label.empty()) {
-        code += "jmp " + current_exit_label + "\n";
-    }
-    
-    return code;
-}
-
-
-

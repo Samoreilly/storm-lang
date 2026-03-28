@@ -440,8 +440,18 @@ std::unique_ptr<Condition> Parser::parse_primary() {
             if (peek_next(1).value == "(") {
                 return parse_proc_call();
             }
+
+            Token res_token = curr;
             advance();
-            return std::make_unique<IdentifierCondition>(curr);
+
+            // allow chaining: player.pos.x
+            while (index < length && get_token().value == ".") {
+                advance(); // consume '.'
+                res_token.value += "." + get_token().value;
+                advance(); // consume field identifier
+            }
+
+            return std::make_unique<IdentifierCondition>(res_token);
         }
 
         //default to string is safest

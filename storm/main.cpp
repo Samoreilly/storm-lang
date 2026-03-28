@@ -4,6 +4,7 @@
 #include "transpiler/transpile.h"
 #include "compiler/semantic_analysis/semantic.h"
 #include "compiler/ir/ir.h"
+#include "compiler//genx86/backend.h"
 #include "token.h"
 #include <cstdlib>
 #include <fstream>
@@ -60,16 +61,18 @@ int main(int argc, char* argv[]) {
         int memory = 0;
     
         SymbolTable master_table("master-node");
-        
+
         master_node->analyze(&master_table, memory);
    
         //intermediate representation
         Ir ir{master_node};
         ir.gen_ir(ir);
         ir.print();
-       
+        
+        std::vector<Instruction> instr = ir.instructions;
 
-        std::string asm_code = master_node->to_asm();
+        Backend b{instr, &master_table};
+        std::string asm_code = b.gen_asm();
 
         std::ofstream storm("storm.asm");
 
@@ -97,6 +100,7 @@ int main(int argc, char* argv[]) {
     // 
     }catch(const std::exception& e) {
         std::cerr << e.what();
+        return 1;
     }
 
     return 0;

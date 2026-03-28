@@ -37,6 +37,9 @@ void ProcedureNode::analyze(SymbolTable* table, int& curr) {
         
         SymbolEntry v(var->name, var->type.value(), local_offset, false, 0);
         proc_scope.insert(var->name, v);
+
+        // Crucial: save the offset so gen_ir knows where this param lives!
+        var->saved_offset = local_offset;
     }
 
     body_node->analyze(&proc_scope, local_offset);
@@ -80,10 +83,10 @@ void VariableNode::analyze(SymbolTable* table, int& curr) {
 
     if(type.has_value()) {
 
-        //check globally for redefintion
-        SymbolEntry* found = table->lookup(this->name);
+        //check locally for redefinition
+        SymbolEntry* found = table->lookup_local(this->name);
         
-        if(found) throw std::runtime_error("Redefintion of variable: " + name);
+        if(found) throw std::runtime_error("Redefinition of variable: " + name);
 
         if(init && type.value() != init->getType()) {
             throw std::runtime_error("\n\nError: Type mismatch: Cannot initialize" + name + "(" + type.value() + ") with " + init->getType());
@@ -102,6 +105,27 @@ void VariableNode::analyze(SymbolTable* table, int& curr) {
 
         if(!init) {
             throw std::runtime_error("\nError: No assignment on variable: " + this->name + "\n\n");
+        }
+
+        // check if it is a dot-separated member assignment (e.g., n.x = 5)
+        if (this->name.find(".") != std::string::npos) {
+            size_t dot_pos = this->name.find(".");
+            std::string base = this->name.substr(0, dot_pos);
+            std::string field = this->name.substr(dot_pos + 1);
+
+            SymbolEntry* base_entry = table->lookup(base);
+            if (!base_entry) throw std::runtime_error("Undefined base variable: " + base + " found");
+            
+            // Find the struct type to get the field's internal offset
+            SymbolEntry* struct_def = table->lookup(base_entry->type);
+            if (struct_def && struct_def->fields.count(field)) {
+                 this->saved_offset = base_entry->offset - struct_def->fields[field];
+            } else {
+                 this->saved_offset = base_entry->offset; // fallback
+            }
+
+            // bypass precise type checking for struct fields since the field types are currently not preserved
+            return;
         }
 
         SymbolEntry* found = table->lookup(this->name);
@@ -129,6 +153,28 @@ void VariableNode::analyze(SymbolTable* table, int& curr) {
 }
 
 void IdentifierCondition::analyze(SymbolTable* table, int& curr) {
+
+    // check if it's a dot-separated member access (e.g., n.x)
+    if (token.value.find(".") != std::string::npos) {
+        size_t dot_pos = token.value.find(".");
+        std::string base = token.value.substr(0, dot_pos);
+        std::string field = token.value.substr(dot_pos + 1);
+
+        SymbolEntry* base_entry = table->lookup(base);
+        if (!base_entry) throw std::runtime_error("Base variable " + base + " was never defined");
+        
+        // Find the struct type to get the field's internal offset
+        SymbolEntry* struct_def = table->lookup(base_entry->type);
+        if (struct_def && struct_def->fields.count(field)) {
+             // Struct fields are stored as positive offsets from the base
+             this->saved_offset = base_entry->offset - struct_def->fields[field];
+        } else {
+             this->saved_offset = base_entry->offset; // fallback
+        }
+
+        this->actual_type = "int"; // default for dot-access
+        return;
+    }
 
     SymbolEntry* entry = table->lookup(token.value);
     
@@ -209,8 +255,8 @@ void ForNode::analyze(SymbolTable* table, int& current_offset) {
 void RangeNode::analyze(SymbolTable* table, int& current_offset) {
     //range(i = 0..50) {}
 
-    //check if i is already defined
-    SymbolEntry* found = table->lookup(this->name);
+    //check if i is already defined locally
+    SymbolEntry* found = table->lookup_local(this->name);
     if (found) {
         throw std::runtime_error("Redefinition of loop iterator '" + name + "' found!");
     }
@@ -227,6 +273,23 @@ void RangeNode::analyze(SymbolTable* table, int& current_offset) {
 }
 
 void UnaryIncrNode::analyze(SymbolTable* table, int& current_offset) {
+    if (this->name.find(".") != std::string::npos) {
+        size_t dot_pos = this->name.find(".");
+        std::string base = this->name.substr(0, dot_pos);
+        std::string field = this->name.substr(dot_pos + 1);
+
+        SymbolEntry* base_entry = table->lookup(base);
+        if (!base_entry) throw std::runtime_error("Cannot increment undefined base variable '" + base + "'!");
+        
+        SymbolEntry* struct_def = table->lookup(base_entry->type);
+        if (struct_def && struct_def->fields.count(field)) {
+             this->saved_offset = base_entry->offset - struct_def->fields[field];
+        } else {
+             this->saved_offset = base_entry->offset;
+        }
+        return;
+    }
+
     // variable must exist to be incremented
     SymbolEntry* found = table->lookup(name);
     if (!found) {

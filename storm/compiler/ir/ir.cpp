@@ -104,25 +104,25 @@ Address VariableNode::gen_ir(Ir& context) {
     if(init) {
 
         Address in = init->gen_ir(context);
-        Address var(ADDR_TYPE::VARIABLE, name , name);
+        Address var(ADDR_TYPE::VARIABLE, name , name, type.has_value() ? type.value() : in.data_type, this->saved_offset);
         
         std::cerr << name << name << name;
         //turns x *= 5 into x = x * 5
-        if(op.has_value()) {
-            std::string& op = this->op.value();
+        if(op.has_value() && op.value() != "=") {
+            std::string& o = this->op.value();
 
-            if(op == "*=") {
+            if(o == "*=") {
                 context.emit(var, var, OPCODE::MUL, in);
-            }else if(op == "+=") {
+            }else if(o == "+=") {
                 context.emit(var, var, OPCODE::ADD, in);
-            }else if(op == "/=") {
+            }else if(o == "/=") {
                 context.emit(var, var, OPCODE::DIV, in);
-            }else if(op == "-=") {
+            }else if(o == "-=") {
                 context.emit(var, var, OPCODE::MINUS, in);
             }
 
-        }else {
-            //x = 5;
+        } else {
+            // x = 5; or a = b;
             if(!context.instructions.empty() && dynamic_cast<ProcCallNode*>(init.get())) {
                 Instruction& last = context.instructions.back();
                 last.result = var;
@@ -140,7 +140,8 @@ Address VariableNode::gen_ir(Ir& context) {
         for (int i = 0; i < storm_init_fields.size(); i++) {
             Address val = storm_init_fields[i]->gen_ir(context); 
             std::string hidden_field = name + ".field_" + std::to_string(i);
-            Address field(ADDR_TYPE::VARIABLE, hidden_field, hidden_field);
+            // fields are at saved_offset, saved_offset-8, saved_offset-16...
+            Address field(ADDR_TYPE::VARIABLE, hidden_field, hidden_field, "", this->saved_offset - (i * 8));
             context.instructions.push_back({field, val, OPCODE::ASSIGN, Address{}});
         }
     }
@@ -159,20 +160,45 @@ Address ProcedureNode::gen_ir(Ir& context) {
     context.curr_params.clear();
 
     for(const auto& param : parameters) {
-        Address p_addr(ADDR_TYPE::PARAM, param->name, param->name);
+        Address p_addr(ADDR_TYPE::PARAM, param->name, param->name, param->type.value(), param->saved_offset);
         context.curr_params.push_back(p_addr);
         context.emit(p_addr, p_addr, OPCODE::PARAM, p_addr);
     }
 
     body_node->gen_ir(context);
 
+    // ensure function always returns (especially for main)
+    context.emit(Address{}, Address{}, OPCODE::RETURN, Address{});
+
     return {};
 }
 
 Address ProcCallNode::gen_ir(Ir& context) {
 
-    //changed this so arguments are contigious
     std::vector<Address> calculated_args;
+    
+    // convert to printf
+    if (proc_name == "echo" || proc_name == "print") {
+        std::string format = "`";
+        for (const auto& arg : arguments) {
+            if (!arg) continue;
+            std::string type = arg->getType();
+            if (type == "int" || type == "bool") format += "%i ";
+            else if (type == "double") format += "%f ";
+            else if (type == "string") format += "%s ";
+            else if (type == "char") format += "%c ";
+            else format += "%i ";
+        }
+        if (format.length() > 1) {
+            format.pop_back(); // remove trailing space
+        }
+        if (proc_name == "echo") format += "\\n";
+        format += "`";
+        
+        Address fmt_str(ADDR_TYPE::CONSTANT, format, format, "string");
+        calculated_args.push_back(fmt_str);
+    }
+
     for(const auto& args : arguments) {
         Address arg = args->gen_ir(context);        
         calculated_args.push_back(arg);
@@ -185,13 +211,15 @@ Address ProcCallNode::gen_ir(Ir& context) {
     Address res_proc = Address{};
 
     if(actual_type != "void") {
-        res_proc = context.get_temp();
+        res_proc = context.get_temp(actual_type);
     }
 
-    Address proc_label(ADDR_TYPE::VARIABLE, proc_name, proc_name);
+    std::string call_name = (proc_name == "echo" || proc_name == "print") ? "printf" : proc_name;
+    Address proc_label(ADDR_TYPE::VARIABLE, call_name, call_name);
 
-    //e.g. t1 = get_sum(1, 2);
+    // e.g. call printf
     context.emit(res_proc, proc_label, OPCODE::CALL, Address{});
+
 
     return res_proc;
 }
@@ -379,8 +407,8 @@ Address RangeNode::gen_ir(Ir& context) {
 }
 
 Address UnaryIncrNode::gen_ir(Ir& context) {
-    Address var(ADDR_TYPE::VARIABLE, name, name);
-    Address constant(ADDR_TYPE::CONSTANT, "1", "1");
+    Address var(ADDR_TYPE::VARIABLE, name, name, "int", this->saved_offset);
+    Address constant(ADDR_TYPE::CONSTANT, "1", "1", "int");
 
     OPCODE op_code = (op == "++") ? OPCODE::ADD : OPCODE::MINUS;
 
@@ -395,7 +423,7 @@ Address BinaryExpression::gen_ir(Ir& context) {
     Address right_addr = right->gen_ir(context);
     OPCODE opcode = get_opcode(op); 
     
-    Address temp = context.get_temp();
+    Address temp = context.get_temp(left_addr.data_type);
 
     context.emit(temp, left_addr, opcode, right_addr);
 
@@ -403,27 +431,27 @@ Address BinaryExpression::gen_ir(Ir& context) {
 }
 
 Address IntegerCondition::gen_ir(Ir& context) {
-    return { ADDR_TYPE::CONSTANT, token.value, token.value }; 
+    return { ADDR_TYPE::CONSTANT, token.value, token.value, "int" }; 
 }
 
 Address DoubleCondition::gen_ir(Ir& context) {
-    return { ADDR_TYPE::CONSTANT, token.value, token.value }; 
+    return { ADDR_TYPE::CONSTANT, token.value, token.value, "double" }; 
 }
 
 Address BoolCondition::gen_ir(Ir& context) {
-    return { ADDR_TYPE::CONSTANT, token.value, token.value }; 
+    return { ADDR_TYPE::CONSTANT, token.value, token.value, "bool" }; 
 }
 
 Address StringCondition::gen_ir(Ir& context) {
-    return { ADDR_TYPE::CONSTANT, token.value, token.value }; 
+    return { ADDR_TYPE::CONSTANT, token.value, token.value, "string" }; 
 }
 
 Address CharCondition::gen_ir(Ir& context) {
-    return { ADDR_TYPE::CONSTANT, token.value, token.value }; 
+    return { ADDR_TYPE::CONSTANT, token.value, token.value, "char" }; 
 }
 
 Address IdentifierCondition::gen_ir(Ir& context) {
-    return { ADDR_TYPE::VARIABLE, token.value, token.value }; 
+    return { ADDR_TYPE::VARIABLE, token.value, token.value, actual_type, this->saved_offset }; 
 }
 
 Address ReturnNode::gen_ir(Ir& context) {
@@ -462,7 +490,7 @@ void Ir::tco(Ir& context) {
     //stage arg values into temps to prevent swap problem
     std::vector<Address> temps;
     for (const auto& arg : arg_values) {
-        Address t = context.get_temp();
+        Address t = context.get_temp(arg.data_type);
         context.emit(t, arg, OPCODE::ASSIGN, Address{});
         temps.push_back(t);
     }

@@ -47,7 +47,7 @@ const std::string Transpile::transpile() {
         }
     }
     
-    std::cout << code << std::endl;
+    std::cout << code << "\n";
 
     return code;
 }

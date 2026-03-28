@@ -135,7 +135,14 @@ std::unique_ptr<Node> Parser::parse_statement() {
         }
 
         case TokenType::IDENTIFIER: {
-            Token next = peek_next(1);
+            // look ahead past any dot-access chains (e.g. n.x.y)
+            int lookahead = 1;
+            while (peek_next(lookahead).value == ".") {
+                lookahead += 2; // skip '.' and the field identifier
+            }
+            
+            Token next = peek_next(lookahead);
+            
             //these look ahead must be handled here and not in parse_variable
             //as its the only way to distinguish between unary operations, declarations and initializations
             if(next.value == "(") {
@@ -400,14 +407,22 @@ std::unique_ptr<IfNode> Parser::parse_if() {
 
 std::unique_ptr<Node> Parser::parse_incr() {
 
-    Token name = get_token();
+    Token name_tok = get_token();
+    std::string name = name_tok.value;
 
     std::cerr << "Parse incr: " << get_token().value << "Line" << get_token().line << "\n";
-    if(name.type != TokenType::IDENTIFIER) {
+    if(name_tok.type != TokenType::IDENTIFIER) {
         throw std::runtime_error("For loop increment must start with a variable name");
     }
 
     advance();
+    
+    // consume dot-access fields to form the full identifier string "n.x"
+    while(index < length && get_token().value == ".") {
+        advance(); // consume '.'
+        name += "." + get_token().value; 
+        advance(); // consume field name
+    }
 
     std::cerr << "Parse incr: " << get_token().value << "\n";
     
@@ -416,7 +431,7 @@ std::unique_ptr<Node> Parser::parse_incr() {
 
         if(op.value == "++" || op.value == "--") {
             advance();
-            return std::make_unique<UnaryIncrNode>(name.value, op.value);
+            return std::make_unique<UnaryIncrNode>(name, op.value);
         }
 
     }
@@ -433,7 +448,7 @@ std::unique_ptr<Node> Parser::parse_incr() {
             auto value = parse_condition();
 
             auto node = std::make_unique<VariableNode>();
-            node->name = name.value;//identifier
+            node->name = name;//identifier (full dot path)
             node->op = op.value;//op
             node->init = std::move(value);//right side
 

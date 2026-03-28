@@ -10,9 +10,12 @@ struct Address {
     ADDR_TYPE type;
     std::string name;
     std::string value; 
+    std::string data_type;
+    int offset = 0;
     
-    Address(ADDR_TYPE t, std::string n, std::string v) : type(t), name(n), value(v) {}
-    Address() {}
+    Address(ADDR_TYPE t, std::string n, std::string v, std::string dt = "", int o = 0) 
+    : type(t), name(n), value(v), data_type(dt), offset(o) {}
+    Address() : type(ADDR_TYPE::CONSTANT), name(""), value(""), data_type(""), offset(0) {}
 };
 
 inline OPCODE get_opcode(const std::string& op) {
