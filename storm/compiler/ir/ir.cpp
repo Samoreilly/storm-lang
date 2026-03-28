@@ -282,6 +282,7 @@ void Ir::unroll(Ir& context, ForNode& for_node) {
     if(right) {
         right->token.value = std::to_string(n - remaining_instr);
     }
+    
     Address start_for = context.get_label();
     context.emitLabel(start_for);
     Address end_for = context.get_label();
@@ -297,11 +298,12 @@ void Ir::unroll(Ir& context, ForNode& for_node) {
     context.emitGoto(start_for);
     context.emitLabel(end_for);
 
-    for(int rem = 0; rem < remaining_instr;rem++){     
-        for_node.for_body->gen_ir(context);
-        for_node.incr.value()->gen_ir(context);
-    }
- 
+    if(remaining_instr > 0) {
+        for(int rem = 0; rem < remaining_instr;rem++){     
+            for_node.for_body->gen_ir(context);
+            for_node.incr.value()->gen_ir(context);
+        }
+    } 
 }
 
 Address RangeNode::gen_ir(Ir& context) {
