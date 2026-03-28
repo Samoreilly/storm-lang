@@ -268,11 +268,28 @@ void StormNode::analyze(SymbolTable* table, int& current_offset) {
     if (table->lookup(storm_name)) {
         throw std::runtime_error("Redefinition of storm (struct): " + storm_name);
     }
+    
     SymbolEntry entry(storm_name, "storm", 0, false, 0);
+    
     table->insert(storm_name, entry);
+
+    int struct_offset {0};
+
     for (const auto& stmt : storm_statements) {
-        if (stmt) stmt->analyze(table, current_offset);
+        if (stmt) {
+            
+            std::string field_name = stmt->name;
+
+            entry.fields[field_name] = struct_offset;
+
+            //every variable in Storm is 8 bytes (so optimal I know)
+            struct_offset += 8;
+        }
     }
+
+    entry.struct_size = struct_offset;
+
+    table->insert(storm_name, entry);
 }
 
 //empty

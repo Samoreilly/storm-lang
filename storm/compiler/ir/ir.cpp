@@ -12,24 +12,28 @@ Address Ir::gen_ir(Ir& context) {
 }
 
 static std::string opToString(OPCODE op) {
+    
     switch (op) {
-        case OPCODE::ADD: return "ADD";
-        case OPCODE::MINUS: return "SUB";
-        case OPCODE::MUL: return "MUL";
-        case OPCODE::DIV: return "DIV";
-        case OPCODE::LT: return "LT";
-        case OPCODE::GT: return "GT";
-        case OPCODE::LOE: return "LE";
-        case OPCODE::GOE: return "GE";
-        case OPCODE::RETURN: return "RET";
-        case OPCODE::GOTO: return "GOTO";
+   
+        case OPCODE::ADD:      return "ADD";
+        case OPCODE::MINUS:    return "SUB";
+        case OPCODE::MUL:      return "MUL";
+        case OPCODE::DIV:      return "DIV";
+        case OPCODE::LT:       return "LT";
+        case OPCODE::GT:       return "GT";
+        case OPCODE::LOE:      return "LE";
+        case OPCODE::GOE:      return "GE";
+        case OPCODE::RETURN:   return "RET";
+        case OPCODE::GOTO:     return "GOTO";
         case OPCODE::IF_FALSE: return "IF_FALSE";
-        case OPCODE::ASSIGN: return "ASSIGN";
-        case OPCODE::LABEL: return "LABEL";
-        case OPCODE::CALL: return "CALL";
-        case OPCODE::PARAM: return "PARAM";
-        case OPCODE::ARG: return "ARG";
-        default: return "UNKNOWN";
+        case OPCODE::ASSIGN:   return "ASSIGN";
+        case OPCODE::LABEL:    return "LABEL";
+        case OPCODE::CALL:     return "CALL";
+        case OPCODE::PARAM:    return "PARAM";
+        case OPCODE::ARG:      return "ARG";
+        case OPCODE::STORM_DEF:return "STORM_DEF";
+        case OPCODE::STORM_INIT:return "STORM_INIT";
+        default:               return "UNKNOWN";
     }
 }
 
@@ -53,6 +57,10 @@ void Ir::print() {
              std::cout << "CALL " << inst.left_operand.name;
         } else if (inst.op == OPCODE::ARG || inst.op == OPCODE::PARAM) {
             std::cout << opToString(inst.op) << " " << inst.result.name;
+        } else if (inst.op == OPCODE::STORM_DEF) {
+            std::cout << "STRUCT_DEF " << inst.result.name;
+        } else if (inst.op == OPCODE::STORM_INIT) {
+            std::cout << "STORM_INIT " << inst.result.name << " " << inst.left_operand.name;
         } else if (inst.op == OPCODE::RETURN) {
             std::cout << "RETURN " << inst.right_operand.name;
         } else {
@@ -70,6 +78,7 @@ Address MainNode::gen_ir(Ir& context) {
         if(node) node->gen_ir(context);
     }
     context.remove_unused_variables();
+
     return {};
 }
 
@@ -121,6 +130,19 @@ Address VariableNode::gen_ir(Ir& context) {
                 context.emit(var, in, OPCODE::ASSIGN, Address{});
             }
         }
+    } else if (!storm_init_fields.empty()) {
+        Address base_var(ADDR_TYPE::VARIABLE, name, name);
+        if (type.has_value()) {
+            Address type_addr(ADDR_TYPE::VARIABLE, type.value(), type.value());
+            context.instructions.push_back({base_var, type_addr, OPCODE::STORM_INIT, Address{}});
+        }
+
+        for (int i = 0; i < storm_init_fields.size(); i++) {
+            Address val = storm_init_fields[i]->gen_ir(context); 
+            std::string hidden_field = name + ".field_" + std::to_string(i);
+            Address field(ADDR_TYPE::VARIABLE, hidden_field, hidden_field);
+            context.instructions.push_back({field, val, OPCODE::ASSIGN, Address{}});
+        }
     }
 
     return {};
@@ -135,6 +157,7 @@ Address ProcedureNode::gen_ir(Ir& context) {
     context.emitLabel(start_proc);
 
     context.curr_params.clear();
+
     for(const auto& param : parameters) {
         Address p_addr(ADDR_TYPE::PARAM, param->name, param->name);
         context.curr_params.push_back(p_addr);
@@ -148,10 +171,16 @@ Address ProcedureNode::gen_ir(Ir& context) {
 
 Address ProcCallNode::gen_ir(Ir& context) {
 
+    //changed this so arguments are contigious
+    std::vector<Address> calculated_args;
     for(const auto& args : arguments) {
         Address arg = args->gen_ir(context);        
-        context.emit(arg, arg, OPCODE::ARG, arg);
+        calculated_args.push_back(arg);
     }
+
+    for(const auto& arg : calculated_args) {
+        context.emit(arg, arg, OPCODE::ARG, arg);
+    }   
 
     Address res_proc = Address{};
 
@@ -168,6 +197,31 @@ Address ProcCallNode::gen_ir(Ir& context) {
 }
 
 Address StormNode::gen_ir(Ir& context) {
+    
+    Address storm_label(ADDR_TYPE::VARIABLE, storm_name, storm_name);
+    
+    context.instructions.push_back({storm_label, Address{}, OPCODE::STORM_DEF, Address{}});
+
+    for(const auto& s : storm_statements) {
+        if(s) s->gen_ir(context);
+    }
+
+    return {};
+}
+
+Address StormDotNode::gen_ir(Ir& context) {
+
+    if(init) {
+
+        Address val = init->gen_ir(context);
+
+        std::string storm_field = left + "." + right;
+
+        Address field(ADDR_TYPE::VARIABLE, storm_field, storm_field);
+        
+        context.instructions.push_back({field, val, OPCODE::ASSIGN, Address{}});
+    }
+    
     return {};
 }
 

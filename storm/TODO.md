@@ -13,7 +13,7 @@
    - 
 5. Remove unused variables | SEMI DONE
 6. Tail call optimization | DONE
-7. Partial loop unrolling
+7. Partial loop unrolling | DONE
    Plan - only unroll if right condition is a constant so i < 10
    instruction per loop is n / k, if (n % k != 0) do another loop of n % k for
    remaining instructions

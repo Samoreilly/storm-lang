@@ -189,6 +189,7 @@ public:
     std::unique_ptr<Condition> init;
     std::optional<std::string> op;
     int saved_offset {0};
+    std::vector<std::unique_ptr<Condition>> storm_init_fields;
 
     // VariableNode(std::string name, std::optional<std::string> type) 
     // : name(std::move(name)), type(std::move(type)), init(nullptr) {}
@@ -422,6 +423,31 @@ public:
         return code;
     }
     
+    void analyze(SymbolTable* table, int& current_offset) override;
+
+    std::string to_asm() override;
+
+    Address gen_ir(Ir& context) override;
+
+};
+
+class StormDotNode : public Node {
+public:
+
+    //player.damaage = 100;
+    std::string left;//player
+    std::string right;//damage
+    std::unique_ptr<Condition> init;//100
+
+    StormDotNode() {}
+    StormDotNode(std::string l, std::string r, std::unique_ptr<Condition> i) : left(l), right(r), init(std::move(i)) {}
+
+    void print() const override {}
+
+    void exec() override {}
+
+    std::string to_c(int indent = 0) override {}
+
     void analyze(SymbolTable* table, int& current_offset) override;
 
     std::string to_asm() override;

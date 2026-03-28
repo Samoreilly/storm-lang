@@ -10,8 +10,12 @@ struct SymbolEntry {
     int offset = 0;   
     int stack_frame_size {0};
     int param_counter {0};
+    int struct_size {0};
     bool is_function {false};
- 
+    
+    //field name to size in bytes
+    std::map<std::string, int> fields;
+
     SymbolEntry() = default;
     SymbolEntry(std::string n, std::string t, int o, bool is_f, int n_params)
     : name(n), type(t), offset(o), is_function(is_f), param_counter(n_params) {}

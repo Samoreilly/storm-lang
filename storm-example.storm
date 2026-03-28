@@ -1,8 +1,15 @@
 
 
+storm Node {
+    x: int;
+    y: int;
+};
+
 
 
 proc void main() {
+
+    n : Node{1, 2};
 
     a: int = 10;
     b: int = 20;

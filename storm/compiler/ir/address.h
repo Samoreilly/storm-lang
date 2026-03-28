@@ -3,7 +3,7 @@
 #include <string>
 
 //unary operations will be turned to i = i + 1
-enum class OPCODE {ADD, MINUS, MUL, DIV, LT, GT, LOE, GOE, RETURN, GOTO, IF_FALSE, ASSIGN, LABEL, CALL, PARAM, ARG};
+enum class OPCODE {ADD, MINUS, MUL, DIV, LT, GT, LOE, GOE, RETURN, GOTO, IF_FALSE, ASSIGN, LABEL, CALL, PARAM, ARG, STORM_DEF, STORM_INIT};
 enum class ADDR_TYPE {CONSTANT, TEMP, VARIABLE, PARAM, ARGS};
 
 struct Address {

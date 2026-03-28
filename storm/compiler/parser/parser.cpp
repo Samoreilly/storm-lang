@@ -240,14 +240,20 @@ std::unique_ptr<VariableNode> Parser::parse_variable() {
     consume(TokenType::SYMBOL, ":");
     
     Token type = get_token();
-    std::cerr << "Parse variable" << type.value;
-    if(!is_variable_type(type.value)) {
-        throw std::runtime_error("Please follow this syntax when declaring and/or initializing variables.\n Use: " 
-                                 "x: int; or x: int = 10; or x = 10 if already declared");
-    }
-
     var->type = type.value;
     advance();
+
+    // storm struct initialization block
+    if (check(TokenType::SYMBOL, "{")) {
+        consume(TokenType::SYMBOL, "{");
+        while(!check(TokenType::SYMBOL, "}")) {
+            var->storm_init_fields.push_back(parse_condition());
+            if(check(TokenType::SYMBOL, ",")) advance();
+        }
+        consume(TokenType::SYMBOL, "}");
+        consume(TokenType::SYMBOL, ";");
+        return var;
+    }
 
     if(check(TokenType::SYMBOL, ";") || check(TokenType::SYMBOL, ",")) {
         advance();

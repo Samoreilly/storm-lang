@@ -6,16 +6,18 @@ main:
 push rbp
 mov rbp, rsp
 sub rsp, 48
+pop rax
+mov [rbp + -8], rax
 push 10
 pop rax
-mov [rbp + -8], rax
+mov [rbp + -16], rax
 push 20
 pop rax
-mov [rbp + -16], rax
+mov [rbp + -24], rax
 push 30
 pop rax
-mov [rbp + -8], rax
-mov rax, [rbp + -8]
+mov [rbp + -16], rax
+mov rax, [rbp + -16]
 push rax
 pop rdi
 extern printf
@@ -25,7 +27,7 @@ mov rax, 0
 call printf
 push 0
 pop rax
-mov [rbp + -24], rax
+mov [rbp + -32], rax
 push 0
 push 0
 pop rsi
@@ -34,9 +36,9 @@ mov rax, 0
 call fun
 push 1
 pop rax
-mov [rbp + -32], rax
+mov [rbp + -40], rax
 FOR_START_1:
-mov rax, [rbp + -32]
+mov rax, [rbp + -40]
 push rax
 
 push 345
@@ -52,8 +54,8 @@ cmp rax, 0
 je FOR_END_2
 push 5
 pop rax
-mov [rbp + -40], rax
-mov rax, [rbp + -40]
+mov [rbp + -48], rax
+mov rax, [rbp + -48]
 push rax
 pop rdi
 extern printf
@@ -61,9 +63,9 @@ mov rsi, rdi
 lea rdi, [format_int]
 mov rax, 0
 call printf
-mov rax, [rbp + -32]
+mov rax, [rbp + -40]
 inc rax
-mov [rbp + -32], rax
+mov [rbp + -40], rax
 jmp FOR_START_1
 FOR_END_2:
 main_EXIT_0:

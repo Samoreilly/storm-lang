@@ -1,8 +1,15 @@
 
 
+s N {
+    x: i;
+    y: i;
+};
+
 
 
 p v m() {
+
+    n : N{1, 2};
 
     a: i = 1;
     b: i = 2;
@@ -33,425 +40,517 @@ p v f(v: i, v: i) {
 
 
 
+TokenType-> STORM
+Value-> storm
+ Line: 3 Column: 0
+
+TokenType-> IDENTIFIER
+Value-> Node
+ Line: 3 Column: 10
+
+TokenType-> SYMBOL
+Value-> {
+ Line: 3 Column: 11
+
+TokenType-> IDENTIFIER
+Value-> x
+ Line: 4 Column: 5
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 4 Column: 5
+
+TokenType-> INTEGER
+Value-> int
+ Line: 4 Column: 7
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 4 Column: 10
+
+TokenType-> IDENTIFIER
+Value-> y
+ Line: 5 Column: 5
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 5 Column: 5
+
+TokenType-> INTEGER
+Value-> int
+ Line: 5 Column: 7
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 5 Column: 10
+
+TokenType-> SYMBOL
+Value-> }
+ Line: 6 Column: 0
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 6 Column: 1
+
 TokenType-> PROC
 Value-> proc
- Line: 5 Column: 0
+ Line: 10 Column: 0
 
 TokenType-> VOID
 Value-> void
- Line: 5 Column: 5
+ Line: 10 Column: 5
 
 TokenType-> IDENTIFIER
 Value-> main
- Line: 5 Column: 14
+ Line: 10 Column: 14
 
 TokenType-> SYMBOL
 Value-> (
- Line: 5 Column: 14
+ Line: 10 Column: 14
 
 TokenType-> SYMBOL
 Value-> )
- Line: 5 Column: 15
+ Line: 10 Column: 15
 
 TokenType-> SYMBOL
 Value-> {
- Line: 5 Column: 17
+ Line: 10 Column: 17
 
 TokenType-> IDENTIFIER
-Value-> a
- Line: 7 Column: 5
+Value-> n
+ Line: 12 Column: 5
 
 TokenType-> SYMBOL
 Value-> :
- Line: 7 Column: 5
+ Line: 12 Column: 6
+
+TokenType-> IDENTIFIER
+Value-> Node
+ Line: 12 Column: 12
+
+TokenType-> SYMBOL
+Value-> {
+ Line: 12 Column: 12
+
+TokenType-> INTEGER
+Value-> 1
+ Line: 12 Column: 14
+
+TokenType-> SYMBOL
+Value-> ,
+ Line: 12 Column: 14
+
+TokenType-> INTEGER
+Value-> 2
+ Line: 12 Column: 17
+
+TokenType-> SYMBOL
+Value-> }
+ Line: 12 Column: 17
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 12 Column: 18
+
+TokenType-> IDENTIFIER
+Value-> a
+ Line: 14 Column: 5
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 14 Column: 5
 
 TokenType-> INTEGER
 Value-> int
- Line: 7 Column: 7
+ Line: 14 Column: 7
 
 TokenType-> OPERATOR
 Value-> =
- Line: 7 Column: 12
+ Line: 14 Column: 12
 
 TokenType-> INTEGER
 Value-> 10
- Line: 7 Column: 15
+ Line: 14 Column: 15
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 7 Column: 15
+ Line: 14 Column: 15
 
 TokenType-> IDENTIFIER
 Value-> b
- Line: 8 Column: 5
+ Line: 15 Column: 5
 
 TokenType-> SYMBOL
 Value-> :
- Line: 8 Column: 5
+ Line: 15 Column: 5
 
 TokenType-> INTEGER
 Value-> int
- Line: 8 Column: 7
+ Line: 15 Column: 7
 
 TokenType-> OPERATOR
 Value-> =
- Line: 8 Column: 12
+ Line: 15 Column: 12
 
 TokenType-> INTEGER
 Value-> 20
- Line: 8 Column: 15
+ Line: 15 Column: 15
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 8 Column: 15
+ Line: 15 Column: 15
 
 TokenType-> IDENTIFIER
 Value-> a
- Line: 9 Column: 5
+ Line: 16 Column: 5
 
 TokenType-> OPERATOR
 Value-> =
- Line: 9 Column: 7
+ Line: 16 Column: 7
 
 TokenType-> INTEGER
 Value-> 30
- Line: 9 Column: 10
+ Line: 16 Column: 10
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 9 Column: 10
+ Line: 16 Column: 10
 
 TokenType-> IDENTIFIER
 Value-> echo
- Line: 10 Column: 8
+ Line: 17 Column: 8
 
 TokenType-> SYMBOL
 Value-> (
- Line: 10 Column: 8
+ Line: 17 Column: 8
 
 TokenType-> IDENTIFIER
 Value-> a
- Line: 10 Column: 10
+ Line: 17 Column: 10
 
 TokenType-> SYMBOL
 Value-> )
- Line: 10 Column: 10
+ Line: 17 Column: 10
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 10 Column: 11
+ Line: 17 Column: 11
 
 TokenType-> IDENTIFIER
 Value-> total
- Line: 12 Column: 9
+ Line: 19 Column: 9
 
 TokenType-> SYMBOL
 Value-> :
- Line: 12 Column: 9
+ Line: 19 Column: 9
 
 TokenType-> INTEGER
 Value-> int
- Line: 12 Column: 11
+ Line: 19 Column: 11
 
 TokenType-> OPERATOR
 Value-> =
- Line: 12 Column: 16
+ Line: 19 Column: 16
 
 TokenType-> INTEGER
 Value-> 0
- Line: 12 Column: 18
+ Line: 19 Column: 18
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 12 Column: 18
+ Line: 19 Column: 18
 
 TokenType-> IDENTIFIER
 Value-> fun
- Line: 14 Column: 7
+ Line: 21 Column: 7
 
 TokenType-> SYMBOL
 Value-> (
- Line: 14 Column: 7
+ Line: 21 Column: 7
 
 TokenType-> INTEGER
 Value-> 0
- Line: 14 Column: 9
+ Line: 21 Column: 9
 
 TokenType-> SYMBOL
 Value-> ,
- Line: 14 Column: 9
+ Line: 21 Column: 9
 
 TokenType-> INTEGER
 Value-> 0
- Line: 14 Column: 12
+ Line: 21 Column: 12
 
 TokenType-> SYMBOL
 Value-> )
- Line: 14 Column: 12
+ Line: 21 Column: 12
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 14 Column: 13
+ Line: 21 Column: 13
 
 TokenType-> FOR
 Value-> for
- Line: 17 Column: 4
+ Line: 24 Column: 4
 
 TokenType-> SYMBOL
 Value-> (
- Line: 17 Column: 7
+ Line: 24 Column: 7
 
 TokenType-> IDENTIFIER
 Value-> i
- Line: 17 Column: 9
+ Line: 24 Column: 9
 
 TokenType-> SYMBOL
 Value-> :
- Line: 17 Column: 9
+ Line: 24 Column: 9
 
 TokenType-> INTEGER
 Value-> int
- Line: 17 Column: 11
+ Line: 24 Column: 11
 
 TokenType-> OPERATOR
 Value-> =
- Line: 17 Column: 16
+ Line: 24 Column: 16
 
 TokenType-> INTEGER
 Value-> 1
- Line: 17 Column: 18
+ Line: 24 Column: 18
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 17 Column: 18
+ Line: 24 Column: 18
 
 TokenType-> IDENTIFIER
 Value-> i
- Line: 17 Column: 21
+ Line: 24 Column: 21
 
 TokenType-> OPERATOR
 Value-> <
- Line: 17 Column: 23
+ Line: 24 Column: 23
 
 TokenType-> INTEGER
 Value-> 350
- Line: 17 Column: 27
+ Line: 24 Column: 27
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 17 Column: 27
+ Line: 24 Column: 27
 
 TokenType-> IDENTIFIER
 Value-> i
- Line: 17 Column: 29
+ Line: 24 Column: 29
 
 TokenType-> UNARY_OP
 Value-> ++
- Line: 17 Column: 31
+ Line: 24 Column: 31
 
 TokenType-> SYMBOL
 Value-> )
- Line: 17 Column: 31
+ Line: 24 Column: 31
 
 TokenType-> SYMBOL
 Value-> {
- Line: 17 Column: 33
+ Line: 24 Column: 33
 
 TokenType-> IDENTIFIER
 Value-> result
- Line: 18 Column: 14
+ Line: 25 Column: 14
 
 TokenType-> SYMBOL
 Value-> :
- Line: 18 Column: 14
+ Line: 25 Column: 14
 
 TokenType-> INTEGER
 Value-> int
- Line: 18 Column: 16
+ Line: 25 Column: 16
 
 TokenType-> OPERATOR
 Value-> =
- Line: 18 Column: 21
+ Line: 25 Column: 21
 
 TokenType-> INTEGER
 Value-> 5
- Line: 18 Column: 23
+ Line: 25 Column: 23
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 18 Column: 23
+ Line: 25 Column: 23
 
 TokenType-> IDENTIFIER
 Value-> echo
- Line: 19 Column: 12
+ Line: 26 Column: 12
 
 TokenType-> SYMBOL
 Value-> (
- Line: 19 Column: 12
+ Line: 26 Column: 12
 
 TokenType-> IDENTIFIER
 Value-> result
- Line: 19 Column: 19
+ Line: 26 Column: 19
 
 TokenType-> SYMBOL
 Value-> )
- Line: 19 Column: 19
+ Line: 26 Column: 19
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 19 Column: 20
+ Line: 26 Column: 20
 
 TokenType-> SYMBOL
 Value-> }
- Line: 20 Column: 4
+ Line: 27 Column: 4
 
 TokenType-> SYMBOL
 Value-> }
- Line: 22 Column: 0
+ Line: 29 Column: 0
 
 TokenType-> PROC
 Value-> proc
- Line: 24 Column: 0
+ Line: 31 Column: 0
 
 TokenType-> VOID
 Value-> void
- Line: 24 Column: 5
+ Line: 31 Column: 5
 
 TokenType-> IDENTIFIER
 Value-> fun
- Line: 24 Column: 13
+ Line: 31 Column: 13
 
 TokenType-> SYMBOL
 Value-> (
- Line: 24 Column: 13
+ Line: 31 Column: 13
 
 TokenType-> IDENTIFIER
 Value-> var_one
- Line: 24 Column: 21
+ Line: 31 Column: 21
 
 TokenType-> SYMBOL
 Value-> :
- Line: 24 Column: 21
+ Line: 31 Column: 21
 
 TokenType-> INTEGER
 Value-> int
- Line: 24 Column: 23
+ Line: 31 Column: 23
 
 TokenType-> SYMBOL
 Value-> ,
- Line: 24 Column: 26
+ Line: 31 Column: 26
 
 TokenType-> IDENTIFIER
 Value-> var_two
- Line: 24 Column: 35
+ Line: 31 Column: 35
 
 TokenType-> SYMBOL
 Value-> :
- Line: 24 Column: 35
+ Line: 31 Column: 35
 
 TokenType-> INTEGER
 Value-> int
- Line: 24 Column: 37
+ Line: 31 Column: 37
 
 TokenType-> SYMBOL
 Value-> )
- Line: 24 Column: 40
+ Line: 31 Column: 40
 
 TokenType-> SYMBOL
 Value-> {
- Line: 24 Column: 42
+ Line: 31 Column: 42
 
 TokenType-> IDENTIFIER
 Value-> var_one
- Line: 26 Column: 11
+ Line: 33 Column: 11
 
 TokenType-> OPERATOR
 Value-> +=
- Line: 26 Column: 14
+ Line: 33 Column: 14
 
 TokenType-> INTEGER
 Value-> 1
- Line: 26 Column: 16
+ Line: 33 Column: 16
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 26 Column: 16
+ Line: 33 Column: 16
 
 TokenType-> IDENTIFIER
 Value-> var_two
- Line: 27 Column: 11
+ Line: 34 Column: 11
 
 TokenType-> OPERATOR
 Value-> +=
- Line: 27 Column: 14
+ Line: 34 Column: 14
 
 TokenType-> IDENTIFIER
 Value-> var_two
- Line: 27 Column: 22
+ Line: 34 Column: 22
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 27 Column: 22
+ Line: 34 Column: 22
 
 TokenType-> IDENTIFIER
 Value-> echo
- Line: 28 Column: 8
+ Line: 35 Column: 8
 
 TokenType-> SYMBOL
 Value-> (
- Line: 28 Column: 8
+ Line: 35 Column: 8
 
 TokenType-> IDENTIFIER
 Value-> var_one
- Line: 28 Column: 16
+ Line: 35 Column: 16
 
 TokenType-> SYMBOL
 Value-> )
- Line: 28 Column: 16
+ Line: 35 Column: 16
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 28 Column: 17
+ Line: 35 Column: 17
 
 TokenType-> RETURN
 Value-> return
- Line: 30 Column: 4
+ Line: 37 Column: 4
 
 TokenType-> IDENTIFIER
 Value-> fun
- Line: 30 Column: 14
+ Line: 37 Column: 14
 
 TokenType-> SYMBOL
 Value-> (
- Line: 30 Column: 14
+ Line: 37 Column: 14
 
 TokenType-> IDENTIFIER
 Value-> var_two
- Line: 30 Column: 22
+ Line: 37 Column: 22
 
 TokenType-> SYMBOL
 Value-> ,
- Line: 30 Column: 22
+ Line: 37 Column: 22
 
 TokenType-> IDENTIFIER
 Value-> var_one
- Line: 30 Column: 31
+ Line: 37 Column: 31
 
 TokenType-> SYMBOL
 Value-> )
- Line: 30 Column: 31
+ Line: 37 Column: 31
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 30 Column: 32
+ Line: 37 Column: 32
 
 TokenType-> SYMBOL
 Value-> }
- Line: 31 Column: 0
+ Line: 38 Column: 0
 [MainNode]
+  [StormDef: Node]
+    [Variable: x, Type: int]
+    [Variable: y, Type: int]
   [ProcedureDef: main -> void]
     Parameters:
     [BodyNode]
+      [Variable: n, Type: Node]
       [Variable: a, Type: int]
         Integer: 10
       [Variable: b, Type: int]
@@ -497,7 +596,11 @@ ENTERED FOR NODE
 
 
 --- Generated IR ---
+  STRUCT_DEF Node
 main:
+  STORM_INIT n Node
+  n.field_0 = 1
+  n.field_1 = 2
   a = 10
   b = 20
   ARG a
