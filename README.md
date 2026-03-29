@@ -79,5 +79,17 @@ proc void main(void) {
 }
 ```
 
+# Register allocation stategy (Linear scan)
+- Will include benchmarks soon!
+- https://www.usenix.org/legacy/events/vee05/full_papers/p132-wimmer.pdf
+
+The algorithm implement
+
+1. LINEAR SCAN ALGORITHM consists of two register pools ( double) and other a register pool for every other datatype
+2. Calls free_registers to see if there is an outdated variable that has been assigned to a register, incoming intrvl takes that register
+3. if no register is available, we resort to stealing from a variable with the longest lifetime
+4. get_reg() is called in backend.h get_addr() when finding a register for a variable 
+
+
 ### Details
 * Compiler currently produces assembly, im using NASM and gcc to build the elf64 file.

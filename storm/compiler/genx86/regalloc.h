@@ -49,7 +49,7 @@ class RegAlloc {
             std::string r = double_registers.back();
             double_registers.pop_back();
             return r;
-        } else {
+        } else {//strings, int, bools
             if (int_registers.empty()) return std::nullopt;
             std::string r = int_registers.back();
             int_registers.pop_back();

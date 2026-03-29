@@ -14,6 +14,13 @@ bool comp(LiveInterval& a, LiveInterval& b) {
     return a.start < b.start;
 }
 
+/* 
+    LINEAR SCAN ALGORITHM consists of two register pools ( double) and other a register pool for every other datatype
+    Calls free_registers to see if there is an outdated variable that has been assigned to a register, incoming intrvl takes that register
+    if no register is available, we resort to stealing from a variable with the longest lifetime
+    this method is called in backend.h get_addr() when finding a register for a variable 
+*/
+
 void RegAlloc::linear_scan() {
     for(int i = 0; i < unhandled.size(); i++) {
         LiveInterval& intrvl = unhandled[i]; 
