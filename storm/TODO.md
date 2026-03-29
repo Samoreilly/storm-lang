@@ -53,7 +53,7 @@ The algorithm implement
 3. if no register is available, we resort to stealing from a variable with the longest lifetime
 4. get_reg() is called in backend.h get_addr() when finding a register for a variable 
 
-v
+
 
 
 

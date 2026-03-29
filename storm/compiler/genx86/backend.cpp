@@ -21,7 +21,12 @@ std::string Backend::gen_asm() {
             case OPCODE::ADD: {
                 if(instr.result.data_type == "double") {
                     code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
-                    code += "\taddsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    if (instr.right_operand.data_type != "double") {
+                        code += "\tcvtsi2sd xmm1, " + get_addr(instr.right_operand) + "\n";
+                        code += "\taddsd xmm0, xmm1\n";
+                    } else {
+                        code += "\taddsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    }
                     code += "\tmovsd " + get_addr(instr.result) + ", xmm0\n";
                }else {
                     code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
@@ -34,7 +39,12 @@ std::string Backend::gen_asm() {
             case OPCODE::MINUS: {
                 if(instr.result.data_type == "double") {
                     code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
-                    code += "\tsubsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    if (instr.right_operand.data_type != "double") {
+                        code += "\tcvtsi2sd xmm1, " + get_addr(instr.right_operand) + "\n";
+                        code += "\tsubsd xmm0, xmm1\n";
+                    } else {
+                        code += "\tsubsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    }
                     code += "\tmovsd " + get_addr(instr.result) + ", xmm0\n";
                }else {
                     code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
@@ -47,7 +57,12 @@ std::string Backend::gen_asm() {
             case OPCODE::MUL: {
                 if(instr.result.data_type == "double") {
                     code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
-                    code += "\tmulsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    if (instr.right_operand.data_type != "double") {
+                        code += "\tcvtsi2sd xmm1, " + get_addr(instr.right_operand) + "\n";
+                        code += "\tmulsd xmm0, xmm1\n";
+                    } else {
+                        code += "\tmulsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    }
                     code += "\tmovsd " + get_addr(instr.result) + ", xmm0\n";
                }else {
                     code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
@@ -60,11 +75,16 @@ std::string Backend::gen_asm() {
             case OPCODE::DIV: {
                 if(instr.result.data_type == "double") {
                     code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
-                    code += "\tdivsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    if (instr.right_operand.data_type != "double") {
+                        code += "\tcvtsi2sd xmm1, " + get_addr(instr.right_operand) + "\n";
+                        code += "\tdivsd xmm0, xmm1\n";
+                    } else {
+                        code += "\tdivsd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    }
                     code += "\tmovsd " + get_addr(instr.result) + ", xmm0\n";
                }else {
                     code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
-                    code += "\tcqto\n";
+                    code += "\tcqo\n";
                     code += "\tidiv qword " + get_addr(instr.right_operand) + "\n";
                     code += "\tmov " + get_addr(instr.result) + ", rax\n";
                 }
@@ -130,6 +150,36 @@ std::string Backend::gen_asm() {
                 code += "\tmov " + get_addr(instr.result) + ", rax\n";
                 break;
             }
+
+            case OPCODE::EQ: {
+                if(instr.left_operand.data_type == "double") {
+                    code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcomisd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tsete al\n"; 
+                } else {
+                    code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcmp rax, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tsete al\n"; 
+                }
+                code += "\tmovzx rax, al\n";
+                code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                break;
+            }
+
+            case OPCODE::NEQ: {
+                if(instr.left_operand.data_type == "double") {
+                    code += "\tmovsd xmm0, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcomisd xmm0, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tsetne al\n"; 
+                } else {
+                    code += "\tmov rax, " + get_addr(instr.left_operand) + "\n";
+                    code += "\tcmp rax, " + get_addr(instr.right_operand) + "\n";
+                    code += "\tsetne al\n"; 
+                }
+                code += "\tmovzx rax, al\n";
+                code += "\tmov " + get_addr(instr.result) + ", rax\n";
+                break;
+            }
             
             case OPCODE::RETURN: {
                 if (instr.right_operand.name != "") {
@@ -141,6 +191,8 @@ std::string Backend::gen_asm() {
                     }
                 }
                 // emit standard stack frame teardown
+                code += "\tlea rsp, [rbp - 48]\n"; // jump over local variables to saved registers
+                code += "\tpop r11\n"; // stack alignment padding
                 code += "\tpop r12\n";
                 code += "\tpop r13\n";
                 code += "\tpop r14\n";
@@ -191,6 +243,7 @@ std::string Backend::gen_asm() {
                      code += "\tpush r14\n";
                      code += "\tpush r13\n";
                      code += "\tpush r12\n";
+                     code += "\tpush r11\n"; // stack alignment padding
                      
                      // aligns stack for local variables
                      int alloc = -(fn_entry->stack_frame_size);

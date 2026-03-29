@@ -16,6 +16,7 @@ Storm is a procedural C styled language. It is being developed solely for learni
 * [Implementation Architecture](#implementation-architecture)
 * [Example](#example)
 * [Details](#details)
+* [Benchmarks](#benchmarks)
 
 ### Features
 
@@ -28,7 +29,6 @@ Storm is a procedural C styled language. It is being developed solely for learni
 * Various integrated types: int, double, string, bool, char, void (built in data structures soon)
 * Multiple files and folder support
 * Narrowing and widening conversion
-
 ### Language Design
 
 Storm is designed to feel familiar to anyone who has written C or C++ but with a few simplifications and modern touches. It uses static typing with explicit type declarations for variables and procedure parameters.
@@ -93,3 +93,7 @@ The algorithm implement
 
 ### Details
 * Compiler currently produces assembly, im using NASM and gcc to build the elf64 file.
+
+
+### Benchmarks
+![benchmarks](stormlang_benchmarks.png)

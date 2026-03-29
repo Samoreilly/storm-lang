@@ -83,6 +83,29 @@ void RegAlloc::free_registers(LiveInterval& curr_interval) {
 
 
 void RegAlloc::build_list() {
+
+    std::map<std::string, int> label_positions;
+    std::vector<std::pair<int, int>> loops;
+    // 
+    for (int i = 0; i < instructions.size(); i++) {
+        if (instructions[i].op == OPCODE::LABEL) {
+            label_positions[instructions[i].result.name] = i;
+        } 
+        else if (instructions[i].op == OPCODE::GOTO) {
+            std::string target = instructions[i].right_operand.name;
+            if (label_positions.count(target)) {
+                loops.push_back({label_positions[target], i});
+            }
+        } 
+        else if (instructions[i].op == OPCODE::IF_FALSE) {
+            std::string target = instructions[i].result.name;
+            if (label_positions.count(target)) {
+                loops.push_back({label_positions[target], i});
+            }
+        }
+    }
+
+    // 2. Perform the standard linear liveness pass
     int index {0};
     for(const auto& i : instructions) {
         update_interval(i.result, index);
@@ -90,6 +113,21 @@ void RegAlloc::build_list() {
         update_interval(i.right_operand, index);
         index++;
     }
+
+    // 3. Extend lifetimes for variables overlapping loops
+    for (auto& pair : map_index) {
+        LiveInterval& li = pair.second;
+        for (const auto& loop : loops) {
+            // If variable lives into, across, or inside the loop...
+            if (li.start <= loop.second && li.end >= loop.first) {
+                // ...force its end point to the end of the loop to prevent premature freeing!
+                if (li.end < loop.second) {
+                    li.end = loop.second;
+                }
+            }
+        }
+    }
+
     map_to_list();
 }
 
