@@ -1,172 +1,237 @@
 
 
-
-p i a(a: i, b: i) {
-    r a + b;
-}
-
-p i r(n: i) {
+p i m() {
     s: i = 0;
 
-    f(i: i = 0;i < n;i+) {
-        s = s + i;
-    }
-    r s;
-}
+    f(i: i = 0; i < 1; i+) {
+        a: i = 1;
+        b: i = 2;
+        c: i = 3;
+        d: i = 4;
+        e: i = 5;
+        f: i = 6;
+        g: i = 7;
+        h: i = 8;
+        j: i = 9;
+        k: i = 1;
 
-p v m() {
-    f(i: i = 0;i < 5;i+) {
-        e(r(1));
+        s = a * b + c * d + e * f + g * h + j * k;
     }
+
+    e(s);
 }
 
 
 TokenType-> PROC
 Value-> proc
- Line: 4 Column: 0
+ Line: 3 Column: 0
 
 TokenType-> INTEGER
 Value-> int
- Line: 4 Column: 5
+ Line: 3 Column: 5
 
 TokenType-> IDENTIFIER
-Value-> add
- Line: 4 Column: 12
+Value-> main
+ Line: 3 Column: 13
 
 TokenType-> SYMBOL
 Value-> (
- Line: 4 Column: 12
-
-TokenType-> IDENTIFIER
-Value-> a
- Line: 4 Column: 14
-
-TokenType-> SYMBOL
-Value-> :
- Line: 4 Column: 14
-
-TokenType-> INTEGER
-Value-> int
- Line: 4 Column: 16
-
-TokenType-> SYMBOL
-Value-> ,
- Line: 4 Column: 19
-
-TokenType-> IDENTIFIER
-Value-> b
- Line: 4 Column: 22
-
-TokenType-> SYMBOL
-Value-> :
- Line: 4 Column: 22
-
-TokenType-> INTEGER
-Value-> int
- Line: 4 Column: 24
+ Line: 3 Column: 13
 
 TokenType-> SYMBOL
 Value-> )
- Line: 4 Column: 27
+ Line: 3 Column: 14
 
 TokenType-> SYMBOL
 Value-> {
- Line: 4 Column: 29
-
-TokenType-> RETURN
-Value-> return
- Line: 5 Column: 4
-
-TokenType-> IDENTIFIER
-Value-> a
- Line: 5 Column: 12
-
-TokenType-> OPERATOR
-Value-> +
- Line: 5 Column: 14
-
-TokenType-> IDENTIFIER
-Value-> b
- Line: 5 Column: 16
-
-TokenType-> SYMBOL
-Value-> ;
- Line: 5 Column: 16
-
-TokenType-> SYMBOL
-Value-> }
- Line: 6 Column: 0
-
-TokenType-> PROC
-Value-> proc
- Line: 8 Column: 0
-
-TokenType-> INTEGER
-Value-> int
- Line: 8 Column: 5
-
-TokenType-> IDENTIFIER
-Value-> run
- Line: 8 Column: 12
-
-TokenType-> SYMBOL
-Value-> (
- Line: 8 Column: 12
-
-TokenType-> IDENTIFIER
-Value-> n
- Line: 8 Column: 14
-
-TokenType-> SYMBOL
-Value-> :
- Line: 8 Column: 14
-
-TokenType-> INTEGER
-Value-> int
- Line: 8 Column: 16
-
-TokenType-> SYMBOL
-Value-> )
- Line: 8 Column: 19
-
-TokenType-> SYMBOL
-Value-> {
- Line: 8 Column: 21
+ Line: 3 Column: 16
 
 TokenType-> IDENTIFIER
 Value-> sum
- Line: 9 Column: 7
+ Line: 4 Column: 7
 
 TokenType-> SYMBOL
 Value-> :
- Line: 9 Column: 7
+ Line: 4 Column: 7
 
 TokenType-> INTEGER
 Value-> int
- Line: 9 Column: 9
+ Line: 4 Column: 9
 
 TokenType-> OPERATOR
 Value-> =
- Line: 9 Column: 14
+ Line: 4 Column: 14
 
 TokenType-> INTEGER
 Value-> 0
- Line: 9 Column: 16
+ Line: 4 Column: 16
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 9 Column: 16
+ Line: 4 Column: 16
 
 TokenType-> FOR
 Value-> for
- Line: 11 Column: 4
+ Line: 6 Column: 4
 
 TokenType-> SYMBOL
 Value-> (
- Line: 11 Column: 7
+ Line: 6 Column: 7
 
 TokenType-> IDENTIFIER
 Value-> i
+ Line: 6 Column: 9
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 6 Column: 9
+
+TokenType-> INTEGER
+Value-> int
+ Line: 6 Column: 11
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 6 Column: 16
+
+TokenType-> INTEGER
+Value-> 0
+ Line: 6 Column: 18
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 6 Column: 18
+
+TokenType-> IDENTIFIER
+Value-> i
+ Line: 6 Column: 21
+
+TokenType-> OPERATOR
+Value-> <
+ Line: 6 Column: 23
+
+TokenType-> INTEGER
+Value-> 100000
+ Line: 6 Column: 30
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 6 Column: 30
+
+TokenType-> IDENTIFIER
+Value-> i
+ Line: 6 Column: 33
+
+TokenType-> UNARY_OP
+Value-> ++
+ Line: 6 Column: 35
+
+TokenType-> SYMBOL
+Value-> )
+ Line: 6 Column: 35
+
+TokenType-> SYMBOL
+Value-> {
+ Line: 6 Column: 37
+
+TokenType-> IDENTIFIER
+Value-> a
+ Line: 7 Column: 9
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 7 Column: 9
+
+TokenType-> INTEGER
+Value-> int
+ Line: 7 Column: 11
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 7 Column: 16
+
+TokenType-> INTEGER
+Value-> 1
+ Line: 7 Column: 18
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 7 Column: 18
+
+TokenType-> IDENTIFIER
+Value-> b
+ Line: 8 Column: 9
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 8 Column: 9
+
+TokenType-> INTEGER
+Value-> int
+ Line: 8 Column: 11
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 8 Column: 16
+
+TokenType-> INTEGER
+Value-> 2
+ Line: 8 Column: 18
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 8 Column: 18
+
+TokenType-> IDENTIFIER
+Value-> c
+ Line: 9 Column: 9
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 9 Column: 9
+
+TokenType-> INTEGER
+Value-> int
+ Line: 9 Column: 11
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 9 Column: 16
+
+TokenType-> INTEGER
+Value-> 3
+ Line: 9 Column: 18
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 9 Column: 18
+
+TokenType-> IDENTIFIER
+Value-> d
+ Line: 10 Column: 9
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 10 Column: 9
+
+TokenType-> INTEGER
+Value-> int
+ Line: 10 Column: 11
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 10 Column: 16
+
+TokenType-> INTEGER
+Value-> 4
+ Line: 10 Column: 18
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 10 Column: 18
+
+TokenType-> IDENTIFIER
+Value-> e
  Line: 11 Column: 9
 
 TokenType-> SYMBOL
@@ -182,7 +247,7 @@ Value-> =
  Line: 11 Column: 16
 
 TokenType-> INTEGER
-Value-> 0
+Value-> 5
  Line: 11 Column: 18
 
 TokenType-> SYMBOL
@@ -190,221 +255,243 @@ Value-> ;
  Line: 11 Column: 18
 
 TokenType-> IDENTIFIER
-Value-> i
- Line: 11 Column: 20
-
-TokenType-> OPERATOR
-Value-> <
- Line: 11 Column: 22
-
-TokenType-> IDENTIFIER
-Value-> n
- Line: 11 Column: 24
+Value-> f
+ Line: 12 Column: 9
 
 TokenType-> SYMBOL
-Value-> ;
- Line: 11 Column: 24
+Value-> :
+ Line: 12 Column: 9
 
-TokenType-> IDENTIFIER
-Value-> i
- Line: 11 Column: 26
-
-TokenType-> UNARY_OP
-Value-> ++
- Line: 11 Column: 28
-
-TokenType-> SYMBOL
-Value-> )
- Line: 11 Column: 28
-
-TokenType-> SYMBOL
-Value-> {
- Line: 11 Column: 30
-
-TokenType-> IDENTIFIER
-Value-> sum
+TokenType-> INTEGER
+Value-> int
  Line: 12 Column: 11
 
 TokenType-> OPERATOR
 Value-> =
- Line: 12 Column: 13
+ Line: 12 Column: 16
 
-TokenType-> IDENTIFIER
-Value-> sum
- Line: 12 Column: 17
-
-TokenType-> OPERATOR
-Value-> +
- Line: 12 Column: 19
-
-TokenType-> IDENTIFIER
-Value-> i
- Line: 12 Column: 21
+TokenType-> INTEGER
+Value-> 6
+ Line: 12 Column: 18
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 12 Column: 21
-
-TokenType-> SYMBOL
-Value-> }
- Line: 13 Column: 4
-
-TokenType-> RETURN
-Value-> return
- Line: 14 Column: 4
+ Line: 12 Column: 18
 
 TokenType-> IDENTIFIER
-Value-> sum
- Line: 14 Column: 14
-
-TokenType-> SYMBOL
-Value-> ;
- Line: 14 Column: 14
-
-TokenType-> SYMBOL
-Value-> }
- Line: 15 Column: 0
-
-TokenType-> PROC
-Value-> proc
- Line: 17 Column: 0
-
-TokenType-> VOID
-Value-> void
- Line: 17 Column: 5
-
-TokenType-> IDENTIFIER
-Value-> main
- Line: 17 Column: 14
-
-TokenType-> SYMBOL
-Value-> (
- Line: 17 Column: 14
-
-TokenType-> SYMBOL
-Value-> )
- Line: 17 Column: 15
-
-TokenType-> SYMBOL
-Value-> {
- Line: 17 Column: 17
-
-TokenType-> FOR
-Value-> for
- Line: 18 Column: 4
-
-TokenType-> SYMBOL
-Value-> (
- Line: 18 Column: 7
-
-TokenType-> IDENTIFIER
-Value-> i
- Line: 18 Column: 9
+Value-> g
+ Line: 13 Column: 9
 
 TokenType-> SYMBOL
 Value-> :
- Line: 18 Column: 9
+ Line: 13 Column: 9
 
 TokenType-> INTEGER
 Value-> int
+ Line: 13 Column: 11
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 13 Column: 16
+
+TokenType-> INTEGER
+Value-> 7
+ Line: 13 Column: 18
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 13 Column: 18
+
+TokenType-> IDENTIFIER
+Value-> h
+ Line: 14 Column: 9
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 14 Column: 9
+
+TokenType-> INTEGER
+Value-> int
+ Line: 14 Column: 11
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 14 Column: 16
+
+TokenType-> INTEGER
+Value-> 8
+ Line: 14 Column: 18
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 14 Column: 18
+
+TokenType-> IDENTIFIER
+Value-> j
+ Line: 15 Column: 9
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 15 Column: 9
+
+TokenType-> INTEGER
+Value-> int
+ Line: 15 Column: 11
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 15 Column: 16
+
+TokenType-> INTEGER
+Value-> 9
+ Line: 15 Column: 18
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 15 Column: 18
+
+TokenType-> IDENTIFIER
+Value-> k
+ Line: 16 Column: 9
+
+TokenType-> SYMBOL
+Value-> :
+ Line: 16 Column: 9
+
+TokenType-> INTEGER
+Value-> int
+ Line: 16 Column: 11
+
+TokenType-> OPERATOR
+Value-> =
+ Line: 16 Column: 16
+
+TokenType-> INTEGER
+Value-> 10
+ Line: 16 Column: 19
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 16 Column: 19
+
+TokenType-> IDENTIFIER
+Value-> sum
  Line: 18 Column: 11
 
 TokenType-> OPERATOR
 Value-> =
- Line: 18 Column: 16
-
-TokenType-> INTEGER
-Value-> 0
- Line: 18 Column: 18
-
-TokenType-> SYMBOL
-Value-> ;
- Line: 18 Column: 18
+ Line: 18 Column: 13
 
 TokenType-> IDENTIFIER
-Value-> i
- Line: 18 Column: 20
+Value-> a
+ Line: 18 Column: 15
 
 TokenType-> OPERATOR
-Value-> <
- Line: 18 Column: 22
+Value-> *
+ Line: 18 Column: 17
 
-TokenType-> INTEGER
-Value-> 50
- Line: 18 Column: 25
+TokenType-> IDENTIFIER
+Value-> b
+ Line: 18 Column: 19
 
-TokenType-> SYMBOL
-Value-> ;
+TokenType-> OPERATOR
+Value-> +
+ Line: 18 Column: 21
+
+TokenType-> IDENTIFIER
+Value-> c
+ Line: 18 Column: 23
+
+TokenType-> OPERATOR
+Value-> *
  Line: 18 Column: 25
 
 TokenType-> IDENTIFIER
-Value-> i
+Value-> d
  Line: 18 Column: 27
 
-TokenType-> UNARY_OP
-Value-> ++
+TokenType-> OPERATOR
+Value-> +
  Line: 18 Column: 29
 
-TokenType-> SYMBOL
-Value-> )
- Line: 18 Column: 29
-
-TokenType-> SYMBOL
-Value-> {
+TokenType-> IDENTIFIER
+Value-> e
  Line: 18 Column: 31
+
+TokenType-> OPERATOR
+Value-> *
+ Line: 18 Column: 33
+
+TokenType-> IDENTIFIER
+Value-> f
+ Line: 18 Column: 35
+
+TokenType-> OPERATOR
+Value-> +
+ Line: 18 Column: 37
+
+TokenType-> IDENTIFIER
+Value-> g
+ Line: 18 Column: 39
+
+TokenType-> OPERATOR
+Value-> *
+ Line: 18 Column: 41
+
+TokenType-> IDENTIFIER
+Value-> h
+ Line: 18 Column: 43
+
+TokenType-> OPERATOR
+Value-> +
+ Line: 18 Column: 45
+
+TokenType-> IDENTIFIER
+Value-> j
+ Line: 18 Column: 47
+
+TokenType-> OPERATOR
+Value-> *
+ Line: 18 Column: 49
+
+TokenType-> IDENTIFIER
+Value-> k
+ Line: 18 Column: 51
+
+TokenType-> SYMBOL
+Value-> ;
+ Line: 18 Column: 51
+
+TokenType-> SYMBOL
+Value-> }
+ Line: 19 Column: 4
 
 TokenType-> IDENTIFIER
 Value-> echo
- Line: 19 Column: 12
+ Line: 21 Column: 8
 
 TokenType-> SYMBOL
 Value-> (
- Line: 19 Column: 12
+ Line: 21 Column: 8
 
 TokenType-> IDENTIFIER
-Value-> run
- Line: 19 Column: 16
-
-TokenType-> SYMBOL
-Value-> (
- Line: 19 Column: 16
-
-TokenType-> INTEGER
-Value-> 100000
- Line: 19 Column: 23
+Value-> sum
+ Line: 21 Column: 12
 
 TokenType-> SYMBOL
 Value-> )
- Line: 19 Column: 23
-
-TokenType-> SYMBOL
-Value-> )
- Line: 19 Column: 24
+ Line: 21 Column: 12
 
 TokenType-> SYMBOL
 Value-> ;
- Line: 19 Column: 25
+ Line: 21 Column: 13
 
 TokenType-> SYMBOL
 Value-> }
- Line: 20 Column: 4
-
-TokenType-> SYMBOL
-Value-> }
- Line: 21 Column: 0
+ Line: 22 Column: 0
 [MainNode]
-  [ProcedureDef: add -> int]
+  [ProcedureDef: main -> int]
     Parameters:
-      [Variable: a, Type: int]
-      [Variable: b, Type: int]
-    [BodyNode]
-      [Return]
-        [BinaryExpression: +]
-          Identifier: a
-          Identifier: b
-  [ProcedureDef: run -> int]
-    Parameters:
-      [Variable: n, Type: int]
     [BodyNode]
       [Variable: sum, Type: int]
         Integer: 0
@@ -413,137 +500,90 @@ Value-> }
           Integer: 0
         [BinaryExpression: <]
           Identifier: i
-          Identifier: n
+          Integer: 100000
         [UnaryIncr: ++i]
         [BodyNode]
+          [Variable: a, Type: int]
+            Integer: 1
+          [Variable: b, Type: int]
+            Integer: 2
+          [Variable: c, Type: int]
+            Integer: 3
+          [Variable: d, Type: int]
+            Integer: 4
+          [Variable: e, Type: int]
+            Integer: 5
+          [Variable: f, Type: int]
+            Integer: 6
+          [Variable: g, Type: int]
+            Integer: 7
+          [Variable: h, Type: int]
+            Integer: 8
+          [Variable: j, Type: int]
+            Integer: 9
+          [Variable: k, Type: int]
+            Integer: 10
           [Variable: sum, Op: =]
             [BinaryExpression: +]
-              Identifier: sum
-              Identifier: i
-      [Return]
+              [BinaryExpression: +]
+                [BinaryExpression: +]
+                  [BinaryExpression: +]
+                    [BinaryExpression: *]
+                      Identifier: a
+                      Identifier: b
+                    [BinaryExpression: *]
+                      Identifier: c
+                      Identifier: d
+                  [BinaryExpression: *]
+                    Identifier: e
+                    Identifier: f
+                [BinaryExpression: *]
+                  Identifier: g
+                  Identifier: h
+              [BinaryExpression: *]
+                Identifier: j
+                Identifier: k
+      [ProcedureCall: echo()]
         Identifier: sum
-  [ProcedureDef: main -> void]
-    Parameters:
-    [BodyNode]
-      [ForLoop]
-        [Variable: i, Type: int]
-          Integer: 0
-        [BinaryExpression: <]
-          Identifier: i
-          Integer: 50
-        [UnaryIncr: ++i]
-        [BodyNode]
-          [ProcedureCall: echo()]
-            [ProcedureCall: run()]
-              Integer: 100000
 
 ENTERED FOR NODE
 
--========================--=====FOR LOOP CONDITION===========================:  :t1
-
-ENTERED FOR NODE
-
+-========================--=====FOR LOOP CONDITION===========================:  :t0
 
 --- Generated IR ---
-add:
-  PARAM a
-  PARAM b
-  t0 = a ADD b
-  RETURN t0
-run:
-  PARAM n
+main:
   sum = 0
   i = 0
 L0:
-  t1 = i LT n
-  IF_FALSE t1 GOTO L1
-  t2 = sum ADD i
-  sum = t2
+  t0 = i LT 100000
+  IF_FALSE t0 GOTO L1
+  a = 1
+  b = 2
+  c = 3
+  d = 4
+  e = 5
+  f = 6
+  g = 7
+  h = 8
+  j = 9
+  k = 10
+  t1 = a MUL b
+  t2 = c MUL d
+  t3 = t1 ADD t2
+  t4 = e MUL f
+  t5 = t3 ADD t4
+  t6 = g MUL h
+  t7 = t5 ADD t6
+  t8 = j MUL k
+  t9 = t7 ADD t8
+  sum = t9
   i = i ADD 1
   GOTO L0
 L1:
-  RETURN sum
-main:
-  i = 0
-L2:
-  t3 = i LT 48
-  IF_FALSE t3 GOTO L3
-  ARG 100000
-  t4 = CALL run
   ARG `%i\n`
-  ARG t4
-  CALL printf
-  i = i ADD 1
-  ARG 100000
-  t5 = CALL run
-  ARG `%i\n`
-  ARG t5
-  CALL printf
-  i = i ADD 1
-  ARG 100000
-  t6 = CALL run
-  ARG `%i\n`
-  ARG t6
-  CALL printf
-  i = i ADD 1
-  ARG 100000
-  t7 = CALL run
-  ARG `%i\n`
-  ARG t7
-  CALL printf
-  i = i ADD 1
-  GOTO L2
-L3:
-  ARG 100000
-  t8 = CALL run
-  ARG `%i\n`
-  ARG t8
-  CALL printf
-  i = i ADD 1
-  ARG 100000
-  t9 = CALL run
-  ARG `%i\n`
-  ARG t9
+  ARG sum
   CALL printf
   RETURN 
 --------------------
 
-ENTERED
-0
-
-3
-
-3
-
-3
-
-5
-
-7
-
-8
-
-10
-
-10
-
-12
-
-18
-
-21
-
-24
-
-27
-
-30
-
-36
-
-42
-
-50
-
-56
-Pipeline done
+202002Pipeline done

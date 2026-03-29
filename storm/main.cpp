@@ -72,12 +72,16 @@ int main(int argc, char* argv[]) {
         
         std::vector<Instruction> instr = ir.instructions;
 
-        Backend b{instr, &master_table};
-        std::string asm_code = b.gen_asm();
-
+        // Register Allocation
         RegAlloc ra{instr};
         ra.build_list();
+        ra.linear_scan();
 
+        // Backend
+        Backend b{instr, &master_table, ra};
+        std::string asm_code = b.gen_asm();
+
+        std::cout << __cplusplus;
 
         std::ofstream storm("storm.asm");
 

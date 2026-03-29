@@ -6,128 +6,90 @@ extern printf
 global main
 
 section .text
-add:
-	push rbp
-	mov rbp, rsp
-	sub rsp, 16
-	mov qword [rbp -8], rdi
-	mov qword [rbp -16], rsi
-	mov rax, qword [rbp -8]
-	add rax, qword [rbp -16]
-	mov qword [rbp -1000], rax
-	mov rax, qword [rbp -1000]
-	leave
-	ret
-run:
-	push rbp
-	mov rbp, rsp
-	sub rsp, 32
-	mov qword [rbp -8], rdi
-	mov rax, 0
-	mov qword [rbp -16], rax
-	mov rax, 0
-	mov qword [rbp -24], rax
-L0:
-	mov rax, qword [rbp -24]
-	cmp rax, qword [rbp -8]
-	setl al
-	movzx rax, al
-	mov qword [rbp -1008], rax
-	mov rax, qword [rbp -1008]
-	cmp rax, 0
-	je L1
-	mov rax, qword [rbp -16]
-	add rax, qword [rbp -24]
-	mov qword [rbp -1016], rax
-	mov rax, qword [rbp -1016]
-	mov qword [rbp -16], rax
-	mov rax, qword [rbp -24]
-	add rax, 1
-	mov qword [rbp -24], rax
-	jmp L0
-L1:
-	mov rax, qword [rbp -16]
-	leave
-	ret
 main:
 	push rbp
 	mov rbp, rsp
-	sub rsp, 16
+	push rbx
+	push r15
+	push r14
+	push r13
+	push r12
+	sub rsp, 96
 	mov rax, 0
 	mov qword [rbp -8], rax
-L2:
-	mov rax, qword [rbp -8]
-	cmp rax, 48
+	mov rax, 0
+	mov qword [rbp -16], rax
+L0:
+	mov rax, qword [rbp -16]
+	cmp rax, 100000
 	setl al
 	movzx rax, al
-	mov qword [rbp -1024], rax
-	mov rax, qword [rbp -1024]
+	mov r13, rax
+	mov rax, r13
 	cmp rax, 0
-	je L3
-	mov rdi, 100000
-	mov al, 0
-	call run
-	mov qword [rbp -1032], rax
-	mov rdi, string_0
-	mov rsi, qword [rbp -1032]
-	mov al, 0
-	call printf
-	mov rax, qword [rbp -8]
-	add rax, 1
+	je L1
+	mov rax, 1
+	mov r13, rax
+	mov rax, 2
+	mov r12, rax
+	mov rax, 3
+	mov rbx, rax
+	mov rax, 4
+	mov r15, rax
+	mov rax, 5
+	mov qword [rbp -56], rax
+	mov rax, 6
+	mov qword [rbp -64], rax
+	mov rax, 7
+	mov qword [rbp -72], rax
+	mov rax, 8
+	mov qword [rbp -80], rax
+	mov rax, 9
+	mov qword [rbp -88], rax
+	mov rax, 10
+	mov qword [rbp -96], rax
+	mov rax, r13
+	imul rax, r12
+	mov r14, rax
+	mov rax, rbx
+	imul rax, r15
+	mov r12, rax
+	mov rax, r14
+	add rax, r12
+	mov rbx, rax
+	mov rax, qword [rbp -56]
+	imul rax, qword [rbp -64]
+	mov r12, rax
+	mov rax, rbx
+	add rax, r12
+	mov r14, rax
+	mov rax, qword [rbp -72]
+	imul rax, qword [rbp -80]
+	mov r12, rax
+	mov rax, r14
+	add rax, r12
+	mov rbx, rax
+	mov rax, qword [rbp -88]
+	imul rax, qword [rbp -96]
+	mov r12, rax
+	mov rax, rbx
+	add rax, r12
+	mov r14, rax
+	mov rax, r14
 	mov qword [rbp -8], rax
-	mov rdi, 100000
-	mov al, 0
-	call run
-	mov qword [rbp -1040], rax
-	mov rdi, string_0
-	mov rsi, qword [rbp -1040]
-	mov al, 0
-	call printf
-	mov rax, qword [rbp -8]
+	mov rax, qword [rbp -16]
 	add rax, 1
-	mov qword [rbp -8], rax
-	mov rdi, 100000
-	mov al, 0
-	call run
-	mov qword [rbp -1048], rax
+	mov qword [rbp -16], rax
+	jmp L0
+L1:
 	mov rdi, string_0
-	mov rsi, qword [rbp -1048]
+	mov rsi, qword [rbp -8]
 	mov al, 0
 	call printf
-	mov rax, qword [rbp -8]
-	add rax, 1
-	mov qword [rbp -8], rax
-	mov rdi, 100000
-	mov al, 0
-	call run
-	mov qword [rbp -1056], rax
-	mov rdi, string_0
-	mov rsi, qword [rbp -1056]
-	mov al, 0
-	call printf
-	mov rax, qword [rbp -8]
-	add rax, 1
-	mov qword [rbp -8], rax
-	jmp L2
-L3:
-	mov rdi, 100000
-	mov al, 0
-	call run
-	mov qword [rbp -1064], rax
-	mov rdi, string_0
-	mov rsi, qword [rbp -1064]
-	mov al, 0
-	call printf
-	mov rax, qword [rbp -8]
-	add rax, 1
-	mov qword [rbp -8], rax
-	mov rdi, 100000
-	mov al, 0
-	call run
-	mov qword [rbp -1072], rax
-	mov rdi, string_0
-	mov rsi, qword [rbp -1072]
-	mov al, 0
-	call printf
+	pop r12
+	pop r13
+	pop r14
+	pop r15
+	pop rbx
 	leave
 	ret

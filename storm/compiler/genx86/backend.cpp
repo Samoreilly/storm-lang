@@ -141,6 +141,11 @@ std::string Backend::gen_asm() {
                     }
                 }
                 // emit standard stack frame teardown
+                code += "\tpop r12\n";
+                code += "\tpop r13\n";
+                code += "\tpop r14\n";
+                code += "\tpop r15\n";
+                code += "\tpop rbx\n";
                 code += "\tleave\n";
                 code += "\tret\n";
                 break;
@@ -178,9 +183,14 @@ std::string Backend::gen_asm() {
                 // add function prologue if this label is a registered function
                 SymbolEntry* fn_entry = table->lookup(instr.result.name);
                 if (fn_entry && fn_entry->is_function) {
-                    //push fp and set new fp
+                     //push fp and set new fp
                      code += "\tpush rbp\n";
                      code += "\tmov rbp, rsp\n";
+                     code += "\tpush rbx\n";
+                     code += "\tpush r15\n";
+                     code += "\tpush r14\n";
+                     code += "\tpush r13\n";
+                     code += "\tpush r12\n";
                      
                      // aligns stack for local variables
                      int alloc = -(fn_entry->stack_frame_size);
