@@ -4,7 +4,8 @@
 #include "transpiler/transpile.h"
 #include "compiler/semantic_analysis/semantic.h"
 #include "compiler/ir/ir.h"
-#include "compiler//genx86/backend.h"
+#include "compiler/genx86/backend.h"
+#include "compiler/genx86/regalloc.h"
 #include "token.h"
 #include <cstdlib>
 #include <fstream>
@@ -73,6 +74,10 @@ int main(int argc, char* argv[]) {
 
         Backend b{instr, &master_table};
         std::string asm_code = b.gen_asm();
+
+        RegAlloc ra{instr};
+        ra.build_list();
+
 
         std::ofstream storm("storm.asm");
 

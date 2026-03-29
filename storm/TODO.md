@@ -42,3 +42,12 @@
 
 After: Merge global vectors from each file into one in MainNode | DONE
 
+
+# Register allocation plan (Linear scan)
+- https://www.usenix.org/legacy/events/vee05/full_papers/p132-wimmer.pdf
+
+
+
+
+
+
