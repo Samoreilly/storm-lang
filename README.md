@@ -6,6 +6,10 @@
      \/                          \/ 
 ```
 
+This project is discontinued, it was extremely valuable for my understanding of compilers and the Assembly language but hence "learning project", I later noticed alot of architectural and language faults due to learning on the go.
+
+I plan to develop another language with a considerably more refined scope and better though out language features!
+
 Storm is a procedural C styled language. It is being developed solely for learning purposes but feel free to make a pull request if your interested in helping out!
 
 [These are the upcoming features](storm/TODO.md)
